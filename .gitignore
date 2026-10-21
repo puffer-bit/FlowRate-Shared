@@ -1,0 +1,25 @@
+################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/bin/
+/obj
+.idea/
+Shared.Core/bin/
+Shared.Core/obj/
+Shared.Core/.idea
+Shared.Parsers/bin/
+Shared.Parsers/obj/
+Shared.Parsers/.idea/
+Shared.Tests/.idea
+Shared.Tests/bin/
+Shared.Tests/obj/
+Shared.Tests/.idea
+Shared.Tools/obj/
+Shared.Tools/bin
+Shared.Tools/.idea
+
+# Written by ProtocolSchemaTests when the message schema differs from protocol-schema.txt
+*.received.txt
+
+*.DotSettings.user
