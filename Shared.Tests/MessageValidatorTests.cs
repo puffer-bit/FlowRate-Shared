@@ -109,7 +109,7 @@ public class MessageValidatorTests
     }
 
     // The ids are padded to the length of an upload id, so a test names them by their first digits
-    private static NewChatImageModel Image(string upload, string preview, string uploadId = null, int width = 640,
+    private static NewChatImageModel Image(string upload, string preview, string? uploadId = null, int width = 640,
         string fileName = "photo.jpg") => new()
     {
         UploadId = uploadId ?? upload.PadRight(Limits.MediaUploadIdLength * 2, '0'),
