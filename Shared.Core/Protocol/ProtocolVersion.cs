@@ -13,9 +13,9 @@ public static class ProtocolVersion
     /// a changed type or enum number, a request old servers do not know. Shared.Tests fails on any
     /// change of the message schema until it is looked at.
     /// </summary>
-    // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel)
-    // 3: sessions carry permission overrides; ChangeSessionPermissionsRequest
-    public const int Current = 3;
+    // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel);
+    //    sessions carry permission overrides; ChangeSessionPermissionsRequest
+    public const int Current = 2;
 
     /// <summary>The oldest client version the server still serves.</summary>
     public const int MinSupported = 1;
