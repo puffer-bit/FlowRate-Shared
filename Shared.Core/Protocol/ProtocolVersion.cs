@@ -14,7 +14,8 @@ public static class ProtocolVersion
     /// change of the message schema until it is looked at.
     /// </summary>
     // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel)
-    public const int Current = 2;
+    // 3: sessions carry permission overrides; ChangeSessionPermissionsRequest
+    public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>
     public const int MinSupported = 1;

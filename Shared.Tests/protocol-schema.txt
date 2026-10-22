@@ -1,4 +1,4 @@
-version 2
+version 3
 AddMessageResult = enum NoError=0, SameMessageAlreadyExist=1, ChatNotExists=2, TimedOut=3, InvalidResponse=4, WrongResponse=5, ReplyTargetNotExists=6, Rejected=7, AttachmentsNotAllowed=8, AttachmentNotReady=9, AttachmentInvalid=10, InternalError=-1
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
@@ -31,6 +31,8 @@ BaseMessage <- "ApproveUserResponse": ApproveUserResponse
 BaseMessage <- "BanInSessionRequest": BanInSessionRequest
 BaseMessage <- "BanInSessionResponse": BanInSessionResponse
 BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettingsRequest
+BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsRequest
+BaseMessage <- "ChangeSessionPermissionsResponse": ChangeSessionPermissionsResponse
 BaseMessage <- "ChangeSessionSettingsResponse": ChangeSessionSettingsResponse
 BaseMessage <- "ChatMarkReadRequest": ChatMarkReadRequest
 BaseMessage <- "ChatMarkReadResponse": ChatMarkReadResponse
@@ -215,6 +217,15 @@ ChangeHybridSessionSettingsRequest.Name: String
 ChangeHybridSessionSettingsRequest.RequestId: Guid
 ChangeHybridSessionSettingsRequest.SenderId: Int32
 ChangeHybridSessionSettingsRequest.SessionId: Int32
+ChangeSessionPermissionsRequest.Overrides: List<SessionPermissionOverrideDTO>
+ChangeSessionPermissionsRequest.RequestId: Guid
+ChangeSessionPermissionsRequest.SenderId: Int32
+ChangeSessionPermissionsRequest.SessionId: Int32
+ChangeSessionPermissionsResponse.RequestId: Guid
+ChangeSessionPermissionsResponse.Result: ChangeSessionPermissionsResult
+ChangeSessionPermissionsResponse.SenderId: Int32
+ChangeSessionPermissionsResponse.SessionId: Int32
+ChangeSessionPermissionsResult = enum NoError=0, SessionNotExists=1, RoleNotExists=2, NotAllowed=3, TimedOut=4, Rejected=5, InternalError=-1
 ChangeSessionSettingsResponse.RequestId: Guid
 ChangeSessionSettingsResponse.Result: ChangeSessionSettingsResult
 ChangeSessionSettingsResponse.SenderId: Int32
@@ -328,6 +339,7 @@ ChatSessionDTO.IsReadOnly: Boolean
 ChatSessionDTO.IsVideoMessagesAllowed: Boolean
 ChatSessionDTO.IsVoiceMessagesAllowed: Boolean
 ChatSessionDTO.Name: String
+ChatSessionDTO.PermissionOverrides: List<SessionPermissionOverrideDTO>
 ChatSessionDTO.SessionType: SessionType
 ChatSessionDTO.Users: Dictionary<Int32, TextChatUserDTO>
 ChatSessionDeletedNotification.SenderId: Int32
@@ -713,6 +725,7 @@ HybridSessionDTO.IsEntered: Boolean
 HybridSessionDTO.IsHostConnected: Boolean
 HybridSessionDTO.IsHostMustApprove: Boolean
 HybridSessionDTO.Name: String
+HybridSessionDTO.PermissionOverrides: List<SessionPermissionOverrideDTO>
 HybridSessionDTO.SessionType: SessionType
 HybridSessionDTO.State: HybridSessionNodeState
 HybridSessionDeletedNotification.SenderId: Int32
@@ -1076,7 +1089,7 @@ PeerDTO.Outbounds: Dictionary<String, Outbound>
 PeerDTO.State: HybridSessionPeerState
 PeerDTO.UserId: Int32
 PeerListRequestResult = enum NoError=0, SessionNotExists=1, SessionIsNotHybrid=2, Rejected=3, InternalError=-1
-Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, All=2047
+Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, Default=129024, SessionScoped=129536, All=131071
 PushMarkReadRequest.ChatId: Int32
 PushMarkReadRequest.MessageId: Int32
 PushPlatform = enum Android=0, Ios=1
@@ -1143,6 +1156,7 @@ SessionDTO.CoordinatorInstanceId: String
 SessionDTO.Id: Int32
 SessionDTO.IsEntered: Boolean
 SessionDTO.Name: String
+SessionDTO.PermissionOverrides: List<SessionPermissionOverrideDTO>
 SessionDTO.SessionType: SessionType
 SessionInfoRequest.RequestId: Guid
 SessionInfoRequest.SenderId: Int32
@@ -1162,6 +1176,9 @@ SessionLayoutResponse.RequestId: Guid
 SessionLayoutResponse.Result: SessionLayoutResult
 SessionLayoutResponse.SenderId: Int32
 SessionLayoutResult = enum NoError=0, SessionNotExists=1, CategoryNotExists=2, TooManyCategories=3, TimedOut=4, Rejected=5, InternalError=-1
+SessionPermissionOverrideDTO.Allow: Permission
+SessionPermissionOverrideDTO.Deny: Permission
+SessionPermissionOverrideDTO.RoleId: Int32
 SessionRequestResult = enum NoError=0, SessionNotExists=1, TimedOut=2, WrongResponse=3, Rejected=4, InternalError=-1
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
 SetAvatarResult = enum NoError=0, UserNotFound=1, UploadNotFound=2, NotAllowed=3, TimedOut=4, Rejected=5, UploadFailed=6, InternalError=-1

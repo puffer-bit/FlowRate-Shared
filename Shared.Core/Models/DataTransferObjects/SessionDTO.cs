@@ -17,4 +17,7 @@ public class SessionDTO
     public required int Capacity { get; set; }
     public required SessionType SessionType { get; set; }
     public bool IsEntered { get; set; }
+
+    /// <summary>What roles allow and deny in this session, apart from what they allow on the coordinator.</summary>
+    public List<SessionPermissionOverrideDTO> PermissionOverrides { get; set; } = [];
 }
