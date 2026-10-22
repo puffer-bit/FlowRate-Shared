@@ -26,12 +26,11 @@ namespace Shared.Tests;
 
 public class MessageValidatorTests
 {
-    // Only images can be attached so far, and a request with a video or a file is rejected as
-    // a whole, so their fields get limits once they can be uploaded
+    // A video cannot be attached so far, and a request with one is rejected as a whole, so its
+    // fields get limits once it can be uploaded
     private static readonly HashSet<Type> PendingMediaTypes =
     [
-        typeof(ChatVideoContentDTO),
-        typeof(ChatFileContentDTO)
+        typeof(ChatVideoContentDTO)
     ];
 
     private static readonly Assembly SharedAssembly = typeof(BaseMessage).Assembly;
@@ -99,6 +98,8 @@ public class MessageValidatorTests
             new EditTextMessageRequest(1, 2, "fixed\ttypo"),
             new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "hi" }, ReplyToMessageId = 5 }),
             new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")] }),
+            new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("c", "notes.txt")] }),
+            new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")], Files = [File("c")] }),
             new MediaTokenRequest(),
             new HybridSessionJoinRequest(1) { ClientEpoch = Guid.NewGuid().ToString("N") },
             ConnectTransport(new DTLSFingerprint { Algorithm = "sha-256", Fingerprint = "AB:CD:EF:01" })
@@ -117,6 +118,12 @@ public class MessageValidatorTests
         FileName = fileName,
         Width = width,
         Height = 480
+    };
+
+    private static NewChatFileModel File(string upload, string fileName = "notes.txt") => new()
+    {
+        UploadId = upload.PadRight(Limits.MediaUploadIdLength * 2, '0'),
+        FileName = fileName
     };
 
     public static TheoryData<object, string> InvalidRequests() => new()
@@ -170,7 +177,12 @@ public class MessageValidatorTests
         { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b", width: 0)] }), "Width" },
         { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b", fileName: " ")] }), "FileName" },
         { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => Image($"a{i:x}", $"b{i:x}")).ToList() }), "Images" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new ChatFileContentDTO { Id = 1, FileName = "a.txt", Size = 1, MimeType = "text/plain" }] }), "not supported" },
+        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Video = [new ChatVideoContentDTO { Id = 1, FileName = "a.mp4", Size = 1, MimeType = "video/mp4", Width = 1, Height = 1, Duration = TimeSpan.FromSeconds(1) }] }), "not supported" },
+        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")], Files = [File("B")] }), "attached once" },
+        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a"), File("A")] }), "attached once" },
+        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a", "bad\u0001name")] }), "FileName" },
+        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = "not-hex", FileName = "a.txt" }] }), "UploadId" },
+        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => File($"a{i:x}")).ToList() }), "Files" },
         { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, IsDelayed = true }), "DelayedSentTime" },
         { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, IsDisposable = true, DisposeTime = DateTime.UtcNow.AddYears(5) }), "DisposeTime" },
         { new HybridSessionJoinRequest(1) { ClientEpoch = "not-a-guid" }, "ClientEpoch" },

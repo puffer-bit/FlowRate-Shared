@@ -1,4 +1,4 @@
-version 1
+version 2
 AddMessageResult = enum NoError=0, SameMessageAlreadyExist=1, ChatNotExists=2, TimedOut=3, InvalidResponse=4, WrongResponse=5, ReplyTargetNotExists=6, Rejected=7, AttachmentsNotAllowed=8, AttachmentNotReady=9, AttachmentInvalid=10, InternalError=-1
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
@@ -1032,6 +1032,8 @@ MoveSessionRequest.Index: Int32
 MoveSessionRequest.RequestId: Guid
 MoveSessionRequest.SenderId: Int32
 MoveSessionRequest.SessionId: Int32
+NewChatFileModel.FileName: String
+NewChatFileModel.UploadId: String
 NewChatImageModel.Description: String
 NewChatImageModel.FileName: String
 NewChatImageModel.Height: Int32
@@ -1041,7 +1043,7 @@ NewChatImageModel.Width: Int32
 NewChatMessageModel.ChatId: Int32
 NewChatMessageModel.DelayedSentTime: DateTime?
 NewChatMessageModel.DisposeTime: DateTime?
-NewChatMessageModel.Files: List<ChatFileContentDTO>
+NewChatMessageModel.Files: List<NewChatFileModel>
 NewChatMessageModel.Images: List<NewChatImageModel>
 NewChatMessageModel.IsDelayed: Boolean
 NewChatMessageModel.IsDisposable: Boolean
