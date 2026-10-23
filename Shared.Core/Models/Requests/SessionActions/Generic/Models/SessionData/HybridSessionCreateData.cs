@@ -15,9 +15,7 @@ public record HybridSessionCreateData(
     bool IsDataChannelEnabled = false,
     bool IsSimulcastEnabled = false,
     bool IsTunnelingEnabled = false,
-    bool IsProxyActive = false,
-    bool DisableStun = false,
-    bool DisableTurn = false
+    bool IsProxyActive = false
 ) : CreateSessionData
 {
     public override SessionType SessionType { get; init; } = SessionType.Hybrid;

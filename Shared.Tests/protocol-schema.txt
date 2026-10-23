@@ -461,10 +461,6 @@ CoordinatorSessionDTO.HeartbeatTimeoutSeconds: Int32
 CoordinatorSessionDTO.Id: String
 CoordinatorSessionDTO.IsMOTDEnabled: Boolean
 CoordinatorSessionDTO.IsPasswordProtected: Boolean
-CoordinatorSessionDTO.IsStunEnabled: Boolean
-CoordinatorSessionDTO.IsStunServerAvailable: Boolean
-CoordinatorSessionDTO.IsTurnEnabled: Boolean
-CoordinatorSessionDTO.IsTurnServerAvailable: Boolean
 CoordinatorSessionDTO.MaxFileSizeBytes: Int64
 CoordinatorSessionDTO.MaxOnlineUsers: Int32
 CoordinatorSessionDTO.MaxUsers: Int32
@@ -475,12 +471,6 @@ CoordinatorSessionDTO.ServerPlatform: String
 CoordinatorSessionDTO.ServerVersion: String
 CoordinatorSessionDTO.SettingsRevision: Int64
 CoordinatorSessionDTO.StorageQuotaBytes: Int64
-CoordinatorSessionDTO.StunAddress: String
-CoordinatorSessionDTO.StunPort: UInt16?
-CoordinatorSessionDTO.TurnAddress: String
-CoordinatorSessionDTO.TurnPassword: String
-CoordinatorSessionDTO.TurnPort: UInt16?
-CoordinatorSessionDTO.TurnUsername: String
 CoordinatorSetAvatarRequest.RequestId: Guid
 CoordinatorSetAvatarRequest.SenderId: Int32
 CoordinatorSetAvatarRequest.UploadId: String
@@ -521,8 +511,6 @@ CoordinatorSettingsDTO.Port: Int32
 CoordinatorSettingsDTO.Revision: Int64
 CoordinatorSettingsDTO.SfuNodeIds: List<Int32>
 CoordinatorSettingsDTO.StorageQuotaBytes: Int64
-CoordinatorSettingsDTO.Stun: IceServerSettingsDTO
-CoordinatorSettingsDTO.Turn: IceServerSettingsDTO
 CoordinatorSettingsRequest.RequestId: Guid
 CoordinatorSettingsRequest.SenderId: Int32
 CoordinatorSettingsResponse.RequestId: Guid
@@ -547,8 +535,6 @@ CoordinatorSettingsUpdateDTO.Port: Int32
 CoordinatorSettingsUpdateDTO.RemovePassword: Boolean
 CoordinatorSettingsUpdateDTO.SfuNodeIds: List<Int32>
 CoordinatorSettingsUpdateDTO.StorageQuotaBytes: Int64
-CoordinatorSettingsUpdateDTO.Stun: IceServerSettingsDTO
-CoordinatorSettingsUpdateDTO.Turn: IceServerSettingsDTO
 CoordinatorUnassignRoleRequest.RequestId: Guid
 CoordinatorUnassignRoleRequest.RoleId: Int32
 CoordinatorUnassignRoleRequest.SenderId: Int32
@@ -701,8 +687,6 @@ HybridSessionConnectTransportResponse.Result: HybridSessionConnectTransportResul
 HybridSessionConnectTransportResponse.SenderId: Int32
 HybridSessionConnectTransportResult = enum NoError=0, SessionNotExists=1, TransportNotExists=2, InvalidDtlsParameters=3, SFUError=4, SFUNotActive=5, Rejected=6, InternalError=-1
 HybridSessionCreateData.AudioCodecs: WebRTCAudioCodecs
-HybridSessionCreateData.DisableStun: Boolean
-HybridSessionCreateData.DisableTurn: Boolean
 HybridSessionCreateData.EngineType: WebRTCEngine
 HybridSessionCreateData.IsAudioTransferEnabled: Boolean
 HybridSessionCreateData.IsDataChannelEnabled: Boolean
@@ -978,11 +962,6 @@ ICECandidate.SDPMid: String
 ICEParameters.ICECandidates: List<ICECandidate>
 ICEParameters.Password: String
 ICEParameters.UsernameFragment: String
-IceServerSettingsDTO.Address: String
-IceServerSettingsDTO.IsEnabled: Boolean
-IceServerSettingsDTO.Password: String
-IceServerSettingsDTO.Port: Int32?
-IceServerSettingsDTO.Username: String
 Inbound.Channels: Int32
 Inbound.ClockRate: Int32
 Inbound.Id: String
