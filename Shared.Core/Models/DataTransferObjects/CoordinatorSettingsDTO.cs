@@ -30,9 +30,6 @@ public class CoordinatorSettingsDTO
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
 
-    public IceServerSettingsDTO Stun { get; set; } = new();
-    public IceServerSettingsDTO Turn { get; set; } = new();
-
     public long MaxFileSizeBytes { get; set; }
 
     /// <summary>0 when the media storage is not limited.</summary>
@@ -79,34 +76,11 @@ public class CoordinatorSettingsUpdateDTO
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
 
-    [Required]
-    public IceServerSettingsDTO Stun { get; set; } = new();
-
-    [Required]
-    public IceServerSettingsDTO Turn { get; set; } = new();
-
     public long MaxFileSizeBytes { get; set; }
     public long StorageQuotaBytes { get; set; }
 
     [Required, ItemCount(Limits.SfuNodesMaxCount)]
     public List<int> SfuNodeIds { get; set; } = [];
-}
-
-/// <summary>A STUN or a TURN server; STUN has no credentials.</summary>
-public class IceServerSettingsDTO
-{
-    public bool IsEnabled { get; set; }
-
-    [StringLength(Limits.IpAddressMaxLength)]
-    public string? Address { get; set; }
-
-    public int? Port { get; set; }
-
-    [StringLength(Limits.IceCredentialMaxLength)]
-    public string? Username { get; set; }
-
-    [StringLength(Limits.IceCredentialMaxLength)]
-    public string? Password { get; set; }
 }
 
 /// <summary>
