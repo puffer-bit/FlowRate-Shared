@@ -10,8 +10,9 @@ namespace Shared.Models.DataTransferObjects;
 /// The defaults are what the client and the SFU use when nothing else is said.
 /// </summary>
 /// <remarks>
-/// The settings are stored and shown, but not yet applied: streams keep the defaults whatever
-/// the session says.
+/// A change applies to the tracks started after it; the ones running keep what they started with.
+/// Audio NACK repairs only the way from the SFU to the listeners: the SFU has no RTX stream to
+/// take repaired audio from its sender on.
 /// </remarks>
 public record HybridMediaSettingsDTO : IValidatableObject
 {
