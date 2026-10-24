@@ -20,4 +20,15 @@ public record Outbound
 
     /// <summary>SSRC of the retransmission stream, or 0 when the track has none.</summary>
     public uint RtxSSRC { get; init; }
+
+    /// <summary>
+    /// An Opus track carries a copy of the previous packet in each one, to restore single losses.
+    /// </summary>
+    public bool IsFecEnabled { get; init; } = true;
+
+    /// <summary>The loss, in percent, the Opus encoder prepares its FEC for.</summary>
+    public int FecLossPercent { get; init; } = 10;
+
+    /// <summary>A voice sends next to nothing while silent.</summary>
+    public bool IsDtxEnabled { get; init; } = true;
 }

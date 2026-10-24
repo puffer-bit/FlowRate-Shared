@@ -1003,6 +1003,8 @@ ICEParameters.UsernameFragment: String
 Inbound.Channels: Int32
 Inbound.ClockRate: Int32
 Inbound.Id: String
+Inbound.IsNackEnabled: Boolean
+Inbound.JitterBufferMs: Int32
 Inbound.MediaType: MediaType
 Inbound.MimeType: String
 Inbound.PayloadType: Int32
@@ -1082,7 +1084,10 @@ NewChatMessageModel.TextContent: ChatTextContentDTO
 NewChatMessageModel.Video: List<ChatVideoContentDTO>
 Outbound.Channels: Int32
 Outbound.ClockRate: Int32
+Outbound.FecLossPercent: Int32
 Outbound.Id: String
+Outbound.IsDtxEnabled: Boolean
+Outbound.IsFecEnabled: Boolean
 Outbound.MediaType: MediaType
 Outbound.MimeType: String
 Outbound.PayloadType: Int32

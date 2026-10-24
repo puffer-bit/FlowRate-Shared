@@ -143,7 +143,9 @@ Every `Outbound` carries the payload type and SSRC the client sends the track wi
 `RtxPayloadType` is not 0, the client answers NACKs of the SFU for that track by resending the lost
 packets as RTX (RFC 4588) with `RtxPayloadType` and `RtxSSRC`; the SFU knows no other SSRC. An
 `Inbound` has no RTX stream: the SFU resends a lost packet as it was, on the same SSRC, so the client
-only has to ask for it with a NACK.
+only has to ask for it with a NACK, and only when `IsNackEnabled` says the SFU keeps the packets of
+the track. `Inbound.JitterBufferMs` is how long the client buffers the track. An Opus `Outbound`
+says how the client encodes it: `IsFecEnabled`, `FecLossPercent` and `IsDtxEnabled`.
 
 A hybrid session carries its media settings in `HybridSessionDTO.Media` (`HybridMediaSettingsDTO`):
 the codecs of camera, screen and audio, NACK and RTX of video, NACK of audio, Opus FEC and DTX, the
@@ -151,7 +153,9 @@ jitter buffers of receivers and the keyframe request delay of the SFU. They are 
 (`HybridSessionCreateData.Media`, defaults when null) and changed with
 `ChangeHybridSessionSettingsRequest`. Only `SupportedVideoCodecs` and `SupportedAudioCodecs` are
 accepted. Bitrate, frame rate and resolution are not session settings: the sender picks them when a
-stream starts. For now the settings are only stored and shown; streams still use the defaults.
+stream starts. The settings apply to tracks started after a change: the coordinator gives them
+to the SFU and puts them into each `Outbound` and `Inbound`, which the client follows. A client
+that receives a track does not read the session settings itself.
 
 ## Validation
 
