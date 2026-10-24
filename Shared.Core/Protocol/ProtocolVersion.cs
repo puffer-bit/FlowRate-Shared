@@ -14,8 +14,8 @@ public static class ProtocolVersion
     /// change of the message schema until it is looked at.
     /// </summary>
     // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel);
-    //    sessions carry permission overrides; ChangeSessionPermissionsRequest;
-    //    coordinator settings carry upload and rate limits, and no STUN or TURN servers
+    //    sessions carry permission overrides; ChangeSessionPermissionsRequest; STUN/TURN fields removed;
+    //    coordinator settings carry upload and rate limits
     public const int Current = 2;
 
     /// <summary>The oldest client version the server still serves.</summary>
