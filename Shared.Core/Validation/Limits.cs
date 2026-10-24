@@ -76,6 +76,16 @@ public static class Limits
     // The longest IPv6 address written out, with an IPv4 tail
     public const int IpAddressMaxLength = 45;
     public const int IpListMaxCount = 1000;
-    public const int IceCredentialMaxLength = 256;
     public const int SfuNodesMaxCount = 100;
+
+    public const int UnattachedUploadsMaxCount = 1000;
+    public const int UnattachedUploadLifetimeMaxHours = 24 * 30;
+    public const int MediaTokenLifetimeMaxMinutes = 24 * 60;
+
+    public const int RequestRateCountMax = 1_000_000;
+    public const double RequestRatePeriodMinSeconds = 0.001;
+    public const double RequestRatePeriodMaxSeconds = 86_400;
+    public const int RequestRejectionsMax = 1_000_000;
+    public const int RequestRejectionWindowMaxSeconds = 86_400;
+    public const int ConnectionsPerIpMax = 1_000_000;
 }

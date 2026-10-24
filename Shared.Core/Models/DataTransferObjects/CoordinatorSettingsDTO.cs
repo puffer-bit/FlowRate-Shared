@@ -30,13 +30,21 @@ public class CoordinatorSettingsDTO
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
 
-    public IceServerSettingsDTO Stun { get; set; } = new();
-    public IceServerSettingsDTO Turn { get; set; } = new();
-
     public long MaxFileSizeBytes { get; set; }
 
     /// <summary>0 when the media storage is not limited.</summary>
     public long StorageQuotaBytes { get; set; }
+
+    /// <summary>How many uploads one user may keep before attaching them to a message.</summary>
+    public int MaxUnattachedUploadsPerUser { get; set; }
+
+    /// <summary>How long an upload not attached to a message is kept.</summary>
+    public int UnattachedUploadLifetimeHours { get; set; }
+
+    /// <summary>How long a token for media requests stays valid.</summary>
+    public int MediaTokenLifetimeMinutes { get; set; }
+
+    public CoordinatorRateLimitsDTO RateLimits { get; set; } = new();
 
     public List<int> SfuNodeIds { get; set; } = [];
 }
@@ -79,34 +87,61 @@ public class CoordinatorSettingsUpdateDTO
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
 
-    [Required]
-    public IceServerSettingsDTO Stun { get; set; } = new();
-
-    [Required]
-    public IceServerSettingsDTO Turn { get; set; } = new();
-
     public long MaxFileSizeBytes { get; set; }
     public long StorageQuotaBytes { get; set; }
+
+    public int MaxUnattachedUploadsPerUser { get; set; }
+    public int UnattachedUploadLifetimeHours { get; set; }
+    public int MediaTokenLifetimeMinutes { get; set; }
+
+    [Required]
+    public CoordinatorRateLimitsDTO RateLimits { get; set; } = new();
 
     [Required, ItemCount(Limits.SfuNodesMaxCount)]
     public List<int> SfuNodeIds { get; set; } = [];
 }
 
-/// <summary>A STUN or a TURN server; STUN has no credentials.</summary>
-public class IceServerSettingsDTO
+/// <summary>At most <see cref="Count"/> requests per <see cref="PeriodSeconds"/>.</summary>
+public class RequestRateDTO
 {
-    public bool IsEnabled { get; set; }
+    public int Count { get; set; }
+    public double PeriodSeconds { get; set; }
+}
 
-    [StringLength(Limits.IpAddressMaxLength)]
-    public string? Address { get; set; }
+/// <summary>
+/// How many requests and connections the coordinator takes from one client. Every request falls into one group
+/// and also counts against <see cref="Global"/>.
+/// </summary>
+public class CoordinatorRateLimitsDTO
+{
+    /// <summary>Every request of one connection.</summary>
+    [Required] public RequestRateDTO Global { get; set; } = new();
 
-    public int? Port { get; set; }
+    /// <summary>Logins from one IP address, over all its connections.</summary>
+    [Required] public RequestRateDTO AuthenticationPerIp { get; set; } = new();
 
-    [StringLength(Limits.IceCredentialMaxLength)]
-    public string? Username { get; set; }
+    [Required] public RequestRateDTO SessionManagement { get; set; } = new();
+    [Required] public RequestRateDTO SessionLayout { get; set; } = new();
+    [Required] public RequestRateDTO SessionMedia { get; set; } = new();
+    [Required] public RequestRateDTO MicrophoneMute { get; set; } = new();
+    [Required] public RequestRateDTO InboundResume { get; set; } = new();
+    [Required] public RequestRateDTO Moderation { get; set; } = new();
+    [Required] public RequestRateDTO ChatWrite { get; set; } = new();
+    [Required] public RequestRateDTO ChatRead { get; set; } = new();
+    [Required] public RequestRateDTO PushRegistration { get; set; } = new();
+    [Required] public RequestRateDTO MediaToken { get; set; } = new();
 
-    [StringLength(Limits.IceCredentialMaxLength)]
-    public string? Password { get; set; }
+    /// <summary>Every request of no other group.</summary>
+    [Required] public RequestRateDTO Query { get; set; } = new();
+
+    [Required] public RequestRateDTO Heartbeat { get; set; } = new();
+
+    /// <summary>A connection that has this many requests refused within the window is closed.</summary>
+    public int MaxRejectionsPerWindow { get; set; }
+    public int RejectionWindowSeconds { get; set; }
+
+    /// <summary>How many connections one IP address may keep open.</summary>
+    public int MaxConnectionsPerIp { get; set; }
 }
 
 /// <summary>
