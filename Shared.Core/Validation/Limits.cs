@@ -29,6 +29,10 @@ public static class Limits
     public const int UrlMaxLength = 2048;
     public const int VideoBitrateMinKbps = 100;
     public const int VideoBitrateMaxKbps = 20_000;
+    public const int KeyFrameRequestDelayMinMs = 0;
+    public const int KeyFrameRequestDelayMaxMs = 10_000;
+    public const int JitterBufferMinMs = 20;
+    public const int JitterBufferMaxMs = 2000;
 
     public const int ReasonMaxLength = 200;
 

@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using Shared.Enums;
 using Shared.Enums.WebRTC;
 using Shared.Models;
+using Shared.Models.DataTransferObjects;
 using Shared.Models.DataTransferObjects.ChatSession.Messages.Content;
 using Shared.Models.Media.Transport;
 using Shared.Models.Requests;
@@ -79,6 +80,9 @@ public class MessageValidatorTests
                 Convert.ToBase64String(new byte[Limits.PushKeyLength])),
             new UnregisterPushTokenRequest("token"),
             new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup))),
+            new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup,
+                Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.H264, IsAudioNackEnabled = true }))),
+            new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO()),
             new CreateSessionRequest(new CreateSessionModel("Chat", 50, new ChatSessionCreateData("About\nus", "https://example.com/icon.png"))),
             new KickFromSessionRequest(1, 2, SessionType.Hybrid, "spam"),
             new SessionInfoRequest(null),
@@ -149,6 +153,11 @@ public class MessageValidatorTests
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(IconPath: "file:///etc/passwd"))), "IconPath" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData((WebRTCEngine)99))), "EngineType" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, VideoBitrate: 1_000_000))), "VideoBitrate" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.AV1 }))), "CameraCodec" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { AudioCodec = WebRTCAudioCodecs.G711 }))), "AudioCodec" },
+        { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { OpusPacketLossPercent = 101 }), "OpusPacketLossPercent" },
+        { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { VoiceJitterBufferMs = 5 }), "VoiceJitterBufferMs" },
+        { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, null!), "Media" },
         { new KickFromSessionRequest(1, 2, SessionType.Hybrid, new string('r', Limits.ReasonMaxLength + 1)), "Reason" },
         { new DeleteSessionRequest(0), "SessionId" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(), CategoryId: 0)), "CategoryId" },

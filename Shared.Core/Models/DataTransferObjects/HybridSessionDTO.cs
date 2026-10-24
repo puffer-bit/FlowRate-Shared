@@ -12,4 +12,5 @@ public class HybridSessionDTO : SessionDTO
     public bool IsHostMustApprove { get; set; }
     public required int HostId { get; set; }
     public HybridSessionNodeState State { get; set; }
+    public HybridMediaSettingsDTO Media { get; set; } = new();
 }

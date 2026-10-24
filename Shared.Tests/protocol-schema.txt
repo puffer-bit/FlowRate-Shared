@@ -213,6 +213,7 @@ BaseMessage <- "WebRtcConnectResponse": WebRtcConnectResponse
 BaseMessage.SenderId: Int32
 ChangeHybridSessionSettingsRequest.Capacity: Int32
 ChangeHybridSessionSettingsRequest.IsHostMustApprove: Boolean
+ChangeHybridSessionSettingsRequest.Media: HybridMediaSettingsDTO
 ChangeHybridSessionSettingsRequest.Name: String
 ChangeHybridSessionSettingsRequest.RequestId: Guid
 ChangeHybridSessionSettingsRequest.SenderId: Int32
@@ -703,6 +704,18 @@ HeartbeatServerClosingNotification.SenderId: Int32
 HeartbeatServerRestartingNotification.CoordinatorId: String
 HeartbeatServerRestartingNotification.Message: String
 HeartbeatServerRestartingNotification.SenderId: Int32
+HybridMediaSettingsDTO.AudioCodec: WebRTCAudioCodecs
+HybridMediaSettingsDTO.CameraCodec: WebRTCVideoCodecs
+HybridMediaSettingsDTO.IsAudioNackEnabled: Boolean
+HybridMediaSettingsDTO.IsOpusFecEnabled: Boolean
+HybridMediaSettingsDTO.IsVideoNackEnabled: Boolean
+HybridMediaSettingsDTO.IsVideoRtxEnabled: Boolean
+HybridMediaSettingsDTO.IsVoiceDtxEnabled: Boolean
+HybridMediaSettingsDTO.KeyFrameRequestDelayMs: Int32
+HybridMediaSettingsDTO.OpusPacketLossPercent: Int32
+HybridMediaSettingsDTO.ScreenCodec: WebRTCVideoCodecs
+HybridMediaSettingsDTO.VideoJitterBufferMs: Int32
+HybridMediaSettingsDTO.VoiceJitterBufferMs: Int32
 HybridSessionConnectTransportRequest.DtlsParameters: DTLSParameters
 HybridSessionConnectTransportRequest.RequestId: Guid
 HybridSessionConnectTransportRequest.SenderId: Int32
@@ -711,17 +724,16 @@ HybridSessionConnectTransportResponse.RequestId: Guid
 HybridSessionConnectTransportResponse.Result: HybridSessionConnectTransportResult
 HybridSessionConnectTransportResponse.SenderId: Int32
 HybridSessionConnectTransportResult = enum NoError=0, SessionNotExists=1, TransportNotExists=2, InvalidDtlsParameters=3, SFUError=4, SFUNotActive=5, Rejected=6, InternalError=-1
-HybridSessionCreateData.AudioCodecs: WebRTCAudioCodecs
 HybridSessionCreateData.EngineType: WebRTCEngine
 HybridSessionCreateData.IsAudioTransferEnabled: Boolean
 HybridSessionCreateData.IsDataChannelEnabled: Boolean
 HybridSessionCreateData.IsProxyActive: Boolean
 HybridSessionCreateData.IsSimulcastEnabled: Boolean
 HybridSessionCreateData.IsTunnelingEnabled: Boolean
+HybridSessionCreateData.Media: HybridMediaSettingsDTO
 HybridSessionCreateData.Resolution: VideoResolutions
 HybridSessionCreateData.SessionType: SessionType
 HybridSessionCreateData.VideoBitrate: Int32?
-HybridSessionCreateData.VideoCodecs: WebRTCVideoCodecs
 HybridSessionCreatedNotification.SenderId: Int32
 HybridSessionCreatedNotification.Session: HybridSessionDTO
 HybridSessionDTO.Capacity: Int32
@@ -733,6 +745,7 @@ HybridSessionDTO.IsAudioRequested: Boolean
 HybridSessionDTO.IsEntered: Boolean
 HybridSessionDTO.IsHostConnected: Boolean
 HybridSessionDTO.IsHostMustApprove: Boolean
+HybridSessionDTO.Media: HybridMediaSettingsDTO
 HybridSessionDTO.Name: String
 HybridSessionDTO.PermissionOverrides: List<SessionPermissionOverrideDTO>
 HybridSessionDTO.SessionType: SessionType

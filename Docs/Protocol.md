@@ -145,6 +145,14 @@ packets as RTX (RFC 4588) with `RtxPayloadType` and `RtxSSRC`; the SFU knows no 
 `Inbound` has no RTX stream: the SFU resends a lost packet as it was, on the same SSRC, so the client
 only has to ask for it with a NACK.
 
+A hybrid session carries its media settings in `HybridSessionDTO.Media` (`HybridMediaSettingsDTO`):
+the codecs of camera, screen and audio, NACK and RTX of video, NACK of audio, Opus FEC and DTX, the
+jitter buffers of receivers and the keyframe request delay of the SFU. They are given on creation
+(`HybridSessionCreateData.Media`, defaults when null) and changed with
+`ChangeHybridSessionSettingsRequest`. Only `SupportedVideoCodecs` and `SupportedAudioCodecs` are
+accepted. Bitrate, frame rate and resolution are not session settings: the sender picks them when a
+stream starts. For now the settings are only stored and shown; streams still use the defaults.
+
 ## Validation
 
 Every request field that comes from the user has a limit, and the client and the server check
