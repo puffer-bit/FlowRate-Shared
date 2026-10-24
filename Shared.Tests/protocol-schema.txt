@@ -1073,6 +1073,8 @@ Outbound.Id: String
 Outbound.MediaType: MediaType
 Outbound.MimeType: String
 Outbound.PayloadType: Int32
+Outbound.RtxPayloadType: Int32
+Outbound.RtxSSRC: UInt32
 Outbound.SSRC: UInt32
 Outbound.SourceType: MediaSourceType
 Outbound.UserId: Int32

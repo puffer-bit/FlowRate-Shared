@@ -139,6 +139,12 @@ Joining a hybrid session gives `TransportData` (ICE parameters and candidates, D
 `HybridSessionConnectTransportRequest`. `HybridSessionJoinRequest.ClientEpoch` identifies the
 client's DTLS context: while it stays the same, the SFU reuses the transport it has.
 
+Every `Outbound` carries the payload type and SSRC the client sends the track with. When
+`RtxPayloadType` is not 0, the client answers NACKs of the SFU for that track by resending the lost
+packets as RTX (RFC 4588) with `RtxPayloadType` and `RtxSSRC`; the SFU knows no other SSRC. An
+`Inbound` has no RTX stream: the SFU resends a lost packet as it was, on the same SSRC, so the client
+only has to ask for it with a NACK.
+
 ## Validation
 
 Every request field that comes from the user has a limit, and the client and the server check
