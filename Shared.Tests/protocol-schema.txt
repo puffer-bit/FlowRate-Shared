@@ -712,8 +712,6 @@ HybridSessionConnectTransportResponse.Result: HybridSessionConnectTransportResul
 HybridSessionConnectTransportResponse.SenderId: Int32
 HybridSessionConnectTransportResult = enum NoError=0, SessionNotExists=1, TransportNotExists=2, InvalidDtlsParameters=3, SFUError=4, SFUNotActive=5, Rejected=6, InternalError=-1
 HybridSessionCreateData.AudioCodecs: WebRTCAudioCodecs
-HybridSessionCreateData.DisableStun: Boolean
-HybridSessionCreateData.DisableTurn: Boolean
 HybridSessionCreateData.EngineType: WebRTCEngine
 HybridSessionCreateData.IsAudioTransferEnabled: Boolean
 HybridSessionCreateData.IsDataChannelEnabled: Boolean
