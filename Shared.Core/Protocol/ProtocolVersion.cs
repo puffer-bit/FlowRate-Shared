@@ -20,7 +20,7 @@ public static class ProtocolVersion
     public const int Current = 2;
 
     /// <summary>The oldest client version the server still serves.</summary>
-    public const int MinSupported = 1;
+    public const int MinSupported = 2;
 
     /// <summary>
     /// Request header with the client version. The server answers a version it does not serve with
