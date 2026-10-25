@@ -53,14 +53,17 @@ public enum Permission : ulong
     /// <summary>Send video and share the screen in a hybrid session.</summary>
     ShareVideo = 1UL << 16,
 
+    /// <summary>Poke other peers of a hybrid session.</summary>
+    PokeMembers = 1UL << 17,
+
     All = Administrator | ViewCoordinatorSettings | ManageCoordinatorSettings | ManageRoles | CreateSessions
           | ManageSessions | KickMembers | BanMembers | ApproveMembers | ManageMessages | ManageUsers
-          | ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo,
+          | ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers,
 
     /// <summary>What the everyone role has on a new coordinator, and what it gains on an older one.</summary>
-    Default = ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo,
+    Default = ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers,
 
     /// <summary>What the overrides of a session can allow or deny; the rest holds on the whole coordinator.</summary>
     SessionScoped = ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo
-                    | ManageMessages
+                    | PokeMembers | ManageMessages
 }

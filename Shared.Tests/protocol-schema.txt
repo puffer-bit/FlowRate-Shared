@@ -155,12 +155,16 @@ BaseMessage <- "HybridSessionPeerUnmutedScreenShareSoundNotification": HybridSes
 BaseMessage <- "HybridSessionPeerUpdatedScreenShareNotification": HybridSessionPeerUpdatedScreenShareNotification
 BaseMessage <- "HybridSessionPeerUpdatedVideoShareNotification": HybridSessionPeerUpdatedVideoShareNotification
 BaseMessage <- "HybridSessionPeerUpdatedVoiceShareNotification": HybridSessionPeerUpdatedVoiceShareNotification
+BaseMessage <- "HybridSessionPokeRequest": HybridSessionPokeRequest
+BaseMessage <- "HybridSessionPokeResponse": HybridSessionPokeResponse
 BaseMessage <- "HybridSessionReconfiguredNotification": HybridSessionReconfiguredNotification
 BaseMessage <- "HybridSessionResumeInboundsRequest": HybridSessionResumeInboundsRequest
 BaseMessage <- "HybridSessionResumeInboundsResponse": HybridSessionResumeInboundsResponse
 BaseMessage <- "HybridSessionSFUNodeChangedNotification": HybridSessionSFUNodeChangedNotification
 BaseMessage <- "HybridSessionSFUNodeConnectedNotification": HybridSessionSFUNodeConnectedNotification
 BaseMessage <- "HybridSessionSFUNodeDisconnectedNotification": HybridSessionSFUNodeDisconnectedNotification
+BaseMessage <- "HybridSessionSetAfkRequest": HybridSessionSetAfkRequest
+BaseMessage <- "HybridSessionSetAfkResponse": HybridSessionSetAfkResponse
 BaseMessage <- "HybridSessionSetMicrophoneMuteRequest": HybridSessionSetMicrophoneMuteRequest
 BaseMessage <- "HybridSessionSetMicrophoneMuteResponse": HybridSessionSetMicrophoneMuteResponse
 BaseMessage <- "HybridSessionSetScreenShareWatchRequest": HybridSessionSetScreenShareWatchRequest
@@ -907,6 +911,15 @@ HybridSessionPeerUpdatedVoiceShareNotification.Inbound: Inbound
 HybridSessionPeerUpdatedVoiceShareNotification.SenderId: Int32
 HybridSessionPeerUpdatedVoiceShareNotification.SessionId: Int32
 HybridSessionPeerUpdatedVoiceShareNotification.UserId: Int32
+HybridSessionPokeRequest.Message: String
+HybridSessionPokeRequest.RequestId: Guid
+HybridSessionPokeRequest.SenderId: Int32
+HybridSessionPokeRequest.SessionId: Int32
+HybridSessionPokeRequest.UserTargetId: Int32
+HybridSessionPokeResponse.RequestId: Guid
+HybridSessionPokeResponse.Result: PokeResult
+HybridSessionPokeResponse.SenderId: Int32
+HybridSessionPokeResponse.UserTargetId: Int32
 HybridSessionReconfiguredNotification.SenderId: Int32
 HybridSessionReconfiguredNotification.Session: HybridSessionDTO
 HybridSessionResumeInboundsRequest.InboundIds: List<String>
@@ -922,6 +935,15 @@ HybridSessionSFUNodeConnectedNotification.SenderId: Int32
 HybridSessionSFUNodeConnectedNotification.SessionId: Int32
 HybridSessionSFUNodeDisconnectedNotification.SenderId: Int32
 HybridSessionSFUNodeDisconnectedNotification.SessionId: Int32
+HybridSessionSetAfkRequest.IsAfk: Boolean
+HybridSessionSetAfkRequest.Reason: String
+HybridSessionSetAfkRequest.RequestId: Guid
+HybridSessionSetAfkRequest.SenderId: Int32
+HybridSessionSetAfkRequest.SessionId: Int32
+HybridSessionSetAfkResponse.IsAfk: Boolean
+HybridSessionSetAfkResponse.RequestId: Guid
+HybridSessionSetAfkResponse.Result: SetAfkResult
+HybridSessionSetAfkResponse.SenderId: Int32
 HybridSessionSetMicrophoneMuteRequest.IsMuted: Boolean
 HybridSessionSetMicrophoneMuteRequest.RequestId: Guid
 HybridSessionSetMicrophoneMuteRequest.SenderId: Int32
@@ -1113,7 +1135,8 @@ PeerDTO.Outbounds: Dictionary<String, Outbound>
 PeerDTO.State: HybridSessionPeerState
 PeerDTO.UserId: Int32
 PeerListRequestResult = enum NoError=0, SessionNotExists=1, SessionIsNotHybrid=2, Rejected=3, InternalError=-1
-Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, Default=129024, SessionScoped=129536, All=131071
+Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, All=262143
+PokeResult = enum NoError=0, InsufficientPermissions=1, SessionNotExists=2, PeerNotExists=3, TimedOut=4, Rejected=5, CannotPokeSelf=6, InternalError=-1
 PushMarkReadRequest.ChatId: Int32
 PushMarkReadRequest.MessageId: Int32
 PushPlatform = enum Android=0, Ios=1
@@ -1207,6 +1230,7 @@ SessionPermissionOverrideDTO.Deny: Permission
 SessionPermissionOverrideDTO.RoleId: Int32
 SessionRequestResult = enum NoError=0, SessionNotExists=1, TimedOut=2, WrongResponse=3, Rejected=4, InternalError=-1
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
+SetAfkResult = enum NoError=0, InsufficientPermissions=1, SessionNotExists=2, PeerNotExists=3, TimedOut=4, Rejected=5, InternalError=-1
 SetAvatarResult = enum NoError=0, UserNotFound=1, UploadNotFound=2, NotAllowed=3, TimedOut=4, Rejected=5, UploadFailed=6, InternalError=-1
 SetMicrophoneMuteResult = enum NoError=0, InsufficientPermissions=1, SessionNotExists=2, PeerNotExists=3, VoiceNotStarted=4, SFUError=5, SFUNotActive=6, TimedOut=7, Rejected=8, InternalError=-1
 SetScreenShareWatchResult = enum NoError=0, ScreenShareNotActive=1, InsufficientPermissions=2, SFUError=3, SessionNotExists=4, PeerNotExists=5, SFUNotActive=6, TimedOut=7, Rejected=8, InternalError=-1
