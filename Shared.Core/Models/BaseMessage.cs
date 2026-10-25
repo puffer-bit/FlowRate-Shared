@@ -161,6 +161,8 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionStopVoiceRequest), typeDiscriminator: nameof(HybridSessionStopVoiceRequest))]
 [JsonDerivedType(typeof(HybridSessionSetMicrophoneMuteRequest), typeDiscriminator: nameof(HybridSessionSetMicrophoneMuteRequest))]
 [JsonDerivedType(typeof(HybridSessionSetSoundMuteRequest), typeDiscriminator: nameof(HybridSessionSetSoundMuteRequest))]
+[JsonDerivedType(typeof(HybridSessionSetAfkRequest), typeDiscriminator: nameof(HybridSessionSetAfkRequest))]
+[JsonDerivedType(typeof(HybridSessionPokeRequest), typeDiscriminator: nameof(HybridSessionPokeRequest))]
 
 [JsonDerivedType(typeof(WebRtcConnectRequest), typeDiscriminator: nameof(WebRtcConnectRequest))]
 
@@ -227,6 +229,8 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionStopVoiceResponse), typeDiscriminator: nameof(HybridSessionStopVoiceResponse))]
 [JsonDerivedType(typeof(HybridSessionSetMicrophoneMuteResponse), typeDiscriminator: nameof(HybridSessionSetMicrophoneMuteResponse))]
 [JsonDerivedType(typeof(HybridSessionSetSoundMuteResponse), typeDiscriminator: nameof(HybridSessionSetSoundMuteResponse))]
+[JsonDerivedType(typeof(HybridSessionSetAfkResponse), typeDiscriminator: nameof(HybridSessionSetAfkResponse))]
+[JsonDerivedType(typeof(HybridSessionPokeResponse), typeDiscriminator: nameof(HybridSessionPokeResponse))]
 
 [JsonDerivedType(typeof(WebRtcConnectResponse), typeDiscriminator: nameof(WebRtcConnectResponse))]
 
