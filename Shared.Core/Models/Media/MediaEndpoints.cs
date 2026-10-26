@@ -15,6 +15,11 @@ public static class MediaEndpoints
     public const string Images = "/media/images";
 
     /// <summary>
+    /// <c>GET {Files}/{id}</c> returns a file of a message, to be saved and not shown; byte ranges are supported.
+    /// </summary>
+    public const string Files = "/media/files";
+
+    /// <summary>
     /// <c>GET {Avatars}/{id}</c> returns the avatar a user has; <see cref="DataTransferObjects.UserDTO.AvatarUrl"/>
     /// holds this path. A new avatar has another id, so what was fetched once never changes.
     /// </summary>
@@ -38,11 +43,16 @@ public static class MediaUploadMetadata
 
     public const string MimeType = "mimeType";
 
-    /// <summary><see cref="KindImage"/>, <see cref="KindImagePreview"/> or <see cref="KindAvatar"/>.</summary>
+    /// <summary>
+    /// <see cref="KindImage"/>, <see cref="KindImagePreview"/>, <see cref="KindFile"/> or <see cref="KindAvatar"/>.
+    /// </summary>
     public const string Kind = "kind";
 
     public const string KindImage = "image";
     public const string KindImagePreview = "imagePreview";
+
+    /// <summary>A file of any type, which a message carries to be downloaded.</summary>
+    public const string KindFile = "file";
 
     /// <summary>A picture a user puts on their profile with <c>CoordinatorSetAvatarRequest</c>.</summary>
     public const string KindAvatar = "avatar";

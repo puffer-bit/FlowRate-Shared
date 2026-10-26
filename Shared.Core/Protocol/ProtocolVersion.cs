@@ -13,10 +13,15 @@ public static class ProtocolVersion
     /// a changed type or enum number, a request old servers do not know. Shared.Tests fails on any
     /// change of the message schema until it is looked at.
     /// </summary>
-    public const int Current = 1;
+    // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel);
+    //    sessions carry permission overrides; ChangeSessionPermissionsRequest; STUN/TURN fields removed;
+    //    coordinator settings carry upload and rate limits; HybridSessionSetAfkRequest, HybridSessionPokeRequest
+    //    and the PokeMembers permission; the User* security requests (password, one-time codes and
+    //    passkeys of the sender)
+    public const int Current = 2;
 
     /// <summary>The oldest client version the server still serves.</summary>
-    public const int MinSupported = 1;
+    public const int MinSupported = 2;
 
     /// <summary>
     /// Request header with the client version. The server answers a version it does not serve with

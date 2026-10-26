@@ -228,15 +228,10 @@ public enum SetAfkResult
     InternalError = -1,
     NoError = 0,
     InsufficientPermissions = 1,
-    AfkModeDisabled = 2
-}
-
-public enum ResetAfkResult
-{
-    InternalError = -1,
-    NoError = 0,
-    InsufficientPermissions = 1,
-    AfkModeDisabled = 2
+    SessionNotExists = 2,
+    PeerNotExists = 3,
+    TimedOut = 4,
+    Rejected = 5
 }
 
 public enum PokeResult
@@ -244,5 +239,13 @@ public enum PokeResult
     InternalError = -1,
     NoError = 0,
     InsufficientPermissions = 1,
-    PokeDisabled = 2
+    SessionNotExists = 2,
+
+    /// <summary>The sender or the poked user is not in the session.</summary>
+    PeerNotExists = 3,
+    TimedOut = 4,
+    Rejected = 5,
+
+    /// <summary>A user cannot poke themselves.</summary>
+    CannotPokeSelf = 6
 }
