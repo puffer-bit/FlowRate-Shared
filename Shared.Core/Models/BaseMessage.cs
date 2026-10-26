@@ -4,6 +4,7 @@ using Shared.Models.Notifications.Heartbeat;
 using Shared.Models.Notifications.SessionInfo;
 using Shared.Models.Requests.Auth;
 using Shared.Models.Requests.Coordinator;
+using Shared.Models.Requests.Coordinator.Security;
 using Shared.Models.Requests.Heartbeat;
 using Shared.Models.Requests.SessionActions.ChatSession;
 using Shared.Models.Requests.SessionActions.Generic;
@@ -12,6 +13,7 @@ using Shared.Models.Requests.WebRTC;
 using Shared.Models.Responses;
 using Shared.Models.Responses.Auth;
 using Shared.Models.Responses.Coordinator;
+using Shared.Models.Responses.Coordinator.Security;
 using Shared.Models.Responses.Heartbeat;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Models.Responses.SessionActions.Generic;
@@ -114,6 +116,14 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorReorderRolesRequest), typeDiscriminator: nameof(CoordinatorReorderRolesRequest))]
 [JsonDerivedType(typeof(CoordinatorAssignRoleRequest), typeDiscriminator: nameof(CoordinatorAssignRoleRequest))]
 [JsonDerivedType(typeof(CoordinatorUnassignRoleRequest), typeDiscriminator: nameof(CoordinatorUnassignRoleRequest))]
+[JsonDerivedType(typeof(UserSecurityInfoRequest), typeDiscriminator: nameof(UserSecurityInfoRequest))]
+[JsonDerivedType(typeof(UserSetPasswordRequest), typeDiscriminator: nameof(UserSetPasswordRequest))]
+[JsonDerivedType(typeof(UserTwoFactorSetupRequest), typeDiscriminator: nameof(UserTwoFactorSetupRequest))]
+[JsonDerivedType(typeof(UserTwoFactorEnableRequest), typeDiscriminator: nameof(UserTwoFactorEnableRequest))]
+[JsonDerivedType(typeof(UserTwoFactorDisableRequest), typeDiscriminator: nameof(UserTwoFactorDisableRequest))]
+[JsonDerivedType(typeof(UserPasskeyOptionsRequest), typeDiscriminator: nameof(UserPasskeyOptionsRequest))]
+[JsonDerivedType(typeof(UserPasskeyRegisterRequest), typeDiscriminator: nameof(UserPasskeyRegisterRequest))]
+[JsonDerivedType(typeof(UserPasskeyDeleteRequest), typeDiscriminator: nameof(UserPasskeyDeleteRequest))]
 [JsonDerivedType(typeof(RegisterPushTokenRequest), typeDiscriminator: nameof(RegisterPushTokenRequest))]
 [JsonDerivedType(typeof(UnregisterPushTokenRequest), typeDiscriminator: nameof(UnregisterPushTokenRequest))]
 [JsonDerivedType(typeof(MediaTokenRequest), typeDiscriminator: nameof(MediaTokenRequest))]
@@ -137,6 +147,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(JoinSessionRequest), typeDiscriminator: nameof(JoinSessionRequest))]
 [JsonDerivedType(typeof(KickFromSessionRequest), typeDiscriminator: nameof(KickFromSessionRequest))]
 [JsonDerivedType(typeof(ChangeHybridSessionSettingsRequest), typeDiscriminator: nameof(ChangeHybridSessionSettingsRequest))]
+[JsonDerivedType(typeof(ChangeSessionPermissionsRequest), typeDiscriminator: nameof(ChangeSessionPermissionsRequest))]
 [JsonDerivedType(typeof(LeaveSessionRequest), typeDiscriminator: nameof(LeaveSessionRequest))]
 [JsonDerivedType(typeof(RejectUserRequest), typeDiscriminator: nameof(RejectUserRequest))]
 [JsonDerivedType(typeof(SessionInfoRequest), typeDiscriminator: nameof(SessionInfoRequest))]
@@ -160,6 +171,8 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionStopVoiceRequest), typeDiscriminator: nameof(HybridSessionStopVoiceRequest))]
 [JsonDerivedType(typeof(HybridSessionSetMicrophoneMuteRequest), typeDiscriminator: nameof(HybridSessionSetMicrophoneMuteRequest))]
 [JsonDerivedType(typeof(HybridSessionSetSoundMuteRequest), typeDiscriminator: nameof(HybridSessionSetSoundMuteRequest))]
+[JsonDerivedType(typeof(HybridSessionSetAfkRequest), typeDiscriminator: nameof(HybridSessionSetAfkRequest))]
+[JsonDerivedType(typeof(HybridSessionPokeRequest), typeDiscriminator: nameof(HybridSessionPokeRequest))]
 
 [JsonDerivedType(typeof(WebRtcConnectRequest), typeDiscriminator: nameof(WebRtcConnectRequest))]
 
@@ -183,6 +196,9 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorRolesResponse), typeDiscriminator: nameof(CoordinatorRolesResponse))]
 [JsonDerivedType(typeof(CoordinatorRoleResponse), typeDiscriminator: nameof(CoordinatorRoleResponse))]
 [JsonDerivedType(typeof(CoordinatorUserRolesResponse), typeDiscriminator: nameof(CoordinatorUserRolesResponse))]
+[JsonDerivedType(typeof(UserSecurityResponse), typeDiscriminator: nameof(UserSecurityResponse))]
+[JsonDerivedType(typeof(UserTwoFactorSetupResponse), typeDiscriminator: nameof(UserTwoFactorSetupResponse))]
+[JsonDerivedType(typeof(UserPasskeyOptionsResponse), typeDiscriminator: nameof(UserPasskeyOptionsResponse))]
 [JsonDerivedType(typeof(RegisterPushTokenResponse), typeDiscriminator: nameof(RegisterPushTokenResponse))]
 [JsonDerivedType(typeof(UnregisterPushTokenResponse), typeDiscriminator: nameof(UnregisterPushTokenResponse))]
 [JsonDerivedType(typeof(MediaTokenResponse), typeDiscriminator: nameof(MediaTokenResponse))]
@@ -206,6 +222,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(JoinSessionResponse), typeDiscriminator: nameof(JoinSessionResponse))]
 [JsonDerivedType(typeof(KickFromSessionResponse), typeDiscriminator: nameof(KickFromSessionResponse))]
 [JsonDerivedType(typeof(ChangeSessionSettingsResponse), typeDiscriminator: nameof(ChangeSessionSettingsResponse))]
+[JsonDerivedType(typeof(ChangeSessionPermissionsResponse), typeDiscriminator: nameof(ChangeSessionPermissionsResponse))]
 [JsonDerivedType(typeof(LeaveSessionResponse), typeDiscriminator: nameof(LeaveSessionResponse))]
 [JsonDerivedType(typeof(RejectUserResponse), typeDiscriminator: nameof(RejectUserResponse))]
 [JsonDerivedType(typeof(SessionInfoResponse), typeDiscriminator: nameof(SessionInfoResponse))]
@@ -225,6 +242,8 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionStopVoiceResponse), typeDiscriminator: nameof(HybridSessionStopVoiceResponse))]
 [JsonDerivedType(typeof(HybridSessionSetMicrophoneMuteResponse), typeDiscriminator: nameof(HybridSessionSetMicrophoneMuteResponse))]
 [JsonDerivedType(typeof(HybridSessionSetSoundMuteResponse), typeDiscriminator: nameof(HybridSessionSetSoundMuteResponse))]
+[JsonDerivedType(typeof(HybridSessionSetAfkResponse), typeDiscriminator: nameof(HybridSessionSetAfkResponse))]
+[JsonDerivedType(typeof(HybridSessionPokeResponse), typeDiscriminator: nameof(HybridSessionPokeResponse))]
 
 [JsonDerivedType(typeof(WebRtcConnectResponse), typeDiscriminator: nameof(WebRtcConnectResponse))]
 

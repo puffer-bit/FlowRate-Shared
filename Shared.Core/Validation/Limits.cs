@@ -11,6 +11,9 @@ public static class Limits
     public const int TwoFactorMaxLength = 6;
     public const int Fido2FieldMaxLength = 4096;
     public const int Fido2UserHandleMaxLength = 128;
+    /// <summary>The JSON of a new passkey (attestation object and client data, base64url).</summary>
+    public const int Fido2CredentialJsonMaxLength = 16384;
+    public const int PasskeyLabelMaxLength = 64;
     public const int UserIdsMaxCount = 100;
     public const int UsernameMaxLength = 32;
     public const int UserSearchMaxCount = 20;
@@ -29,8 +32,13 @@ public static class Limits
     public const int UrlMaxLength = 2048;
     public const int VideoBitrateMinKbps = 100;
     public const int VideoBitrateMaxKbps = 20_000;
+    public const int KeyFrameRequestDelayMinMs = 0;
+    public const int KeyFrameRequestDelayMaxMs = 10_000;
+    public const int JitterBufferMinMs = 20;
+    public const int JitterBufferMaxMs = 2000;
 
     public const int ReasonMaxLength = 200;
+    public const int PokeMessageMaxLength = 200;
 
     public const int ChatTextMaxLength = 4000;
     public const int ChatHistoryMaxTake = 100;
@@ -76,6 +84,16 @@ public static class Limits
     // The longest IPv6 address written out, with an IPv4 tail
     public const int IpAddressMaxLength = 45;
     public const int IpListMaxCount = 1000;
-    public const int IceCredentialMaxLength = 256;
     public const int SfuNodesMaxCount = 100;
+
+    public const int UnattachedUploadsMaxCount = 1000;
+    public const int UnattachedUploadLifetimeMaxHours = 24 * 30;
+    public const int MediaTokenLifetimeMaxMinutes = 24 * 60;
+
+    public const int RequestRateCountMax = 1_000_000;
+    public const double RequestRatePeriodMinSeconds = 0.001;
+    public const double RequestRatePeriodMaxSeconds = 86_400;
+    public const int RequestRejectionsMax = 1_000_000;
+    public const int RequestRejectionWindowMaxSeconds = 86_400;
+    public const int ConnectionsPerIpMax = 1_000_000;
 }

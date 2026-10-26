@@ -24,7 +24,7 @@ public class NewChatMessageModel : IValidatableObject
     [Required, ItemCount(Limits.ChatAttachmentsMaxCount)]
     public List<ChatVideoContentDTO> Video { get; init; } = new();
     [Required, ItemCount(Limits.ChatAttachmentsMaxCount)]
-    public List<ChatFileContentDTO> Files { get; init; } = new();
+    public List<NewChatFileModel> Files { get; init; } = new();
 
     public bool IsDelayed { get; set; }
     public bool IsDisposable { get; set; }
@@ -39,13 +39,15 @@ public class NewChatMessageModel : IValidatableObject
         if (attachments > Limits.ChatAttachmentsMaxCount)
             yield return new ValidationResult($"A message carries at most {Limits.ChatAttachmentsMaxCount} attachments.");
 
-        // Only images can be uploaded so far
-        if (Video.Count + Files.Count > 0)
-            yield return new ValidationResult("Video and file attachments are not supported.");
+        // A video goes as a file so far
+        if (Video.Count > 0)
+            yield return new ValidationResult("Video attachments are not supported.");
 
-        var uploads = Images.SelectMany(image => new[] { image.UploadId, image.PreviewUploadId }).ToList();
+        var uploads = Images.SelectMany(image => new[] { image.UploadId, image.PreviewUploadId })
+            .Concat(Files.Select(file => file.UploadId))
+            .ToList();
         if (uploads.Distinct(StringComparer.OrdinalIgnoreCase).Count() != uploads.Count)
-            yield return new ValidationResult("An upload is attached once.", [nameof(Images)]);
+            yield return new ValidationResult("An upload is attached once.", [nameof(Images), nameof(Files)]);
 
         // Clock skew between client and server is tolerated for a few minutes
         var now = DateTime.UtcNow;

@@ -122,3 +122,16 @@ public enum ChangeSessionSettingsResult
     TimedOut = 4,
     Rejected = 5
 }
+
+public enum ChangeSessionPermissionsResult
+{
+    InternalError = -1,
+    NoError = 0,
+    SessionNotExists = 1,
+    RoleNotExists = 2,
+
+    /// <summary>A role not below one's own highest role, or a permission one does not have.</summary>
+    NotAllowed = 3,
+    TimedOut = 4,
+    Rejected = 5
+}
