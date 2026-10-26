@@ -1,0 +1,52 @@
+# Runs the tests of the shared library on every pull request, and on every push to main. A working branch is
+# tested through its pull request, which tests it merged into its base.
+#
+# The client and the server take this library as a submodule, so a message schema change that breaks the
+# protocol snapshot (Shared.Tests/protocol-schema.txt) is stopped here, before either of them takes it.
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Tests
+    # Pinned so that a runner image migration does not change the build unannounced
+    runs-on: ubuntu-24.04
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-dotnet@v6
+        with:
+          # 10.0.403 was announced before its files could be downloaded (HTTP 409); back to 10.0.x once they can
+          dotnet-version: 10.0.402
+
+      - name: Test
+        run: |
+          printf '### Tests\n\n' >> "$GITHUB_STEP_SUMMARY"
+          status=0
+          dotnet test Shared.sln -c Release --logger trx \
+              --results-directory "$GITHUB_WORKSPACE/TestResults" 2>&1 | tee "$RUNNER_TEMP/test.log" || status=1
+          # The "Passed!"/"Failed!" totals of each test assembly go to the run summary
+          grep -E '^(Passed|Failed)!' "$RUNNER_TEMP/test.log" | sed 's/^/    /' >> "$GITHUB_STEP_SUMMARY" || true
+          exit $status
+
+      - name: Upload test results
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results
+          path: TestResults
