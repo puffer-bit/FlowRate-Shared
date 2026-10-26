@@ -14,6 +14,7 @@ using Shared.Models.Media.Transport;
 using Shared.Models.Requests;
 using Shared.Models.Requests.Auth;
 using Shared.Models.Requests.Coordinator;
+using Shared.Models.Requests.Coordinator.Security;
 using Shared.Models.Requests.SessionActions.ChatSession;
 using Shared.Models.Requests.SessionActions.ChatSession.Models;
 using Shared.Models.Requests.SessionActions.Generic;
@@ -72,6 +73,12 @@ public class MessageValidatorTests
         object[] requests =
         [
             new UserAuthRequest("secret", "alice"),
+            new UserSecurityInfoRequest(),
+            new UserSetPasswordRequest(new UserSecurityProofDTO("old secret", "123456"), "new secret"),
+            new UserSetPasswordRequest(null, null),
+            new UserTwoFactorEnableRequest("123456"),
+            new UserPasskeyRegisterRequest("YubiKey", "{\"id\":\"AQ\"}"),
+            new UserPasskeyDeleteRequest(null, 3),
             new CoordinatorUserInfoRequest([1, 2, 3]),
             new CoordinatorChangeUsernameRequest("alice"),
             new CoordinatorSetAvatarRequest(new string('a', Limits.MediaUploadIdLength * 2)),
@@ -133,6 +140,12 @@ public class MessageValidatorTests
     public static TheoryData<object, string> InvalidRequests() => new()
     {
         { new UserAuthRequest("secret", new string('a', Limits.UserIdentityMaxLength + 1)), "UserIdentity" },
+        { new UserSetPasswordRequest(null, new string('p', Limits.PasswordMaxLength + 1)), "NewPassword" },
+        { new UserTwoFactorSetupRequest(new UserSecurityProofDTO(null, "1234567")), "TwoFactorCode" },
+        { new UserTwoFactorEnableRequest("12\u00073"), "Code" },
+        { new UserPasskeyRegisterRequest("bad\u0007name", "{}"), "Label" },
+        { new UserPasskeyRegisterRequest(null, new string('j', Limits.Fido2CredentialJsonMaxLength + 1)), "CredentialJson" },
+        { new UserPasskeyDeleteRequest(null, 0), "PasskeyId" },
         { new CoordinatorUserInfoRequest(Enumerable.Range(1, Limits.UserIdsMaxCount + 1).ToList()), "UserIds" },
         { new CoordinatorUserInfoRequest([]), "UserIds" },
         { new CoordinatorChangeUsernameRequest(new string('u', Limits.UsernameMaxLength + 1)), "Username" },

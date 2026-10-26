@@ -128,6 +128,7 @@ response.
 |------|-------------------------------|---------|
 | Auth | `Requests.Auth`, `Responses.Auth` | Login, second stage by 2FA code or FIDO2 |
 | Coordinator | `Requests.Coordinator`, `Notifications.CoordinatorInfo` | Server info, users, profile, settings, roles, push tokens, media token |
+| Account security | `Requests.Coordinator.Security`, `Responses.Coordinator.Security` | The sender's password, one-time codes and passkeys |
 | Heartbeat | `Requests.Heartbeat`, `Notifications.Heartbeat` | Ping, server closing or restarting |
 | Generic sessions | `Requests.SessionActions.Generic`, `Notifications.SessionInfo` | Create, join, leave, kick, ban, approve; categories and layout |
 | Chat sessions | `Requests.SessionActions.ChatSession` | History, paging, changes since a revision, send, edit, delete, read state |
@@ -156,6 +157,40 @@ accepted. Bitrate, frame rate and resolution are not session settings: the sende
 stream starts. The settings apply to tracks started after a change: the coordinator gives them
 to the SFU and puts them into each `Outbound` and `Inbound`, which the client follows. A client
 that receives a track does not read the session settings itself.
+
+## Logging in and account security
+
+A user who has a password, one-time codes (TOTP) or passkeys is answered `SecondStageRequeried` to
+`UserAuthRequest`. `ServerMessage` then lists what the user can prove as names of
+`SecondStageAuthType`, comma separated (`Password,TwoFactor,FIDO2`), and `FIDO2LoginOptionsDTO` is set
+when the user has passkeys. The client finishes with either
+
+- `TwoFactorUserAuthRequest`: the password and the code, each when the user has it, or
+- `FIDO2UserAuthRequest`: a passkey assertion. A passkey alone is enough.
+
+Binary values of the passkey messages (challenge, credential ids, the parts of the assertion) are
+base64url. The user handle of a passkey is the user id as UTF-8 text. User verification is always
+required. The server gives three tries and two minutes for the second stage; a code is good for one
+login.
+
+Once logged in, the client sets up the sender's own login with the `User*` requests of
+`Requests.Coordinator.Security`. Each answers with `UserSecurityDTO`, what the user has now.
+
+| Request | Does |
+|---------|------|
+| `UserSecurityInfoRequest` | Tells what the user has |
+| `UserSetPasswordRequest` | Sets the password (8–128 characters), or removes it with `NewPassword` null |
+| `UserTwoFactorSetupRequest` | Offers a secret for an authenticator app (`Secret`, `otpauth://` `Uri`) |
+| `UserTwoFactorEnableRequest` | Turns codes on with a code made from the offered secret |
+| `UserTwoFactorDisableRequest` | Turns codes off |
+| `UserPasskeyOptionsRequest` | WebAuthn creation options (`PublicKeyCredentialCreationOptionsJSON`) |
+| `UserPasskeyRegisterRequest` | Registers the passkey made for those options (`RegistrationResponseJSON`) |
+| `UserPasskeyDeleteRequest` | Removes a passkey |
+
+Every request that changes something or starts a setup carries `UserSecurityProofDTO`: the current
+password and one-time code, each when the user has it. A missing or wrong proof is answered
+`ProofRequired`, so an open session alone cannot change how the account logs in. The control panel can
+set up and take away all of it too, for a user who lost a device.
 
 ## Validation
 

@@ -11,6 +11,9 @@ public static class Limits
     public const int TwoFactorMaxLength = 6;
     public const int Fido2FieldMaxLength = 4096;
     public const int Fido2UserHandleMaxLength = 128;
+    /// <summary>The JSON of a new passkey (attestation object and client data, base64url).</summary>
+    public const int Fido2CredentialJsonMaxLength = 16384;
+    public const int PasskeyLabelMaxLength = 64;
     public const int UserIdsMaxCount = 100;
     public const int UsernameMaxLength = 32;
     public const int UserSearchMaxCount = 20;
