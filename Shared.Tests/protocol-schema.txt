@@ -212,6 +212,17 @@ BaseMessage <- "UnregisterPushTokenRequest": UnregisterPushTokenRequest
 BaseMessage <- "UnregisterPushTokenResponse": UnregisterPushTokenResponse
 BaseMessage <- "UserAuthRequest": UserAuthRequest
 BaseMessage <- "UserAuthResponse": UserAuthResponse
+BaseMessage <- "UserPasskeyDeleteRequest": UserPasskeyDeleteRequest
+BaseMessage <- "UserPasskeyOptionsRequest": UserPasskeyOptionsRequest
+BaseMessage <- "UserPasskeyOptionsResponse": UserPasskeyOptionsResponse
+BaseMessage <- "UserPasskeyRegisterRequest": UserPasskeyRegisterRequest
+BaseMessage <- "UserSecurityInfoRequest": UserSecurityInfoRequest
+BaseMessage <- "UserSecurityResponse": UserSecurityResponse
+BaseMessage <- "UserSetPasswordRequest": UserSetPasswordRequest
+BaseMessage <- "UserTwoFactorDisableRequest": UserTwoFactorDisableRequest
+BaseMessage <- "UserTwoFactorEnableRequest": UserTwoFactorEnableRequest
+BaseMessage <- "UserTwoFactorSetupRequest": UserTwoFactorSetupRequest
+BaseMessage <- "UserTwoFactorSetupResponse": UserTwoFactorSetupResponse
 BaseMessage <- "WebRtcConnectRequest": WebRtcConnectRequest
 BaseMessage <- "WebRtcConnectResponse": WebRtcConnectResponse
 BaseMessage.SenderId: Int32
@@ -1299,8 +1310,59 @@ UserDTO.RoleIds: List<Int32>
 UserDTO.State: UserState
 UserDTO.Status: UserStatus
 UserDTO.Username: String
+UserPasskeyDTO.CreatedAtUtc: DateTime
+UserPasskeyDTO.Id: Int32
+UserPasskeyDTO.Label: String
+UserPasskeyDTO.LastUsedAtUtc: DateTime?
+UserPasskeyDeleteRequest.PasskeyId: Int32
+UserPasskeyDeleteRequest.Proof: UserSecurityProofDTO
+UserPasskeyDeleteRequest.RequestId: Guid
+UserPasskeyDeleteRequest.SenderId: Int32
+UserPasskeyOptionsRequest.Proof: UserSecurityProofDTO
+UserPasskeyOptionsRequest.RequestId: Guid
+UserPasskeyOptionsRequest.SenderId: Int32
+UserPasskeyOptionsResponse.OptionsJson: String
+UserPasskeyOptionsResponse.RequestId: Guid
+UserPasskeyOptionsResponse.Result: UserSecurityResult
+UserPasskeyOptionsResponse.SenderId: Int32
+UserPasskeyRegisterRequest.CredentialJson: String
+UserPasskeyRegisterRequest.Label: String
+UserPasskeyRegisterRequest.RequestId: Guid
+UserPasskeyRegisterRequest.SenderId: Int32
+UserSecurityDTO.HasPassword: Boolean
+UserSecurityDTO.IsTwoFactorEnabled: Boolean
+UserSecurityDTO.IsTwoFactorPending: Boolean
+UserSecurityDTO.Passkeys: List<UserPasskeyDTO>
+UserSecurityDTO.PasskeysAvailable: Boolean
+UserSecurityInfoRequest.RequestId: Guid
+UserSecurityInfoRequest.SenderId: Int32
+UserSecurityProofDTO.Password: String
+UserSecurityProofDTO.TwoFactorCode: String
+UserSecurityResponse.RequestId: Guid
+UserSecurityResponse.Result: UserSecurityResult
+UserSecurityResponse.Security: UserSecurityDTO
+UserSecurityResponse.SenderId: Int32
+UserSecurityResult = enum NoError=0, ProofRequired=1, InvalidValue=2, Refused=3, PasskeysUnavailable=4, PasskeyNotFound=5, InternalError=-1
+UserSetPasswordRequest.NewPassword: String
+UserSetPasswordRequest.Proof: UserSecurityProofDTO
+UserSetPasswordRequest.RequestId: Guid
+UserSetPasswordRequest.SenderId: Int32
 UserState = enum Unknown=0, Banned=1, Suspended=2, Normal=3, System=4
 UserStatus = enum Offline=0, Online=1, Away=2, DoNotDisturb=3, Invisible=4
+UserTwoFactorDisableRequest.Proof: UserSecurityProofDTO
+UserTwoFactorDisableRequest.RequestId: Guid
+UserTwoFactorDisableRequest.SenderId: Int32
+UserTwoFactorEnableRequest.Code: String
+UserTwoFactorEnableRequest.RequestId: Guid
+UserTwoFactorEnableRequest.SenderId: Int32
+UserTwoFactorSetupRequest.Proof: UserSecurityProofDTO
+UserTwoFactorSetupRequest.RequestId: Guid
+UserTwoFactorSetupRequest.SenderId: Int32
+UserTwoFactorSetupResponse.RequestId: Guid
+UserTwoFactorSetupResponse.Result: UserSecurityResult
+UserTwoFactorSetupResponse.Secret: String
+UserTwoFactorSetupResponse.SenderId: Int32
+UserTwoFactorSetupResponse.Uri: String
 UsersRequestResult = enum NoError=0, UserNotFound=1, TimedOut=2, Rejected=3, InternalError=-1
 VideoResolutions = enum LD=0, nHD=1, SD=2, HD=3, FHD=4, QHD=5, UHD=6
 WebRTCAudioCodecs = enum Undefined=0, Opus=1, G711=2, PCM=3

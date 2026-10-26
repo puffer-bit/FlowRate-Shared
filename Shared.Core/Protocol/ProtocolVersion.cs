@@ -16,7 +16,8 @@ public static class ProtocolVersion
     // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel);
     //    sessions carry permission overrides; ChangeSessionPermissionsRequest; STUN/TURN fields removed;
     //    coordinator settings carry upload and rate limits; HybridSessionSetAfkRequest, HybridSessionPokeRequest
-    //    and the PokeMembers permission
+    //    and the PokeMembers permission; the User* security requests (password, one-time codes and
+    //    passkeys of the sender)
     public const int Current = 2;
 
     /// <summary>The oldest client version the server still serves.</summary>
