@@ -1128,6 +1128,7 @@ Outbound.RtxPayloadType: Int32
 Outbound.RtxSSRC: UInt32
 Outbound.SSRC: UInt32
 Outbound.SourceType: MediaSourceType
+Outbound.TransportCcExtensionId: Int32
 Outbound.UserId: Int32
 PeerDTO.AfkMessage: String
 PeerDTO.Inbounds: Dictionary<String, Inbound>
