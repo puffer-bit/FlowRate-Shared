@@ -49,7 +49,8 @@ client                                          coordinator
   (`Client.Application/Ports/ProtocolMismatch.cs`).
 - Authentication is the first exchange on the socket: `UserAuthRequest`, then
   `TwoFactorUserAuthRequest` or `FIDO2UserAuthRequest` when the response says
-  `SecondStageRequeried`.
+  `SecondStageRequeried`. A device with a live session token skips the second stage (see
+  [Device sessions](#device-sessions)).
 - While connected, the client sends a `HeartbeatPingRequest` every 5 seconds
   (`Client.Api/Protocol/HeartbeatHandler.cs`). Before a planned shutdown the server sends
   `HeartbeatServerClosingNotification` or `HeartbeatServerRestartingNotification`.
@@ -191,6 +192,35 @@ Every request that changes something or starts a setup carries `UserSecurityProo
 password and one-time code, each when the user has it. A missing or wrong proof is answered
 `ProofRequired`, so an open session alone cannot change how the account logs in. The control panel can
 set up and take away all of it too, for a user who lost a device.
+
+## Device sessions
+
+The identity (`#` and a GUID, given by the server to a new user) stays the key of the account: the
+client keeps it, and it logs in from any device. The server keeps only its SHA-256.
+
+- Every successful login, by identity or by token, answers with `SessionToken` (in `UserAuthResponse`,
+  `TwoFactorUserAuthResponse` or `FIDO2UserAuthResponse`): 32 random bytes, base64url. The client
+  keeps it with the identity and sends it with the next `UserAuthRequest`, along with `UserIdentity`
+  and `Device` (`DeviceInfoDTO`: name, platform, client version).
+- A token the server knows logs the device in at once, without the second stage, and is answered with
+  the next token. The token before stays valid until the next one is used, for a device that lost
+  the answer. `UserIdentity` is null in that response: the client keeps its own.
+- An unknown or expired token is not refused: the server goes on with `UserIdentity`, second stage
+  included, and starts a new session.
+- A session ends after 90 days without a login, or when it is ended. The server keeps only the
+  hashes of the tokens.
+
+Requests of the sender (`Requests.Coordinator.Security`, answered with `UserSessionsResponse` or
+`UserIdentityResetResponse`):
+
+| Request | Does |
+|---------|------|
+| `UserSessionsRequest` | The sessions of the user, the latest used first; `IsCurrent` marks the asking one |
+| `UserSessionRevokeRequest` | Ends one session (not the current one), or every other one with `SessionId` null; no proof asked |
+| `UserIdentityResetRequest` | Gives a new identity (with `UserSecurityProofDTO`) and ends every other session |
+
+The connections of an ended session get `CoordinatorUserSessionEndedNotification` (`Revoked` or
+`IdentityReset`) and are closed. The client drops its token and does not reconnect on its own.
 
 ## Validation
 

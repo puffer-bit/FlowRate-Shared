@@ -73,6 +73,10 @@ public class MessageValidatorTests
         object[] requests =
         [
             new UserAuthRequest("secret", "alice"),
+            new UserAuthRequest(null, "alice", SessionToken: new string('t', 43), Device: new DeviceInfoDTO("desk", "Linux", "0.8.0")),
+            new UserSessionsRequest(),
+            new UserSessionRevokeRequest(null),
+            new UserIdentityResetRequest(new UserSecurityProofDTO("secret", null)),
             new UserSecurityInfoRequest(),
             new UserSetPasswordRequest(new UserSecurityProofDTO("old secret", "123456"), "new secret"),
             new UserSetPasswordRequest(null, null),
@@ -140,6 +144,9 @@ public class MessageValidatorTests
     public static TheoryData<object, string> InvalidRequests() => new()
     {
         { new UserAuthRequest("secret", new string('a', Limits.UserIdentityMaxLength + 1)), "UserIdentity" },
+        { new UserAuthRequest(null, "alice", SessionToken: new string('t', Limits.SessionTokenMaxLength + 1)), "SessionToken" },
+        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO(new string('d', Limits.DeviceNameMaxLength + 1), "Linux", "0.8.0")), "Name" },
+        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "bad\u0007version")), "AppVersion" },
         { new UserSetPasswordRequest(null, new string('p', Limits.PasswordMaxLength + 1)), "NewPassword" },
         { new UserTwoFactorSetupRequest(new UserSecurityProofDTO(null, "1234567")), "TwoFactorCode" },
         { new UserTwoFactorEnableRequest("12\u00073"), "Code" },

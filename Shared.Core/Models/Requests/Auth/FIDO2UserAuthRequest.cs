@@ -10,6 +10,6 @@ public record FIDO2UserAuthRequest(
     FIDO2AssertionDTO AssertionResponse) : AuthRequest
 {
     public FIDO2UserAuthResponse ToResponse(AuthResult authResult, UserDTO? userDTO = null,
-        string? serverMessage = null)
-        => new(RequestId, userDTO, authResult, serverMessage);
+        string? serverMessage = null, string? sessionToken = null)
+        => new(RequestId, userDTO, authResult, serverMessage, sessionToken);
 }

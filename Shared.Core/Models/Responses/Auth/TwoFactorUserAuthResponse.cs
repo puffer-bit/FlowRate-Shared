@@ -7,4 +7,5 @@ public record TwoFactorUserAuthResponse(
     Guid RequestId,
     UserDTO? UserDTO,
     AuthResult AuthResult,
-    string? ServerMessage = null) : AuthResponse(RequestId);
+    string? ServerMessage = null,
+    string? SessionToken = null) : AuthResponse(RequestId);
