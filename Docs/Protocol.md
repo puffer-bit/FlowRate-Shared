@@ -12,7 +12,8 @@ rules they follow, and what to check when you change them.
 | `Shared.Core/Models/Requests/Request.cs` | Base of requests; carries `RequestId` |
 | `Shared.Core/Models/Responses/Response.cs` | Base of responses; echoes the `RequestId` |
 | `Shared.Core/Models/Notifications/Notification.cs` | Base of messages the server sends on its own |
-| `Shared.Core/Models/Responses/RequestRejectedResponse.cs` | The answer to a request the server refused before handling it |
+| `Shared.Core/Models/Responses/ErrorResponse.cs` | The answer to a request that failed |
+| `Shared.Core/Enums/ErrorCode.cs` | Why a request failed |
 | `Shared.Core/Serialization/ProtocolJsonContext.cs` | Source-generated JSON metadata, the only serializer either side uses |
 | `Shared.Core/Validation/Limits.cs` | Size limits of all fields |
 | `Shared.Core/Validation/ValidationAttributes.cs` | The protocol's own validation attributes |
@@ -49,7 +50,7 @@ client                                          coordinator
   (`Client.Application/Ports/ProtocolMismatch.cs`).
 - Authentication is the first exchange on the socket: `UserAuthRequest`, then
   `TwoFactorUserAuthRequest` or `FIDO2UserAuthRequest` when the response says
-  `SecondStageRequeried`. A device with a live session token skips the second stage (see
+  `SecondStageRequired`. A device with a live session token skips the second stage (see
   [Device sessions](#device-sessions)).
 - While connected, the client sends a `HeartbeatPingRequest` every 5 seconds
   (`Client.Api/Protocol/HeartbeatHandler.cs`). Before a planned shutdown the server sends
@@ -100,28 +101,35 @@ uses that method, so the `RequestId` is always copied. Exceptions to the naming:
 `CoordinatorRoleResponse`; assigning and unassigning a role are answered with
 `CoordinatorUserRolesResponse`.
 
-A response normally carries a `Result` enum of its area (`Enums/*Results.cs`). By convention
-`NoError = 0` (`Success` for `AuthResult`) and `InternalError = -1`; any other value is a specific
-failure.
+A response is sent on success only and carries what the request asked for, without a result
+code. A request that fails is answered with an `ErrorResponse` instead, with the same `RequestId`:
 
-### Rejected requests
+| Field | Meaning |
+|-------|---------|
+| `Code` | Why it failed, an `ErrorCode` |
+| `Details` | What went wrong, for logs; not meant for end users |
+| `Fields` | Why values were refused, by field (`"Heartbeat.TimeoutSeconds"`; `""` for the request as a whole), with `InvalidRequest` and `InvalidValue` |
 
-When the server refuses a request before handling it, it sends a `RequestRejectedResponse` with
-the same `RequestId` instead of the regular response:
+`ErrorCode` is one list for the whole protocol, grouped by hundreds; the request it answers tells what
+a code is about (`SessionNotFound` of a join is the session to join):
 
-| `RequestRejectReason` | Meaning |
-|-----------------------|---------|
-| `RateLimited` | Too many requests |
-| `InvalidRequest` | The request fails `MessageValidator` |
-| `InsufficientPermissions` | The sender's roles do not allow it (see `Enums/Permission.cs`) |
-| `UserFrozen` | The sender may read, but not write, join voice or change anything |
+| Codes | Group |
+|-------|-------|
+| 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled` |
+| 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached` |
+| 200–299 | What the request is about does not exist: `UserNotFound`, `SessionNotFound`, `PeerNotFound`... |
+| 300–399 | The state of things does not allow it: `Conflict`, `NameTaken`, `SessionFull`, `NotAdmitted`, `CannotTargetSelf`, `HierarchyViolation`... |
+| 400–499 | A value the format allows but the server cannot use: `InvalidValue`, the attachment codes, `UnsupportedMedia` |
+| 500–599 | Account security: `ProofRequired`, `VerificationFailed` |
+| 600–699 | Media servers: `SfuError`, `SfuUnavailable` |
 
-`Details` says what was exceeded or invalid. It is meant for logs, not for end users.
+`Conflict` means someone else changed the settings or the role after the revision the change was
+based on; the client fetches them again and the user decides anew.
 
-A client must therefore expect either the regular response or `RequestRejectedResponse` for every
-request. The FlowRate client turns the latter into a `RequestRejectedException`
+A client must therefore expect either the regular response or `ErrorResponse` for every request. The
+FlowRate client turns the latter into an exception that carries the `ErrorCode`
 (`Client.Api/Protocol/ResponseAwaiter.cs`), and gives up on a request after 40 seconds without a
-response.
+response. Giving up is the client's own matter and is not an `ErrorCode`.
 
 ## Message areas
 
@@ -161,7 +169,7 @@ that receives a track does not read the session settings itself.
 
 ## Logging in and account security
 
-A user who has a password, one-time codes (TOTP) or passkeys is answered `SecondStageRequeried` to
+A user who has a password, one-time codes (TOTP) or passkeys is answered `SecondStageRequired` to
 `UserAuthRequest`. `ServerMessage` then lists what the user can prove as names of
 `SecondStageAuthType`, comma separated (`Password,TwoFactor,FIDO2`), and `FIDO2LoginOptionsDTO` is set
 when the user has passkeys. The client finishes with either
@@ -173,6 +181,9 @@ Binary values of the passkey messages (challenge, credential ids, the parts of t
 base64url. The user handle of a passkey is the user id as UTF-8 text. User verification is always
 required. The server gives three tries and two minutes for the second stage; a code is good for one
 login.
+
+A login that fails is answered with an `ErrorResponse`: `AuthFailed`, `Banned`, `OnlineLimitReached`
+or `UserLimitReached`.
 
 Once logged in, the client sets up the sender's own login with the `User*` requests of
 `Requests.Coordinator.Security`. Each answers with `UserSecurityDTO`, what the user has now.

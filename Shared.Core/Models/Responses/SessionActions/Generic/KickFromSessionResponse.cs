@@ -6,5 +6,4 @@ public record KickFromSessionResponse(
     Guid RequestId,
     int SessionId,
     int UserTargetId,
-    SessionType SessionType,
-    LeaveSessionResult Result ) : GenericSessionResponse(RequestId);
+    SessionType SessionType) : GenericSessionResponse(RequestId);

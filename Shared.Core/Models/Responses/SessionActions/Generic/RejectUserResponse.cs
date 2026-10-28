@@ -6,5 +6,4 @@ public record RejectUserResponse(
     Guid RequestId,
     int SessionId,
     int UserTargetId,
-    SessionType SessionType,
-    RejectUserSessionResult Result ) : GenericSessionResponse(RequestId);
+    SessionType SessionType) : GenericSessionResponse(RequestId);

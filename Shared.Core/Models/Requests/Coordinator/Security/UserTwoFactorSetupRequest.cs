@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator.Security;
 using Shared.Validation;
@@ -12,6 +11,6 @@ namespace Shared.Models.Requests.Coordinator.Security;
 /// </summary>
 public record UserTwoFactorSetupRequest(UserSecurityProofDTO? Proof) : CoordinatorRequest
 {
-    public UserTwoFactorSetupResponse ToResponse(UserSecurityResult result, string? secret = null, string? uri = null)
-        => new(RequestId, result, secret, uri);
+    public UserTwoFactorSetupResponse ToResponse(string secret, string uri)
+        => new(RequestId, secret, uri);
 }

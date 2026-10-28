@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.DataTransferObjects.ChatSession;
 using Shared.Models.Responses.SessionActions.ChatSession;
 
@@ -9,6 +8,6 @@ namespace Shared.Models.Requests.SessionActions.ChatSession;
 /// </summary>
 public record ChatReadStatesRequest : ChatSessionRequest
 {
-    public ChatReadStatesResponse ToResponse(ChatReadResult result, List<ChatReadStateDTO>? states)
-        => new(RequestId, result, states);
+    public ChatReadStatesResponse ToResponse(List<ChatReadStateDTO> states)
+        => new(RequestId, states);
 }

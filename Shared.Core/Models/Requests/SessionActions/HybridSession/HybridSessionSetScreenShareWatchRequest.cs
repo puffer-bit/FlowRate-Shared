@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.Media;
 using Shared.Models.Responses.SessionActions.HybridSession;
 using Shared.Validation;
@@ -10,7 +9,7 @@ public record HybridSessionSetScreenShareWatchRequest(
     [property: EntityId] int UserId,
     bool IsWatching) : HybridSessionRequest
 {
-    public HybridSessionSetScreenShareWatchResponse ToResponse(SetScreenShareWatchResult result, Inbound? inbound = null,
+    public HybridSessionSetScreenShareWatchResponse ToResponse(Inbound? inbound = null,
         Inbound? audioInbound = null)
-        => new (RequestId, result, UserId, IsWatching, inbound, audioInbound);
+        => new (RequestId, UserId, IsWatching, inbound, audioInbound);
 }

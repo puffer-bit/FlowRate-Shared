@@ -255,7 +255,7 @@ namespace Shared.Models;
 
 [JsonDerivedType(typeof(WebRtcConnectResponse), typeDiscriminator: nameof(WebRtcConnectResponse))]
 
-[JsonDerivedType(typeof(RequestRejectedResponse), typeDiscriminator: nameof(RequestRejectedResponse))]
+[JsonDerivedType(typeof(ErrorResponse), typeDiscriminator: nameof(ErrorResponse))]
 public abstract record BaseMessage
 {
     /// <summary>

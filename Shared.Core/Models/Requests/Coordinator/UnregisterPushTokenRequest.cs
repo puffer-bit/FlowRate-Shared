@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.Coordinator;
 using Shared.Validation;
 
@@ -13,5 +12,5 @@ public record UnregisterPushTokenRequest(
     [property: Required, NotBlank, StringLength(Limits.PushTokenMaxLength), NoControlCharacters] string Token)
     : CoordinatorRequest
 {
-    public UnregisterPushTokenResponse ToResponse(PushTokenResult result) => new(RequestId, result);
+    public UnregisterPushTokenResponse ToResponse() => new(RequestId);
 }

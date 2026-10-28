@@ -11,6 +11,6 @@ public record ApproveUserRequest(
     [property: DefinedEnum] SessionType SessionType
 ) : GenericSessionRequest
 {
-    public ApproveUserResponse ToResponse(ApproveUserSessionResult result)
-        => new(RequestId, SessionId, UserTargetId, SessionType, result);
+    public ApproveUserResponse ToResponse()
+        => new(RequestId, SessionId, UserTargetId, SessionType);
 }

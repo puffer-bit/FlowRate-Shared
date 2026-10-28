@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.Coordinator;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator;
 
@@ -13,7 +12,6 @@ public record CoordinatorUpdateSettingsRequest(
     [property: Required] CoordinatorSettingsUpdateDTO Settings,
     long ExpectedRevision) : CoordinatorRequest
 {
-    public CoordinatorUpdateSettingsResponse ToResponse(CoordinatorSettingsResult result,
-        CoordinatorSettingsDTO? settings = null, IDictionary<string, string[]>? errors = null)
-        => new(RequestId, result, settings, errors);
+    public CoordinatorUpdateSettingsResponse ToResponse(CoordinatorSettingsDTO settings)
+        => new(RequestId, settings);
 }

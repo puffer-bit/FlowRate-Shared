@@ -30,7 +30,7 @@ reflection at run time, so the client can be published with NativeAOT.
 | `Models/DataTransferObjects` | Objects that messages carry: users, roles, sessions, chat messages and their content |
 | `Models/Media` | The HTTP media endpoints, tus upload metadata, and the ICE/DTLS transport data of the SFU |
 | `Models/Push` | The HTTP push endpoints and their request bodies |
-| `Enums` | Result codes of every request, permissions, session and peer states |
+| `Enums` | The error codes of requests, permissions, session and peer states |
 | `Serialization/ProtocolJsonContext.cs` | Source-generated System.Text.Json metadata |
 | `Validation` | `Limits`, the validation attributes and `MessageValidator` |
 | `Protocol/ProtocolVersion.cs` | The protocol version and its handshake headers |

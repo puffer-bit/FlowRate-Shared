@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.Responses.Coordinator;
 
 namespace Shared.Models.Requests.Coordinator;
@@ -10,6 +9,6 @@ namespace Shared.Models.Requests.Coordinator;
 /// </summary>
 public record MediaTokenRequest : CoordinatorRequest
 {
-    public MediaTokenResponse ToResponse(MediaTokenResult result, string? token = null, DateTime? expiresAt = null)
-        => new(RequestId, result, token, expiresAt);
+    public MediaTokenResponse ToResponse(string token, DateTime expiresAt)
+        => new(RequestId, token, expiresAt);
 }

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.Generic;
 using Shared.Validation;
 
@@ -11,6 +10,6 @@ public record MoveSessionCategoryRequest(
     [property: Range(0, Limits.SessionLayoutIndexMax)] int Index
 ) : GenericSessionRequest
 {
-    public SessionLayoutResponse ToResponse(SessionLayoutResult result)
-        => new(RequestId, result);
+    public SessionLayoutResponse ToResponse()
+        => new(RequestId);
 }

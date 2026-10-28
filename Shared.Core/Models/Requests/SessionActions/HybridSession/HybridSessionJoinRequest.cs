@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.HybridSession;
 using Shared.Models.Media.Transport;
 using Shared.Validation;
@@ -17,6 +16,6 @@ public record HybridSessionJoinRequest(
     [StringLength(Limits.ClientEpochMaxLength), GuidString]
     public string? ClientEpoch { get; init; }
 
-    public HybridSessionJoinResponse ToResponse(HybridSessionJoinResult result, TransportData? transportData = null)
-        => new(RequestId, result, transportData);
+    public HybridSessionJoinResponse ToResponse(TransportData? transportData = null)
+        => new(RequestId, transportData);
 }

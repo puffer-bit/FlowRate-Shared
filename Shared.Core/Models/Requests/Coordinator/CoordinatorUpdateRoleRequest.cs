@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.Coordinator;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator;
 using Shared.Validation;
@@ -15,6 +14,6 @@ public record CoordinatorUpdateRoleRequest(
     [property: Required] RoleUpdateDTO Role,
     long ExpectedRevision) : CoordinatorRequest
 {
-    public CoordinatorRoleResponse ToResponse(CoordinatorRoleResult result, RoleDTO? role = null)
-        => new(RequestId, result, role);
+    public CoordinatorRoleResponse ToResponse(RoleDTO role)
+        => new(RequestId, role);
 }

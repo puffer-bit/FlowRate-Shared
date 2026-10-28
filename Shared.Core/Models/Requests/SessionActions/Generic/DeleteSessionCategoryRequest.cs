@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.Generic;
 using Shared.Validation;
 
@@ -9,6 +8,6 @@ public record DeleteSessionCategoryRequest(
     [property: EntityId] int CategoryId
 ) : GenericSessionRequest
 {
-    public SessionLayoutResponse ToResponse(SessionLayoutResult result)
-        => new(RequestId, result);
+    public SessionLayoutResponse ToResponse()
+        => new(RequestId);
 }

@@ -6,5 +6,4 @@ public record BanInSessionResponse(
     Guid RequestId,
     int SessionId,
     int UserTargetId,
-    SessionType SessionType,
-    BanFromSessionResult Result ) : GenericSessionResponse(RequestId);
+    SessionType SessionType) : GenericSessionResponse(RequestId);

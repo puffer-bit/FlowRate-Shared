@@ -14,6 +14,6 @@ public record CoordinatorSetUserStateRequest(
     [property: EntityId] int UserTargetId,
     [property: DefinedEnum] UserState State) : CoordinatorRequest
 {
-    public CoordinatorSetUserStateResponse ToResponse(ModerateUserResult result, UserDTO? user = null)
-        => new(RequestId, result, UserTargetId, user);
+    public CoordinatorSetUserStateResponse ToResponse(UserDTO user)
+        => new(RequestId, UserTargetId, user);
 }

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator;
 using Shared.Validation;
@@ -13,6 +12,6 @@ public record CoordinatorChangeUsernameRequest(
     [property: Required, NotBlank, StringLength(Limits.UsernameMaxLength), NoControlCharacters] string Username,
     int? UserId = null) : CoordinatorRequest
 {
-    public CoordinatorChangeUsernameResponse ToResponse(ChangeUsernameResult result, UserDTO? user = null)
-        => new(RequestId, result, user);
+    public CoordinatorChangeUsernameResponse ToResponse(UserDTO user)
+        => new(RequestId, user);
 }

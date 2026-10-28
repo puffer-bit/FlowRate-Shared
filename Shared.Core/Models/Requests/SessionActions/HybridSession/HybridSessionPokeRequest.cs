@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.HybridSession;
 using Shared.Validation;
 
@@ -12,6 +11,6 @@ public record HybridSessionPokeRequest(
     [property: StringLength(Limits.PokeMessageMaxLength), NoControlCharacters] string? Message = null)
     : HybridSessionRequest
 {
-    public HybridSessionPokeResponse ToResponse(PokeResult result)
-        => new(RequestId, result, UserTargetId);
+    public HybridSessionPokeResponse ToResponse()
+        => new(RequestId, UserTargetId);
 }

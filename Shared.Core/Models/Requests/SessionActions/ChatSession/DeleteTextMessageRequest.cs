@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
 
@@ -10,6 +9,6 @@ public record DeleteTextMessageRequest(
     [property: EntityId] int MessageId
 ) : ChatSessionRequest
 {
-    public DeleteTextMessageResponse ToResponse(DeleteMessageResult result)
-        => new(RequestId, result);
+    public DeleteTextMessageResponse ToResponse()
+        => new(RequestId);
 }
