@@ -11,6 +11,6 @@ public record JoinSessionRequest(
     [property: DefinedEnum] SessionType SessionType
 ) : GenericSessionRequest
 {
-    public JoinSessionResponse ToResponse(JoinSessionResult result, TransportData? transportData = null)
-        => new(RequestId, SessionId, SessionType, result, transportData);
+    public JoinSessionResponse ToResponse(TransportData? transportData = null)
+        => new(RequestId, SessionId, SessionType, transportData);
 }

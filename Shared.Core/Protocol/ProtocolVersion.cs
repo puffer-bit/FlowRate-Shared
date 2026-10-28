@@ -21,7 +21,9 @@ public static class ProtocolVersion
     //    and PeerDTO.WatchedScreenShares
     // 3: device sessions: UserAuthRequest.SessionToken and Device, SessionToken in the auth responses;
     //    UserSessionsRequest, UserSessionRevokeRequest, UserIdentityResetRequest and
-    //    CoordinatorUserSessionEndedNotification
+    //    CoordinatorUserSessionEndedNotification; a failed request is answered with ErrorResponse and one
+    //    ErrorCode instead of a Result in every response (RequestRejectedResponse and the *Result enums
+    //    removed, AuthResult keeps Success and SecondStageRequired)
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

@@ -1,4 +1,3 @@
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator.Security;
 
@@ -10,6 +9,6 @@ namespace Shared.Models.Requests.Coordinator.Security;
 /// </summary>
 public record UserIdentityResetRequest(UserSecurityProofDTO? Proof) : CoordinatorRequest
 {
-    public UserIdentityResetResponse ToResponse(UserSecurityResult result, string? userIdentity = null)
-        => new(RequestId, result, userIdentity);
+    public UserIdentityResetResponse ToResponse(string userIdentity)
+        => new(RequestId, userIdentity);
 }

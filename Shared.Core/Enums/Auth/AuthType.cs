@@ -1,15 +1,18 @@
+using Shared.Enums;
+
 namespace Shared.Enums.Auth;
 
+/// <summary>
+/// How a login that did not fail goes on; a failed one is answered with an
+/// <see cref="Models.Responses.ErrorResponse"/> (<see cref="ErrorCode.AuthFailed"/>, <see cref="ErrorCode.Banned"/>...).
+/// </summary>
 public enum AuthResult
 {
-    Success,
-    AuthFailed,
-    Banned,
-    SecondStageRequeried,
-    /// <summary>The coordinator already has as many users online as it takes.</summary>
-    OnlineLimitReached,
-    /// <summary>The coordinator cannot register another user.</summary>
-    UserLimitReached
+    /// <summary>The sender is logged in.</summary>
+    Success = 0,
+
+    /// <summary>The login needs a second stage; the response tells which ones the user has.</summary>
+    SecondStageRequired = 1
 }
 
 public enum SecondStageAuthType

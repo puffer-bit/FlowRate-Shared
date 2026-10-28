@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator.Security;
 using Shared.Validation;
@@ -14,6 +13,6 @@ public record UserPasskeyRegisterRequest(
     [property: StringLength(Limits.PasskeyLabelMaxLength), NoControlCharacters] string? Label,
     [property: Required, StringLength(Limits.Fido2CredentialJsonMaxLength)] string CredentialJson) : CoordinatorRequest
 {
-    public UserSecurityResponse ToResponse(UserSecurityResult result, UserSecurityDTO? security = null)
-        => new(RequestId, result, security);
+    public UserSecurityResponse ToResponse(UserSecurityDTO security)
+        => new(RequestId, security);
 }

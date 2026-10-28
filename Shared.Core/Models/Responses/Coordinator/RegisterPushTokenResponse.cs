@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.Push;
 
 namespace Shared.Models.Responses.Coordinator;
@@ -9,5 +8,4 @@ namespace Shared.Models.Responses.Coordinator;
 /// </param>
 public record RegisterPushTokenResponse(
     Guid RequestId,
-    PushTokenResult Result,
     string? ReplyToken = null) : CoordinatorResponse(RequestId);

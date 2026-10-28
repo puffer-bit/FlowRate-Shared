@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator;
 using Shared.Validation;
@@ -17,6 +16,6 @@ public record CoordinatorSetAvatarRequest(
     [property: StringLength(Limits.MediaUploadIdLength * 2), HexBytes(Limits.MediaUploadIdLength)] string? UploadId,
     int? UserId = null) : CoordinatorRequest
 {
-    public CoordinatorSetAvatarResponse ToResponse(SetAvatarResult result, UserDTO? user = null)
-        => new(RequestId, result, user);
+    public CoordinatorSetAvatarResponse ToResponse(UserDTO user)
+        => new(RequestId, user);
 }

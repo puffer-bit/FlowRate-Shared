@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.DataTransferObjects.ChatSession;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
@@ -14,6 +13,6 @@ public record ChatMarkReadRequest(
     [property: EntityId] int MessageId
 ) : ChatSessionRequest
 {
-    public ChatMarkReadResponse ToResponse(ChatReadResult result, ChatReadStateDTO? state)
-        => new(RequestId, result, state);
+    public ChatMarkReadResponse ToResponse(ChatReadStateDTO state)
+        => new(RequestId, state);
 }

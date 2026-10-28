@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.SessionActions.Generic;
 using Shared.Validation;
@@ -19,6 +18,6 @@ public record ChangeHybridSessionSettingsRequest(
     [property: Required] HybridMediaSettingsDTO Media
 ) : GenericSessionRequest
 {
-    public ChangeSessionSettingsResponse ToResponse(ChangeSessionSettingsResult result)
-        => new(RequestId, SessionId, result);
+    public ChangeSessionSettingsResponse ToResponse()
+        => new(RequestId, SessionId);
 }

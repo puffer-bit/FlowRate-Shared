@@ -1,4 +1,3 @@
-using Shared.Enums.User;
 using Shared.Models.Responses.Coordinator;
 using Shared.Validation;
 
@@ -10,6 +9,6 @@ namespace Shared.Models.Requests.Coordinator;
 /// </summary>
 public record CoordinatorDeleteUserRequest([property: EntityId] int UserTargetId) : CoordinatorRequest
 {
-    public CoordinatorDeleteUserResponse ToResponse(ModerateUserResult result)
-        => new(RequestId, result, UserTargetId);
+    public CoordinatorDeleteUserResponse ToResponse()
+        => new(RequestId, UserTargetId);
 }

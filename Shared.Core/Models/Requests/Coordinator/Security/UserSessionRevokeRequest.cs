@@ -1,4 +1,3 @@
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator.Security;
 
@@ -11,6 +10,6 @@ namespace Shared.Models.Requests.Coordinator.Security;
 /// </summary>
 public record UserSessionRevokeRequest(Guid? SessionId) : CoordinatorRequest
 {
-    public UserSessionsResponse ToResponse(UserSecurityResult result, List<UserSessionDTO>? sessions = null)
-        => new(RequestId, result, sessions);
+    public UserSessionsResponse ToResponse(List<UserSessionDTO> sessions)
+        => new(RequestId, sessions);
 }

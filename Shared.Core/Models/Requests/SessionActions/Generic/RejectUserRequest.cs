@@ -12,6 +12,6 @@ public record RejectUserRequest(
     [property: StringLength(Limits.ReasonMaxLength), NoControlCharacters] string? Reason
 ) : GenericSessionRequest
 {
-    public RejectUserResponse ToResponse(RejectUserSessionResult result)
-        => new(RequestId, SessionId, UserTargetId, SessionType, result);
+    public RejectUserResponse ToResponse()
+        => new(RequestId, SessionId, UserTargetId, SessionType);
 }

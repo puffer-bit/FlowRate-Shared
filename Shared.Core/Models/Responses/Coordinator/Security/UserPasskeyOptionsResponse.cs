@@ -1,5 +1,3 @@
-using Shared.Enums.User;
-
 namespace Shared.Models.Responses.Coordinator.Security;
 
 /// <param name="OptionsJson">
@@ -8,5 +6,4 @@ namespace Shared.Models.Responses.Coordinator.Security;
 /// </param>
 public record UserPasskeyOptionsResponse(
     Guid RequestId,
-    UserSecurityResult Result,
-    string? OptionsJson) : CoordinatorResponse(RequestId);
+    string OptionsJson) : CoordinatorResponse(RequestId);

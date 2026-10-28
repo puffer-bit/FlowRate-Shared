@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.Generic;
 using Shared.Validation;
 
@@ -10,6 +9,6 @@ public record CreateSessionCategoryRequest(
     [property: Required, NotBlank, StringLength(Limits.SessionCategoryNameMaxLength), NoControlCharacters] string Name
 ) : GenericSessionRequest
 {
-    public SessionLayoutResponse ToResponse(SessionLayoutResult result, int? categoryId = null)
-        => new(RequestId, result, categoryId);
+    public SessionLayoutResponse ToResponse(int? categoryId = null)
+        => new(RequestId, categoryId);
 }

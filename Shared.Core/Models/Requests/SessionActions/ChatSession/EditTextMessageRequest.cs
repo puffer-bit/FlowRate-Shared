@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
 
@@ -12,6 +11,6 @@ public record EditTextMessageRequest(
     [property: Required, NotBlank, StringLength(Limits.ChatTextMaxLength), NoControlCharacters(allowLineBreaks: true)] string Text
 ) : ChatSessionRequest
 {
-    public EditMessageResponse ToResponse(EditMessageResult result)
-        => new(RequestId, result);
+    public EditMessageResponse ToResponse()
+        => new(RequestId);
 }

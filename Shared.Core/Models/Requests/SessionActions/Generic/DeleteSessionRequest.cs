@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.Generic;
 using Shared.Validation;
 
@@ -9,6 +8,6 @@ public record DeleteSessionRequest(
     [property: EntityId] int SessionId
 ) : GenericSessionRequest
 {
-    public DeleteSessionResponse ToResponse(DeleteSessionResult result)
-        => new(RequestId, result);
+    public DeleteSessionResponse ToResponse()
+        => new(RequestId);
 }

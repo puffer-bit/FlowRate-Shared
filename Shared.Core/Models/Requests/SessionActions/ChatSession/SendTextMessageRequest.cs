@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Requests.SessionActions.ChatSession.Models;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
@@ -11,6 +10,6 @@ public record SendTextMessageRequest(
     [property: Required] NewChatMessageModel MessageModel
 ) : ChatSessionRequest
 {
-    public SendTextMessageResponse ToResponse(AddMessageResult result)
-        => new(RequestId, result);
+    public SendTextMessageResponse ToResponse()
+        => new(RequestId);
 }

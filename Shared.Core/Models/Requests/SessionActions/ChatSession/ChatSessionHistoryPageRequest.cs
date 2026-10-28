@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.DataTransferObjects.ChatSession.Messages;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
@@ -16,7 +15,7 @@ public record ChatSessionHistoryPageRequest(
     [property: Range(1, Limits.ChatHistoryMaxTake)] int Take
 ) : ChatSessionRequest
 {
-    public ChatSessionHistoryPageResponse ToResponse(FetchMessagesResult result, List<ChatMessageDTO>? messages,
+    public ChatSessionHistoryPageResponse ToResponse(List<ChatMessageDTO> messages,
         long currentRevision)
-        => new(RequestId, result, messages, currentRevision);
+        => new(RequestId, messages, currentRevision);
 }

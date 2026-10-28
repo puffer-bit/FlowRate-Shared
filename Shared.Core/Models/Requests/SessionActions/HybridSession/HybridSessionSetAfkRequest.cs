@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.HybridSession;
 using Shared.Validation;
 
@@ -11,6 +10,6 @@ public record HybridSessionSetAfkRequest(
     bool IsAfk,
     [property: StringLength(Limits.ReasonMaxLength), NoControlCharacters] string? Reason = null) : HybridSessionRequest
 {
-    public HybridSessionSetAfkResponse ToResponse(SetAfkResult result)
-        => new(RequestId, result, IsAfk);
+    public HybridSessionSetAfkResponse ToResponse()
+        => new(RequestId, IsAfk);
 }

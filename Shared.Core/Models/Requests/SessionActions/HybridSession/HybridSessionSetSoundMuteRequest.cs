@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.HybridSession;
 using Shared.Validation;
 
@@ -9,6 +8,6 @@ public record HybridSessionSetSoundMuteRequest(
     [property: EntityId] int SessionId,
     bool IsMuted) : HybridSessionRequest
 {
-    public HybridSessionSetSoundMuteResponse ToResponse(SetSoundMuteResult result)
-        => new (RequestId, result, IsMuted);
+    public HybridSessionSetSoundMuteResponse ToResponse()
+        => new (RequestId, IsMuted);
 }
