@@ -5,4 +5,4 @@ namespace Shared.Models.Responses.Coordinator;
 public record CoordinatorSettingsResponse(
     Guid RequestId,
     CoordinatorSettingsDTO Settings,
-    IList<SfuNodeDTO> SfuNodes) : CoordinatorResponse(RequestId);
+    IList<SFUNodeDTO> SFUNodes) : CoordinatorResponse(RequestId);

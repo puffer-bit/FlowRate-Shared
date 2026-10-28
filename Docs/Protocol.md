@@ -121,7 +121,7 @@ a code is about (`SessionNotFound` of a join is the session to join):
 | 300–399 | The state of things does not allow it: `Conflict`, `NameTaken`, `SessionFull`, `NotAdmitted`, `CannotTargetSelf`, `HierarchyViolation`... |
 | 400–499 | A value the format allows but the server cannot use: `InvalidValue`, the attachment codes, `UnsupportedMedia` |
 | 500–599 | Account security: `ProofRequired`, `VerificationFailed` |
-| 600–699 | Media servers: `SfuError`, `SfuUnavailable` |
+| 600–699 | Media servers: `SFUError`, `SFUUnavailable` |
 
 `Conflict` means someone else changed the settings or the role after the revision the change was
 based on; the client fetches them again and the user decides anew.
@@ -142,7 +142,6 @@ response. Giving up is the client's own matter and is not an `ErrorCode`.
 | Generic sessions | `Requests.SessionActions.Generic`, `Notifications.SessionInfo` | Create, join, leave, kick, ban, approve; categories and layout |
 | Chat sessions | `Requests.SessionActions.ChatSession` | History, paging, changes since a revision, send, edit, delete, read state |
 | Hybrid sessions | `Requests.SessionActions.HybridSession` | Voice and video rooms on an SFU: transport, voice, camera, screen share, mute |
-| WebRTC | `Requests.WebRTC` | SDP exchange (`WebRtcConnectRequest`) |
 
 Joining a hybrid session gives `TransportData` (ICE parameters and candidates, DTLS parameters) in
 `HybridSessionJoinResponse`. The client answers with its own DTLS parameters in
@@ -250,7 +249,7 @@ the same limits:
 | `NotBlank` | Text that is not empty or whitespace |
 | `HttpsUrl` | An absolute `https` URL |
 | `GuidString` | A GUID written as text |
-| `DtlsFingerprint` | Colon-separated hex pairs |
+| `DTLSFingerprint` | Colon-separated hex pairs |
 | `HexBytes(n)` | Exactly `n` bytes in hex |
 | `Base64Bytes(n)` | Exactly `n` bytes in base64; overlong input is refused without decoding |
 | `OneOf(...)` | One of a fixed set of strings, ignoring case |

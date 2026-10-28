@@ -21,8 +21,8 @@ public class CoordinatorSettingsDTO
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
 
-    public bool IsMotdEnabled { get; set; }
-    public string? MotdText { get; set; }
+    public bool IsMOTDEnabled { get; set; }
+    public string? MOTDText { get; set; }
 
     public List<string> AllowedIps { get; set; } = [];
     public List<string> BannedIps { get; set; } = [];
@@ -46,7 +46,7 @@ public class CoordinatorSettingsDTO
 
     public CoordinatorRateLimitsDTO RateLimits { get; set; } = new();
 
-    public List<int> SfuNodeIds { get; set; } = [];
+    public List<int> SFUNodeIds { get; set; } = [];
 }
 
 /// <summary>
@@ -73,10 +73,10 @@ public class CoordinatorSettingsUpdateDTO
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
 
-    public bool IsMotdEnabled { get; set; }
+    public bool IsMOTDEnabled { get; set; }
 
-    [StringLength(Limits.MotdTextMaxLength)]
-    public string? MotdText { get; set; }
+    [StringLength(Limits.MOTDTextMaxLength)]
+    public string? MOTDText { get; set; }
 
     [Required, ItemCount(Limits.IpListMaxCount)]
     public List<string> AllowedIps { get; set; } = [];
@@ -97,8 +97,8 @@ public class CoordinatorSettingsUpdateDTO
     [Required]
     public CoordinatorRateLimitsDTO RateLimits { get; set; } = new();
 
-    [Required, ItemCount(Limits.SfuNodesMaxCount)]
-    public List<int> SfuNodeIds { get; set; } = [];
+    [Required, ItemCount(Limits.SFUNodesMaxCount)]
+    public List<int> SFUNodeIds { get; set; } = [];
 }
 
 /// <summary>At most <see cref="Count"/> requests per <see cref="PeriodSeconds"/>.</summary>
@@ -148,7 +148,7 @@ public class CoordinatorRateLimitsDTO
 /// A node of the SFU pool of the server that a coordinator can be given. Credentials are left out.
 /// The connection fields are what the server knew when it answered; null for a disabled node.
 /// </summary>
-public class SfuNodeDTO
+public class SFUNodeDTO
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -156,7 +156,7 @@ public class SfuNodeDTO
     public int Port { get; set; }
     public bool IsEnabled { get; set; }
 
-    public SfuNodeConnectionState? ConnectionState { get; set; }
+    public SFUNodeConnectionState? ConnectionState { get; set; }
 
     /// <summary>Round trip of the server's last answered ping to the node; null while the node does not answer.</summary>
     public double? PingMs { get; set; }

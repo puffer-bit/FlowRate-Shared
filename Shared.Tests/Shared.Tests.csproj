@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared.Core\Shared.Core.csproj" />
-    <ProjectReference Include="..\Shared.Parsers\Shared.Parsers.csproj" />
   </ItemGroup>
   
 </Project>

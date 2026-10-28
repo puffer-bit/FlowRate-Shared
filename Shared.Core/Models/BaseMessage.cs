@@ -9,7 +9,6 @@ using Shared.Models.Requests.Heartbeat;
 using Shared.Models.Requests.SessionActions.ChatSession;
 using Shared.Models.Requests.SessionActions.Generic;
 using Shared.Models.Requests.SessionActions.HybridSession;
-using Shared.Models.Requests.WebRTC;
 using Shared.Models.Responses;
 using Shared.Models.Responses.Auth;
 using Shared.Models.Responses.Coordinator;
@@ -18,7 +17,6 @@ using Shared.Models.Responses.Heartbeat;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Models.Responses.SessionActions.Generic;
 using Shared.Models.Responses.SessionActions.HybridSession;
-using Shared.Models.Responses.WebRTC;
 
 namespace Shared.Models;
 
@@ -61,8 +59,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionPeerRejectedNotification), typeDiscriminator: nameof(HybridSessionPeerRejectedNotification))]
 [JsonDerivedType(typeof(HybridSessionStateChangedNotification), typeDiscriminator: nameof(HybridSessionStateChangedNotification))]
 [JsonDerivedType(typeof(HybridSessionSFUNodeChangedNotification), typeDiscriminator: nameof(HybridSessionSFUNodeChangedNotification))]
-[JsonDerivedType(typeof(HybridSessionSFUNodeConnectedNotification), typeDiscriminator: nameof(HybridSessionSFUNodeConnectedNotification))]
-[JsonDerivedType(typeof(HybridSessionSFUNodeDisconnectedNotification), typeDiscriminator: nameof(HybridSessionSFUNodeDisconnectedNotification))]
+[JsonDerivedType(typeof(HybridSessionSFUNodeConnectionChangedNotification), typeDiscriminator: nameof(HybridSessionSFUNodeConnectionChangedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerJoinedNotification), typeDiscriminator: nameof(HybridSessionPeerJoinedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerLeftNotification), typeDiscriminator: nameof(HybridSessionPeerLeftNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerKickedNotification), typeDiscriminator: nameof(HybridSessionPeerKickedNotification))]
@@ -73,26 +70,19 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionPeerStartedScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerStartedScreenShareNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerUpdatedScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerUpdatedScreenShareNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerStoppedScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerStoppedScreenShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerMutedScreenShareSoundNotification), typeDiscriminator: nameof(HybridSessionPeerMutedScreenShareSoundNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerPausedScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerPausedScreenShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerUnmutedScreenShareSoundNotification), typeDiscriminator: nameof(HybridSessionPeerUnmutedScreenShareSoundNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerResumedScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerResumedScreenShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerStartedWatchingScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerStartedWatchingScreenShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerStoppedWatchingScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerStoppedWatchingScreenShareNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerScreenShareSoundMuteChangedNotification), typeDiscriminator: nameof(HybridSessionPeerScreenShareSoundMuteChangedNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerScreenSharePauseChangedNotification), typeDiscriminator: nameof(HybridSessionPeerScreenSharePauseChangedNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerScreenShareWatchChangedNotification), typeDiscriminator: nameof(HybridSessionPeerScreenShareWatchChangedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerStartedVideoShareNotification), typeDiscriminator: nameof(HybridSessionPeerStartedVideoShareNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerUpdatedVideoShareNotification), typeDiscriminator: nameof(HybridSessionPeerUpdatedVideoShareNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerStoppedVideoShareNotification), typeDiscriminator: nameof(HybridSessionPeerStoppedVideoShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerPausedVideoShareNotification), typeDiscriminator: nameof(HybridSessionPeerPausedVideoShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerResumedVideoShareNotification), typeDiscriminator: nameof(HybridSessionPeerResumedVideoShareNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerVideoSharePauseChangedNotification), typeDiscriminator: nameof(HybridSessionPeerVideoSharePauseChangedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerStartedVoiceShareNotification), typeDiscriminator: nameof(HybridSessionPeerStartedVoiceShareNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerUpdatedVoiceShareNotification), typeDiscriminator: nameof(HybridSessionPeerUpdatedVoiceShareNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerStoppedVoiceShareNotification), typeDiscriminator: nameof(HybridSessionPeerStoppedVoiceShareNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerMuteMicrophoneNotification), typeDiscriminator: nameof(HybridSessionPeerMuteMicrophoneNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerUnmuteMicrophoneNotification), typeDiscriminator: nameof(HybridSessionPeerUnmuteMicrophoneNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerMuteSoundNotification), typeDiscriminator: nameof(HybridSessionPeerMuteSoundNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerUnmuteSoundNotification), typeDiscriminator: nameof(HybridSessionPeerUnmuteSoundNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerAfkNotification), typeDiscriminator: nameof(HybridSessionPeerAfkNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerNotAfkNotification), typeDiscriminator: nameof(HybridSessionPeerNotAfkNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerMicrophoneMuteChangedNotification), typeDiscriminator: nameof(HybridSessionPeerMicrophoneMuteChangedNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerSoundMuteChangedNotification), typeDiscriminator: nameof(HybridSessionPeerSoundMuteChangedNotification))]
+[JsonDerivedType(typeof(HybridSessionPeerAfkChangedNotification), typeDiscriminator: nameof(HybridSessionPeerAfkChangedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerPokedNotification), typeDiscriminator: nameof(HybridSessionPeerPokedNotification))]
 
 // Requests
@@ -180,7 +170,6 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionSetAfkRequest), typeDiscriminator: nameof(HybridSessionSetAfkRequest))]
 [JsonDerivedType(typeof(HybridSessionPokeRequest), typeDiscriminator: nameof(HybridSessionPokeRequest))]
 
-[JsonDerivedType(typeof(WebRtcConnectRequest), typeDiscriminator: nameof(WebRtcConnectRequest))]
 
 // Responses
 
@@ -253,7 +242,6 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionSetAfkResponse), typeDiscriminator: nameof(HybridSessionSetAfkResponse))]
 [JsonDerivedType(typeof(HybridSessionPokeResponse), typeDiscriminator: nameof(HybridSessionPokeResponse))]
 
-[JsonDerivedType(typeof(WebRtcConnectResponse), typeDiscriminator: nameof(WebRtcConnectResponse))]
 
 [JsonDerivedType(typeof(ErrorResponse), typeDiscriminator: nameof(ErrorResponse))]
 public abstract record BaseMessage

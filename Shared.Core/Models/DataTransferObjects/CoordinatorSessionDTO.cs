@@ -21,7 +21,7 @@ public class CoordinatorSessionDTO
     public int MaxUsers { get; set; }
 
     public bool IsMOTDEnabled { get; set; }
-    public string? MotdText { get; set; }
+    public string? MOTDText { get; set; }
 
     /// <summary>Users must enter the server password to sign in.</summary>
     public bool IsPasswordProtected { get; set; }
