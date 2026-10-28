@@ -17,7 +17,11 @@ public record UserAuthRequest(
     [property: StringLength(Limits.SessionTokenMaxLength), NoControlCharacters] string? SessionToken = null,
     DeviceInfoDTO? Device = null) : AuthRequest
 {
-    public UserAuthResponse ToResponse(AuthResult authResult, string? userIdentity = null, UserDTO? userDTO = null,
-        string? serverMessage = null, string? sessionToken = null)
-        => new(RequestId, userDTO, userIdentity, authResult, serverMessage, SessionToken: sessionToken);
+    /// <param name="userIdentity">The identity of a new user; null when the client logged in with its own.</param>
+    public UserAuthResponse ToResponse(UserDTO user, string sessionToken, string? userIdentity = null)
+        => new(RequestId, AuthResult.Success, user, userIdentity, sessionToken);
+
+    public UserAuthResponse ToSecondStageResponse(List<SecondStageAuthType> secondStages,
+        FIDO2LoginOptionsDTO? fido2LoginOptions = null)
+        => new(RequestId, AuthResult.SecondStageRequired, SecondStages: secondStages, FIDO2LoginOptions: fido2LoginOptions);
 }

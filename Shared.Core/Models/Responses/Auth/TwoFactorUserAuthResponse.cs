@@ -1,11 +1,9 @@
-using Shared.Enums.Auth;
 using Shared.Models.DataTransferObjects;
 
 namespace Shared.Models.Responses.Auth;
 
+/// <param name="SessionToken">The token to log in with next time.</param>
 public record TwoFactorUserAuthResponse(
     Guid RequestId,
-    UserDTO? UserDTO,
-    AuthResult AuthResult,
-    string? ServerMessage = null,
-    string? SessionToken = null) : AuthResponse(RequestId);
+    UserDTO User,
+    string SessionToken) : AuthResponse(RequestId);

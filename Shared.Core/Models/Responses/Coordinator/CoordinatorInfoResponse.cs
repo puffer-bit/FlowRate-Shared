@@ -4,4 +4,4 @@ namespace Shared.Models.Responses.Coordinator;
 
 public record CoordinatorInfoResponse(
     Guid RequestId,
-    CoordinatorSessionDTO CoordinatorSessionDTO) : CoordinatorResponse(RequestId);
+    CoordinatorSessionDTO Coordinator) : CoordinatorResponse(RequestId);

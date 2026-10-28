@@ -6,6 +6,6 @@ namespace Shared.Models.Requests.Coordinator;
 public record CoordinatorInfoRequest() : CoordinatorRequest
 {
     public CoordinatorInfoResponse ToResponse(
-        CoordinatorSessionDTO coordinatorSessionDTO) =>
-        new (RequestId, coordinatorSessionDTO);
+        CoordinatorSessionDTO coordinator) =>
+        new (RequestId, coordinator);
 }

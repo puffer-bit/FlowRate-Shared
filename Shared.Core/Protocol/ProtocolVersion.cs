@@ -28,7 +28,10 @@ public static class ProtocolVersion
     //    SFU node connected/disconnected) are one *Changed notification each, with a flag;
     //    WebRtcConnectRequest, UserAuthRequest.IsFIDO2AuthRequested, HybridSessionDTO.IsHostConnected and
     //    the unused media fields of HybridSessionCreateData removed; acronyms upper case (SFU, DTO, DTLS,
-    //    FIDO2, MOTD)
+    //    FIDO2, MOTD); fields named for what they hold (User, Coordinator, Sessions, Users, TargetUserId,
+    //    SharerUserId, TransportData, Candidates, Message) and Send/Edit/DeleteMessage*,
+    //    ChangeHybridSessionSettingsResponse; UserAuthResponse.SecondStages instead of ServerMessage, the
+    //    second-stage responses carry the user and the token only
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

@@ -5,11 +5,11 @@ using Shared.Validation;
 
 namespace Shared.Models.Requests.SessionActions.ChatSession;
 
-public record SendTextMessageRequest(
+public record SendMessageRequest(
     [property: EntityId] int ChatId,
-    [property: Required] NewChatMessageModel MessageModel
+    [property: Required] NewChatMessageModel Message
 ) : ChatSessionRequest
 {
-    public SendTextMessageResponse ToResponse()
+    public SendMessageResponse ToResponse()
         => new(RequestId);
 }

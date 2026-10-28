@@ -3,32 +3,32 @@ ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
 ApproveUserRequest.SessionId: Int32
 ApproveUserRequest.SessionType: SessionType
-ApproveUserRequest.UserTargetId: Int32
+ApproveUserRequest.TargetUserId: Int32
 ApproveUserResponse.RequestId: Guid
 ApproveUserResponse.SenderId: Int32
 ApproveUserResponse.SessionId: Int32
 ApproveUserResponse.SessionType: SessionType
-ApproveUserResponse.UserTargetId: Int32
+ApproveUserResponse.TargetUserId: Int32
 AuthResult = enum Success=0, SecondStageRequired=1
 BanInSessionRequest.Reason: String
 BanInSessionRequest.RequestId: Guid
 BanInSessionRequest.SenderId: Int32
 BanInSessionRequest.SessionId: Int32
 BanInSessionRequest.SessionType: SessionType
-BanInSessionRequest.UserTargetId: Int32
+BanInSessionRequest.TargetUserId: Int32
 BanInSessionResponse.RequestId: Guid
 BanInSessionResponse.SenderId: Int32
 BanInSessionResponse.SessionId: Int32
 BanInSessionResponse.SessionType: SessionType
-BanInSessionResponse.UserTargetId: Int32
+BanInSessionResponse.TargetUserId: Int32
 BaseMessage <- "ApproveUserRequest": ApproveUserRequest
 BaseMessage <- "ApproveUserResponse": ApproveUserResponse
 BaseMessage <- "BanInSessionRequest": BanInSessionRequest
 BaseMessage <- "BanInSessionResponse": BanInSessionResponse
 BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettingsRequest
+BaseMessage <- "ChangeHybridSessionSettingsResponse": ChangeHybridSessionSettingsResponse
 BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsRequest
 BaseMessage <- "ChangeSessionPermissionsResponse": ChangeSessionPermissionsResponse
-BaseMessage <- "ChangeSessionSettingsResponse": ChangeSessionSettingsResponse
 BaseMessage <- "ChatMarkReadRequest": ChatMarkReadRequest
 BaseMessage <- "ChatMarkReadResponse": ChatMarkReadResponse
 BaseMessage <- "ChatReadStateChangedNotification": ChatReadStateChangedNotification
@@ -96,13 +96,13 @@ BaseMessage <- "CoordinatorUserUpdatedNotification": CoordinatorUserUpdatedNotif
 BaseMessage <- "CreateSessionCategoryRequest": CreateSessionCategoryRequest
 BaseMessage <- "CreateSessionRequest": CreateSessionRequest
 BaseMessage <- "CreateSessionResponse": CreateSessionResponse
+BaseMessage <- "DeleteMessageRequest": DeleteMessageRequest
+BaseMessage <- "DeleteMessageResponse": DeleteMessageResponse
 BaseMessage <- "DeleteSessionCategoryRequest": DeleteSessionCategoryRequest
 BaseMessage <- "DeleteSessionRequest": DeleteSessionRequest
 BaseMessage <- "DeleteSessionResponse": DeleteSessionResponse
-BaseMessage <- "DeleteTextMessageRequest": DeleteTextMessageRequest
-BaseMessage <- "DeleteTextMessageResponse": DeleteTextMessageResponse
+BaseMessage <- "EditMessageRequest": EditMessageRequest
 BaseMessage <- "EditMessageResponse": EditMessageResponse
-BaseMessage <- "EditTextMessageRequest": EditTextMessageRequest
 BaseMessage <- "ErrorResponse": ErrorResponse
 BaseMessage <- "FIDO2UserAuthRequest": FIDO2UserAuthRequest
 BaseMessage <- "FIDO2UserAuthResponse": FIDO2UserAuthResponse
@@ -190,8 +190,8 @@ BaseMessage <- "RegisterPushTokenResponse": RegisterPushTokenResponse
 BaseMessage <- "RejectUserRequest": RejectUserRequest
 BaseMessage <- "RejectUserResponse": RejectUserResponse
 BaseMessage <- "RenameSessionCategoryRequest": RenameSessionCategoryRequest
-BaseMessage <- "SendTextMessageRequest": SendTextMessageRequest
-BaseMessage <- "SendTextMessageResponse": SendTextMessageResponse
+BaseMessage <- "SendMessageRequest": SendMessageRequest
+BaseMessage <- "SendMessageResponse": SendMessageResponse
 BaseMessage <- "SessionInfoRequest": SessionInfoRequest
 BaseMessage <- "SessionInfoResponse": SessionInfoResponse
 BaseMessage <- "SessionLayoutChangedNotification": SessionLayoutChangedNotification
@@ -226,6 +226,9 @@ ChangeHybridSessionSettingsRequest.Name: String
 ChangeHybridSessionSettingsRequest.RequestId: Guid
 ChangeHybridSessionSettingsRequest.SenderId: Int32
 ChangeHybridSessionSettingsRequest.SessionId: Int32
+ChangeHybridSessionSettingsResponse.RequestId: Guid
+ChangeHybridSessionSettingsResponse.SenderId: Int32
+ChangeHybridSessionSettingsResponse.SessionId: Int32
 ChangeSessionPermissionsRequest.Overrides: List<SessionPermissionOverrideDTO>
 ChangeSessionPermissionsRequest.RequestId: Guid
 ChangeSessionPermissionsRequest.SenderId: Int32
@@ -233,9 +236,6 @@ ChangeSessionPermissionsRequest.SessionId: Int32
 ChangeSessionPermissionsResponse.RequestId: Guid
 ChangeSessionPermissionsResponse.SenderId: Int32
 ChangeSessionPermissionsResponse.SessionId: Int32
-ChangeSessionSettingsResponse.RequestId: Guid
-ChangeSessionSettingsResponse.SenderId: Int32
-ChangeSessionSettingsResponse.SessionId: Int32
 ChatContentType = enum File=0, Text=1, Image=2, Video=3, Reply=4
 ChatFileContentDTO.FileName: String
 ChatFileContentDTO.Id: Int32
@@ -320,7 +320,7 @@ ChatSessionCreateData.IsAttachmentsAllowed: Boolean
 ChatSessionCreateData.IsDelayedMessagesAllowed: Boolean
 ChatSessionCreateData.IsEncrypted: Boolean
 ChatSessionCreateData.IsVideoMessagesAllowed: Boolean
-ChatSessionCreateData.IsVoiceMessageAllowed: Boolean
+ChatSessionCreateData.IsVoiceMessagesAllowed: Boolean
 ChatSessionCreateData.SessionType: SessionType
 ChatSessionCreatedNotification.SenderId: Int32
 ChatSessionCreatedNotification.Session: ChatSessionDTO
@@ -398,10 +398,10 @@ ChatVideoContentDTO.Width: Int32
 CoordinatorAssignRoleRequest.RequestId: Guid
 CoordinatorAssignRoleRequest.RoleId: Int32
 CoordinatorAssignRoleRequest.SenderId: Int32
-CoordinatorAssignRoleRequest.UserTargetId: Int32
+CoordinatorAssignRoleRequest.TargetUserId: Int32
 CoordinatorChangeUsernameRequest.RequestId: Guid
 CoordinatorChangeUsernameRequest.SenderId: Int32
-CoordinatorChangeUsernameRequest.UserId: Int32?
+CoordinatorChangeUsernameRequest.TargetUserId: Int32?
 CoordinatorChangeUsernameRequest.Username: String
 CoordinatorChangeUsernameResponse.RequestId: Guid
 CoordinatorChangeUsernameResponse.SenderId: Int32
@@ -414,13 +414,13 @@ CoordinatorDeleteRoleRequest.RoleId: Int32
 CoordinatorDeleteRoleRequest.SenderId: Int32
 CoordinatorDeleteUserRequest.RequestId: Guid
 CoordinatorDeleteUserRequest.SenderId: Int32
-CoordinatorDeleteUserRequest.UserTargetId: Int32
+CoordinatorDeleteUserRequest.TargetUserId: Int32
 CoordinatorDeleteUserResponse.RequestId: Guid
 CoordinatorDeleteUserResponse.SenderId: Int32
-CoordinatorDeleteUserResponse.UserTargetId: Int32
+CoordinatorDeleteUserResponse.TargetUserId: Int32
 CoordinatorInfoRequest.RequestId: Guid
 CoordinatorInfoRequest.SenderId: Int32
-CoordinatorInfoResponse.CoordinatorSessionDTO: CoordinatorSessionDTO
+CoordinatorInfoResponse.Coordinator: CoordinatorSessionDTO
 CoordinatorInfoResponse.RequestId: Guid
 CoordinatorInfoResponse.SenderId: Int32
 CoordinatorOnlineUsersChangedNotification.ConnectedUsersCount: Int32
@@ -444,7 +444,7 @@ CoordinatorRateLimitsDTO.RejectionWindowSeconds: Int32
 CoordinatorRateLimitsDTO.SessionLayout: RequestRateDTO
 CoordinatorRateLimitsDTO.SessionManagement: RequestRateDTO
 CoordinatorRateLimitsDTO.SessionMedia: RequestRateDTO
-CoordinatorReconfiguredNotification.CoordinatorSessionDTO: CoordinatorSessionDTO
+CoordinatorReconfiguredNotification.Coordinator: CoordinatorSessionDTO
 CoordinatorReconfiguredNotification.SenderId: Int32
 CoordinatorReorderRolesRequest.RequestId: Guid
 CoordinatorReorderRolesRequest.RoleIds: IList<Int32>
@@ -482,19 +482,19 @@ CoordinatorSessionDTO.SettingsRevision: Int64
 CoordinatorSessionDTO.StorageQuotaBytes: Int64
 CoordinatorSetAvatarRequest.RequestId: Guid
 CoordinatorSetAvatarRequest.SenderId: Int32
+CoordinatorSetAvatarRequest.TargetUserId: Int32?
 CoordinatorSetAvatarRequest.UploadId: String
-CoordinatorSetAvatarRequest.UserId: Int32?
 CoordinatorSetAvatarResponse.RequestId: Guid
 CoordinatorSetAvatarResponse.SenderId: Int32
 CoordinatorSetAvatarResponse.User: UserDTO
 CoordinatorSetUserStateRequest.RequestId: Guid
 CoordinatorSetUserStateRequest.SenderId: Int32
 CoordinatorSetUserStateRequest.State: UserState
-CoordinatorSetUserStateRequest.UserTargetId: Int32
+CoordinatorSetUserStateRequest.TargetUserId: Int32
 CoordinatorSetUserStateResponse.RequestId: Guid
 CoordinatorSetUserStateResponse.SenderId: Int32
+CoordinatorSetUserStateResponse.TargetUserId: Int32
 CoordinatorSetUserStateResponse.User: UserDTO
-CoordinatorSetUserStateResponse.UserTargetId: Int32
 CoordinatorSetUserStatusRequest.RequestId: Guid
 CoordinatorSetUserStatusRequest.SenderId: Int32
 CoordinatorSetUserStatusRequest.Status: UserStatus
@@ -550,7 +550,7 @@ CoordinatorSettingsUpdateDTO.UnattachedUploadLifetimeHours: Int32
 CoordinatorUnassignRoleRequest.RequestId: Guid
 CoordinatorUnassignRoleRequest.RoleId: Int32
 CoordinatorUnassignRoleRequest.SenderId: Int32
-CoordinatorUnassignRoleRequest.UserTargetId: Int32
+CoordinatorUnassignRoleRequest.TargetUserId: Int32
 CoordinatorUpdateRoleRequest.ExpectedRevision: Int64
 CoordinatorUpdateRoleRequest.RequestId: Guid
 CoordinatorUpdateRoleRequest.Role: RoleUpdateDTO
@@ -578,7 +578,7 @@ CoordinatorUserInfoRequest.SenderId: Int32
 CoordinatorUserInfoRequest.UserIds: IList<Int32>
 CoordinatorUserInfoResponse.RequestId: Guid
 CoordinatorUserInfoResponse.SenderId: Int32
-CoordinatorUserInfoResponse.UserList: IDictionary<Int32, UserDTO>
+CoordinatorUserInfoResponse.Users: IDictionary<Int32, UserDTO>
 CoordinatorUserKickedNotification.Reason: String
 CoordinatorUserKickedNotification.SenderId: Int32
 CoordinatorUserKickedNotification.UserId: Int32
@@ -592,7 +592,7 @@ CoordinatorUserListUpdatedNotification.Users: IList<UserDTO>
 CoordinatorUserRolesResponse.RequestId: Guid
 CoordinatorUserRolesResponse.RoleIds: IList<Int32>
 CoordinatorUserRolesResponse.SenderId: Int32
-CoordinatorUserRolesResponse.UserTargetId: Int32
+CoordinatorUserRolesResponse.TargetUserId: Int32
 CoordinatorUserSearchRequest.Limit: Int32
 CoordinatorUserSearchRequest.Query: String
 CoordinatorUserSearchRequest.RequestId: Guid
@@ -624,6 +624,12 @@ DTLSFingerprint.Algorithm: String
 DTLSFingerprint.Fingerprint: String
 DTLSParameters.Fingerprints: List<DTLSFingerprint>
 DTLSParameters.Role: String
+DeleteMessageRequest.ChatId: Int32
+DeleteMessageRequest.MessageId: Int32
+DeleteMessageRequest.RequestId: Guid
+DeleteMessageRequest.SenderId: Int32
+DeleteMessageResponse.RequestId: Guid
+DeleteMessageResponse.SenderId: Int32
 DeleteSessionCategoryRequest.CategoryId: Int32
 DeleteSessionCategoryRequest.RequestId: Guid
 DeleteSessionCategoryRequest.SenderId: Int32
@@ -632,22 +638,16 @@ DeleteSessionRequest.SenderId: Int32
 DeleteSessionRequest.SessionId: Int32
 DeleteSessionResponse.RequestId: Guid
 DeleteSessionResponse.SenderId: Int32
-DeleteTextMessageRequest.ChatId: Int32
-DeleteTextMessageRequest.MessageId: Int32
-DeleteTextMessageRequest.RequestId: Guid
-DeleteTextMessageRequest.SenderId: Int32
-DeleteTextMessageResponse.RequestId: Guid
-DeleteTextMessageResponse.SenderId: Int32
 DeviceInfoDTO.AppVersion: String
 DeviceInfoDTO.Name: String
 DeviceInfoDTO.Platform: String
+EditMessageRequest.ChatId: Int32
+EditMessageRequest.MessageId: Int32
+EditMessageRequest.RequestId: Guid
+EditMessageRequest.SenderId: Int32
+EditMessageRequest.Text: String
 EditMessageResponse.RequestId: Guid
 EditMessageResponse.SenderId: Int32
-EditTextMessageRequest.ChatId: Int32
-EditTextMessageRequest.MessageId: Int32
-EditTextMessageRequest.RequestId: Guid
-EditTextMessageRequest.SenderId: Int32
-EditTextMessageRequest.Text: String
 ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, TargetIsHost=315, HierarchyViolation=316, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
 ErrorResponse.Code: ErrorCode
 ErrorResponse.Details: String
@@ -669,12 +669,10 @@ FIDO2LoginOptionsDTO.UserVerification: String
 FIDO2UserAuthRequest.AssertionResponse: FIDO2AssertionDTO
 FIDO2UserAuthRequest.RequestId: Guid
 FIDO2UserAuthRequest.SenderId: Int32
-FIDO2UserAuthResponse.AuthResult: AuthResult
 FIDO2UserAuthResponse.RequestId: Guid
 FIDO2UserAuthResponse.SenderId: Int32
-FIDO2UserAuthResponse.ServerMessage: String
 FIDO2UserAuthResponse.SessionToken: String
-FIDO2UserAuthResponse.UserDTO: UserDTO
+FIDO2UserAuthResponse.User: UserDTO
 HeartbeatPingRequest.RequestId: Guid
 HeartbeatPingRequest.SenderId: Int32
 HeartbeatPingResponse.RequestId: Guid
@@ -867,10 +865,10 @@ HybridSessionPokeRequest.Message: String
 HybridSessionPokeRequest.RequestId: Guid
 HybridSessionPokeRequest.SenderId: Int32
 HybridSessionPokeRequest.SessionId: Int32
-HybridSessionPokeRequest.UserTargetId: Int32
+HybridSessionPokeRequest.TargetUserId: Int32
 HybridSessionPokeResponse.RequestId: Guid
 HybridSessionPokeResponse.SenderId: Int32
-HybridSessionPokeResponse.UserTargetId: Int32
+HybridSessionPokeResponse.TargetUserId: Int32
 HybridSessionReconfiguredNotification.SenderId: Int32
 HybridSessionReconfiguredNotification.Session: HybridSessionDTO
 HybridSessionResumeInboundsRequest.InboundIds: List<String>
@@ -903,13 +901,13 @@ HybridSessionSetScreenShareWatchRequest.IsWatching: Boolean
 HybridSessionSetScreenShareWatchRequest.RequestId: Guid
 HybridSessionSetScreenShareWatchRequest.SenderId: Int32
 HybridSessionSetScreenShareWatchRequest.SessionId: Int32
-HybridSessionSetScreenShareWatchRequest.UserId: Int32
+HybridSessionSetScreenShareWatchRequest.SharerUserId: Int32
 HybridSessionSetScreenShareWatchResponse.AudioInbound: Inbound
 HybridSessionSetScreenShareWatchResponse.Inbound: Inbound
 HybridSessionSetScreenShareWatchResponse.IsWatching: Boolean
 HybridSessionSetScreenShareWatchResponse.RequestId: Guid
 HybridSessionSetScreenShareWatchResponse.SenderId: Int32
-HybridSessionSetScreenShareWatchResponse.UserId: Int32
+HybridSessionSetScreenShareWatchResponse.SharerUserId: Int32
 HybridSessionSetSoundMuteRequest.IsMuted: Boolean
 HybridSessionSetSoundMuteRequest.RequestId: Guid
 HybridSessionSetSoundMuteRequest.SenderId: Int32
@@ -958,7 +956,7 @@ HybridSessionStopVoiceResponse.SenderId: Int32
 ICECandidate.Candidate: String
 ICECandidate.SDPMLineIndex: Int32
 ICECandidate.SDPMid: String
-ICEParameters.ICECandidates: List<ICECandidate>
+ICEParameters.Candidates: List<ICECandidate>
 ICEParameters.Password: String
 ICEParameters.UsernameFragment: String
 Inbound.Channels: Int32
@@ -976,22 +974,22 @@ JoinSessionRequest.RequestId: Guid
 JoinSessionRequest.SenderId: Int32
 JoinSessionRequest.SessionId: Int32
 JoinSessionRequest.SessionType: SessionType
-JoinSessionResponse.Data: TransportData
 JoinSessionResponse.RequestId: Guid
 JoinSessionResponse.SenderId: Int32
 JoinSessionResponse.SessionId: Int32
 JoinSessionResponse.SessionType: SessionType
+JoinSessionResponse.TransportData: TransportData
 KickFromSessionRequest.Reason: String
 KickFromSessionRequest.RequestId: Guid
 KickFromSessionRequest.SenderId: Int32
 KickFromSessionRequest.SessionId: Int32
 KickFromSessionRequest.SessionType: SessionType
-KickFromSessionRequest.UserTargetId: Int32
+KickFromSessionRequest.TargetUserId: Int32
 KickFromSessionResponse.RequestId: Guid
 KickFromSessionResponse.SenderId: Int32
 KickFromSessionResponse.SessionId: Int32
 KickFromSessionResponse.SessionType: SessionType
-KickFromSessionResponse.UserTargetId: Int32
+KickFromSessionResponse.TargetUserId: Int32
 LeaveSessionRequest.RequestId: Guid
 LeaveSessionRequest.SenderId: Int32
 LeaveSessionRequest.SessionId: Int32
@@ -1087,12 +1085,12 @@ RejectUserRequest.RequestId: Guid
 RejectUserRequest.SenderId: Int32
 RejectUserRequest.SessionId: Int32
 RejectUserRequest.SessionType: SessionType
-RejectUserRequest.UserTargetId: Int32
+RejectUserRequest.TargetUserId: Int32
 RejectUserResponse.RequestId: Guid
 RejectUserResponse.SenderId: Int32
 RejectUserResponse.SessionId: Int32
 RejectUserResponse.SessionType: SessionType
-RejectUserResponse.UserTargetId: Int32
+RejectUserResponse.TargetUserId: Int32
 RenameSessionCategoryRequest.CategoryId: Int32
 RenameSessionCategoryRequest.Name: String
 RenameSessionCategoryRequest.RequestId: Guid
@@ -1119,12 +1117,13 @@ SFUNodeDTO.LastPingAtUtc: DateTimeOffset?
 SFUNodeDTO.Name: String
 SFUNodeDTO.PingMs: Double?
 SFUNodeDTO.Port: Int32
-SendTextMessageRequest.ChatId: Int32
-SendTextMessageRequest.MessageModel: NewChatMessageModel
-SendTextMessageRequest.RequestId: Guid
-SendTextMessageRequest.SenderId: Int32
-SendTextMessageResponse.RequestId: Guid
-SendTextMessageResponse.SenderId: Int32
+SecondStageAuthType = enum FIDO2=0, TwoFactor=1, Password=2
+SendMessageRequest.ChatId: Int32
+SendMessageRequest.Message: NewChatMessageModel
+SendMessageRequest.RequestId: Guid
+SendMessageRequest.SenderId: Int32
+SendMessageResponse.RequestId: Guid
+SendMessageResponse.SenderId: Int32
 SessionCategoryDTO.Id: Int32
 SessionCategoryDTO.Name: String
 SessionCategoryDTO.SessionIds: List<Int32>
@@ -1143,7 +1142,7 @@ SessionInfoRequest.SessionId: Int32?
 SessionInfoResponse.Layout: SessionLayoutDTO
 SessionInfoResponse.RequestId: Guid
 SessionInfoResponse.SenderId: Int32
-SessionInfoResponse.SessionsList: IDictionary<Int32, SessionDTO>
+SessionInfoResponse.Sessions: IDictionary<Int32, SessionDTO>
 SessionLayoutChangedNotification.Layout: SessionLayoutDTO
 SessionLayoutChangedNotification.SenderId: Int32
 SessionLayoutDTO.Categories: List<SessionCategoryDTO>
@@ -1158,20 +1157,18 @@ SessionPermissionOverrideDTO.RoleId: Int32
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
 TextChatUserDTO.IsAdmin: Boolean
 TextChatUserDTO.UserId: Int32
-TransportData.DTLSData: DTLSParameters
+TransportData.DTLSParameters: DTLSParameters
 TransportData.Host: String
-TransportData.ICEData: ICEParameters
+TransportData.ICEParameters: ICEParameters
 TransportData.Port: UInt16
 TwoFactorUserAuthRequest.Password: String
 TwoFactorUserAuthRequest.RequestId: Guid
 TwoFactorUserAuthRequest.SenderId: Int32
 TwoFactorUserAuthRequest.TwoFactorCode: String
-TwoFactorUserAuthResponse.AuthResult: AuthResult
 TwoFactorUserAuthResponse.RequestId: Guid
 TwoFactorUserAuthResponse.SenderId: Int32
-TwoFactorUserAuthResponse.ServerMessage: String
 TwoFactorUserAuthResponse.SessionToken: String
-TwoFactorUserAuthResponse.UserDTO: UserDTO
+TwoFactorUserAuthResponse.User: UserDTO
 UnregisterPushTokenRequest.RequestId: Guid
 UnregisterPushTokenRequest.SenderId: Int32
 UnregisterPushTokenRequest.Token: String
@@ -1184,12 +1181,12 @@ UserAuthRequest.ServerPassword: String
 UserAuthRequest.SessionToken: String
 UserAuthRequest.UserIdentity: String
 UserAuthResponse.AuthResult: AuthResult
-UserAuthResponse.FIDO2LoginOptionsDTO: FIDO2LoginOptionsDTO
+UserAuthResponse.FIDO2LoginOptions: FIDO2LoginOptionsDTO
 UserAuthResponse.RequestId: Guid
+UserAuthResponse.SecondStages: List<SecondStageAuthType>
 UserAuthResponse.SenderId: Int32
-UserAuthResponse.ServerMessage: String
 UserAuthResponse.SessionToken: String
-UserAuthResponse.UserDTO: UserDTO
+UserAuthResponse.User: UserDTO
 UserAuthResponse.UserIdentity: String
 UserDTO.AvatarUrl: String
 UserDTO.CoordinatorInstanceId: String

@@ -1,5 +1,5 @@
 namespace Shared.Models.Responses.SessionActions.Generic;
 
-public record ChangeSessionSettingsResponse(
+public record ChangeHybridSessionSettingsResponse(
     Guid RequestId,
     int SessionId) : GenericSessionResponse(RequestId);

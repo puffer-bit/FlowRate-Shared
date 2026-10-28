@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.Auth;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Auth;
 using Shared.Validation;
@@ -9,7 +8,6 @@ namespace Shared.Models.Requests.Auth;
 public record FIDO2UserAuthRequest(
     FIDO2AssertionDTO AssertionResponse) : AuthRequest
 {
-    public FIDO2UserAuthResponse ToResponse(AuthResult authResult, UserDTO? userDTO = null,
-        string? serverMessage = null, string? sessionToken = null)
-        => new(RequestId, userDTO, authResult, serverMessage, sessionToken);
+    public FIDO2UserAuthResponse ToResponse(UserDTO user, string sessionToken)
+        => new(RequestId, user, sessionToken);
 }

@@ -18,6 +18,6 @@ public record ChangeHybridSessionSettingsRequest(
     [property: Required] HybridMediaSettingsDTO Media
 ) : GenericSessionRequest
 {
-    public ChangeSessionSettingsResponse ToResponse()
+    public ChangeHybridSessionSettingsResponse ToResponse()
         => new(RequestId, SessionId);
 }

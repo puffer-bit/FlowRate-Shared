@@ -4,11 +4,11 @@ using Shared.Validation;
 
 namespace Shared.Models.Requests.SessionActions.ChatSession;
 
-public record DeleteTextMessageRequest(
+public record DeleteMessageRequest(
     [property: EntityId] int ChatId,
     [property: EntityId] int MessageId
 ) : ChatSessionRequest
 {
-    public DeleteTextMessageResponse ToResponse()
+    public DeleteMessageResponse ToResponse()
         => new(RequestId);
 }

@@ -8,7 +8,7 @@ namespace Shared.Models.Requests.SessionActions.Generic;
 public record SessionInfoRequest(
     [property: EntityId] int? SessionId) : GenericSessionRequest
 {
-    public SessionInfoResponse ToResponse(IDictionary<int, SessionDTO> sessionList,
+    public SessionInfoResponse ToResponse(IDictionary<int, SessionDTO> sessions,
         SessionLayoutDTO? layout = null)
-        => new (RequestId, sessionList, layout);
+        => new (RequestId, sessions, layout);
 }

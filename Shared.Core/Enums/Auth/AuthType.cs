@@ -17,7 +17,7 @@ public enum AuthResult
 
 public enum SecondStageAuthType
 {
-    FIDO2,
-    TwoFactor,
-    Password
+    FIDO2 = 0,
+    TwoFactor = 1,
+    Password = 2
 }
