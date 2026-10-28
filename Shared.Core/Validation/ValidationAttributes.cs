@@ -74,7 +74,7 @@ public sealed class GuidStringAttribute : ValidationAttribute
 
 /// <summary>A DTLS certificate fingerprint: colon-separated pairs of hex digits.</summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
-public sealed partial class DtlsFingerprintAttribute : ValidationAttribute
+public sealed partial class DTLSFingerprintAttribute : ValidationAttribute
 {
     [GeneratedRegex("^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2})*$")]
     private static partial Regex Pattern();

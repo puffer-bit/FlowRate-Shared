@@ -14,7 +14,6 @@ namespace Shared.Models.Requests.Auth;
 public record UserAuthRequest(
     [property: StringLength(Limits.PasswordMaxLength)] string? ServerPassword,
     [property: StringLength(Limits.UserIdentityMaxLength), NoControlCharacters] string? UserIdentity,
-    bool IsFIDO2AuthRequested = false,
     [property: StringLength(Limits.SessionTokenMaxLength), NoControlCharacters] string? SessionToken = null,
     DeviceInfoDTO? Device = null) : AuthRequest
 {

@@ -142,8 +142,8 @@ public enum ErrorCode
     // Media servers
 
     /// <summary>The SFU node failed the request.</summary>
-    SfuError = 600,
+    SFUError = 600,
 
     /// <summary>The session has no SFU node to work with.</summary>
-    SfuUnavailable = 601
+    SFUUnavailable = 601
 }

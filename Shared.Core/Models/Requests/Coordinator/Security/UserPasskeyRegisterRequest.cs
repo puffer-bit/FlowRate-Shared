@@ -11,7 +11,7 @@ namespace Shared.Models.Requests.Coordinator.Security;
 /// </summary>
 public record UserPasskeyRegisterRequest(
     [property: StringLength(Limits.PasskeyLabelMaxLength), NoControlCharacters] string? Label,
-    [property: Required, StringLength(Limits.Fido2CredentialJsonMaxLength)] string CredentialJson) : CoordinatorRequest
+    [property: Required, StringLength(Limits.FIDO2CredentialJsonMaxLength)] string CredentialJson) : CoordinatorRequest
 {
     public UserSecurityResponse ToResponse(UserSecurityDTO security)
         => new(RequestId, security);

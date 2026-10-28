@@ -9,5 +9,5 @@ public enum HybridSessionNodeState
     /// No SFU node of the pool is available. Peers stay in the session and rejoin by themselves
     /// once a node is assigned (<c>HybridSessionStateChangedNotification</c> with <see cref="Active"/>).
     /// </summary>
-    WaitingForSfuNode = 1,
+    WaitingForSFUNode = 1,
 }

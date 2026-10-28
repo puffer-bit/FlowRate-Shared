@@ -23,7 +23,12 @@ public static class ProtocolVersion
     //    UserSessionsRequest, UserSessionRevokeRequest, UserIdentityResetRequest and
     //    CoordinatorUserSessionEndedNotification; a failed request is answered with ErrorResponse and one
     //    ErrorCode instead of a Result in every response (RequestRejectedResponse and the *Result enums
-    //    removed, AuthResult keeps Success and SecondStageRequired)
+    //    removed, AuthResult keeps Success and SecondStageRequired);
+    //    the paired peer notifications (mute/unmute, afk/not afk, pause/resume, start/stop watching,
+    //    SFU node connected/disconnected) are one *Changed notification each, with a flag;
+    //    WebRtcConnectRequest, UserAuthRequest.IsFIDO2AuthRequested, HybridSessionDTO.IsHostConnected and
+    //    the unused media fields of HybridSessionCreateData removed; acronyms upper case (SFU, DTO, DTLS,
+    //    FIDO2, MOTD)
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

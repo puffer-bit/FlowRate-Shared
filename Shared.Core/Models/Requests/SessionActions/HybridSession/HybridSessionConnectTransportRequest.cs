@@ -9,7 +9,7 @@ public record HybridSessionConnectTransportRequest(
     [property: EntityId] int SessionId) : HybridSessionRequest
 {
     [Required]
-    public required DTLSParameters DtlsParameters { get; init; }
+    public required DTLSParameters DTLSParameters { get; init; }
 
     public HybridSessionConnectTransportResponse ToResponse()
         => new(RequestId);

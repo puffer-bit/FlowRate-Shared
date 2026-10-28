@@ -1,7 +1,7 @@
 namespace Shared.Enums;
 
 /// <summary>How the server's connection to one SFU node is doing.</summary>
-public enum SfuNodeConnectionState
+public enum SFUNodeConnectionState
 {
     /// <summary>The first connection is being set up.</summary>
     Connecting = 0,

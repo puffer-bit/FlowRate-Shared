@@ -151,7 +151,7 @@ public class MessageValidatorTests
         { new UserTwoFactorSetupRequest(new UserSecurityProofDTO(null, "1234567")), "TwoFactorCode" },
         { new UserTwoFactorEnableRequest("12\u00073"), "Code" },
         { new UserPasskeyRegisterRequest("bad\u0007name", "{}"), "Label" },
-        { new UserPasskeyRegisterRequest(null, new string('j', Limits.Fido2CredentialJsonMaxLength + 1)), "CredentialJson" },
+        { new UserPasskeyRegisterRequest(null, new string('j', Limits.FIDO2CredentialJsonMaxLength + 1)), "CredentialJson" },
         { new UserPasskeyDeleteRequest(null, 0), "PasskeyId" },
         { new CoordinatorUserInfoRequest(Enumerable.Range(1, Limits.UserIdsMaxCount + 1).ToList()), "UserIds" },
         { new CoordinatorUserInfoRequest([]), "UserIds" },
@@ -172,7 +172,6 @@ public class MessageValidatorTests
         { new CreateSessionRequest(new CreateSessionModel("Room", 0, new ChatSessionCreateData())), "Capacity" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(IconPath: "file:///etc/passwd"))), "IconPath" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData((WebRTCEngine)99))), "EngineType" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, VideoBitrate: 1_000_000))), "VideoBitrate" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.AV1 }))), "CameraCodec" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { AudioCodec = WebRTCAudioCodecs.G711 }))), "AudioCodec" },
         { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { OpusPacketLossPercent = 101 }), "OpusPacketLossPercent" },
@@ -228,7 +227,7 @@ public class MessageValidatorTests
     }
 
     private static HybridSessionConnectTransportRequest ConnectTransport(DTLSFingerprint fingerprint) =>
-        new(1) { DtlsParameters = new DTLSParameters { Role = "client", Fingerprints = [fingerprint] } };
+        new(1) { DTLSParameters = new DTLSParameters { Role = "client", Fingerprints = [fingerprint] } };
 
     private static void CollectUnbounded(Type type, string path, List<string> unbounded, HashSet<Type> visited)
     {

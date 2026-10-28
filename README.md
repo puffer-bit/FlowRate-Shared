@@ -13,12 +13,10 @@ The client includes this repository as the `src/Shared` submodule.
 |---------|----------|
 | `Shared.Core` | Messages, DTOs, enums, the JSON context, validation and the protocol version |
 | `Shared.Tests` | Checks the message registrations, the validation rules and the schema snapshot |
-| `Shared.Parsers` | Empty for now; the client still references it |
-| `Shared.Tools` | Only the obsolete `SdpParser`. The client builds its SDP itself (`Client.GStreamer.Services.Sdp.SdpBuilder`) |
 
-`Shared.sln` contains Core, Parsers and Tests. Shared.Tools is only in the client solution.
+`Shared.sln` contains Core and Tests.
 
-All projects target `net10.0`. The libraries set `IsAotCompatible`: nothing in them uses
+All projects target `net10.0`. The library sets `IsAotCompatible`: nothing in them uses
 reflection at run time, so the client can be published with NativeAOT.
 
 ## Layout of Shared.Core
@@ -26,7 +24,7 @@ reflection at run time, so the client can be published with NativeAOT.
 | Folder | Role |
 |--------|------|
 | `Models/BaseMessage.cs` | Root of every message; holds the `$type` registrations of all of them |
-| `Models/Requests`, `Models/Responses`, `Models/Notifications` | The messages, grouped by area: `Auth`, `Coordinator`, `Heartbeat`, `SessionActions` (`Generic`, `ChatSession`, `HybridSession`), `WebRTC` |
+| `Models/Requests`, `Models/Responses`, `Models/Notifications` | The messages, grouped by area: `Auth`, `Coordinator`, `Heartbeat`, `SessionActions` (`Generic`, `ChatSession`, `HybridSession`) |
 | `Models/DataTransferObjects` | Objects that messages carry: users, roles, sessions, chat messages and their content |
 | `Models/Media` | The HTTP media endpoints, tus upload metadata, and the ICE/DTLS transport data of the SFU |
 | `Models/Push` | The HTTP push endpoints and their request bodies |
