@@ -145,10 +145,12 @@ BaseMessage <- "HybridSessionPeerResumedVideoShareNotification": HybridSessionPe
 BaseMessage <- "HybridSessionPeerStartedScreenShareNotification": HybridSessionPeerStartedScreenShareNotification
 BaseMessage <- "HybridSessionPeerStartedVideoShareNotification": HybridSessionPeerStartedVideoShareNotification
 BaseMessage <- "HybridSessionPeerStartedVoiceShareNotification": HybridSessionPeerStartedVoiceShareNotification
+BaseMessage <- "HybridSessionPeerStartedWatchingScreenShareNotification": HybridSessionPeerStartedWatchingScreenShareNotification
 BaseMessage <- "HybridSessionPeerStateChangedNotification": HybridSessionPeerStateChangedNotification
 BaseMessage <- "HybridSessionPeerStoppedScreenShareNotification": HybridSessionPeerStoppedScreenShareNotification
 BaseMessage <- "HybridSessionPeerStoppedVideoShareNotification": HybridSessionPeerStoppedVideoShareNotification
 BaseMessage <- "HybridSessionPeerStoppedVoiceShareNotification": HybridSessionPeerStoppedVoiceShareNotification
+BaseMessage <- "HybridSessionPeerStoppedWatchingScreenShareNotification": HybridSessionPeerStoppedWatchingScreenShareNotification
 BaseMessage <- "HybridSessionPeerUnmuteMicrophoneNotification": HybridSessionPeerUnmuteMicrophoneNotification
 BaseMessage <- "HybridSessionPeerUnmuteSoundNotification": HybridSessionPeerUnmuteSoundNotification
 BaseMessage <- "HybridSessionPeerUnmutedScreenShareSoundNotification": HybridSessionPeerUnmutedScreenShareSoundNotification
@@ -882,6 +884,10 @@ HybridSessionPeerStartedVoiceShareNotification.Inbound: Inbound
 HybridSessionPeerStartedVoiceShareNotification.SenderId: Int32
 HybridSessionPeerStartedVoiceShareNotification.SessionId: Int32
 HybridSessionPeerStartedVoiceShareNotification.UserId: Int32
+HybridSessionPeerStartedWatchingScreenShareNotification.SenderId: Int32
+HybridSessionPeerStartedWatchingScreenShareNotification.SessionId: Int32
+HybridSessionPeerStartedWatchingScreenShareNotification.SharerUserId: Int32
+HybridSessionPeerStartedWatchingScreenShareNotification.UserId: Int32
 HybridSessionPeerState = enum New=0, WaitingForApprove=1, Connecting=3, WaitingForServer=4, Connected=5, Closed=6
 HybridSessionPeerStateChangedNotification.SenderId: Int32
 HybridSessionPeerStateChangedNotification.SessionId: Int32
@@ -899,6 +905,10 @@ HybridSessionPeerStoppedVoiceShareNotification.InitiatorUserId: Int32?
 HybridSessionPeerStoppedVoiceShareNotification.SenderId: Int32
 HybridSessionPeerStoppedVoiceShareNotification.SessionId: Int32
 HybridSessionPeerStoppedVoiceShareNotification.UserId: Int32
+HybridSessionPeerStoppedWatchingScreenShareNotification.SenderId: Int32
+HybridSessionPeerStoppedWatchingScreenShareNotification.SessionId: Int32
+HybridSessionPeerStoppedWatchingScreenShareNotification.SharerUserId: Int32
+HybridSessionPeerStoppedWatchingScreenShareNotification.UserId: Int32
 HybridSessionPeerUnmuteMicrophoneNotification.InitiatorUserId: Int32?
 HybridSessionPeerUnmuteMicrophoneNotification.SenderId: Int32
 HybridSessionPeerUnmuteMicrophoneNotification.SessionId: Int32
@@ -1146,6 +1156,7 @@ PeerDTO.IsVideoShareActive: Boolean
 PeerDTO.Outbounds: Dictionary<String, Outbound>
 PeerDTO.State: HybridSessionPeerState
 PeerDTO.UserId: Int32
+PeerDTO.WatchedScreenShares: List<Int32>
 PeerListRequestResult = enum NoError=0, SessionNotExists=1, SessionIsNotHybrid=2, Rejected=3, InternalError=-1
 Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, All=262143
 PokeResult = enum NoError=0, InsufficientPermissions=1, SessionNotExists=2, PeerNotExists=3, TimedOut=4, Rejected=5, CannotPokeSelf=6, InternalError=-1

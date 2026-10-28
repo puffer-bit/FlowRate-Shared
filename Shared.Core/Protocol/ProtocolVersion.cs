@@ -17,7 +17,8 @@ public static class ProtocolVersion
     //    sessions carry permission overrides; ChangeSessionPermissionsRequest; STUN/TURN fields removed;
     //    coordinator settings carry upload and rate limits; HybridSessionSetAfkRequest, HybridSessionPokeRequest
     //    and the PokeMembers permission; the User* security requests (password, one-time codes and
-    //    passkeys of the sender)
+    //    passkeys of the sender); Outbound.TransportCcExtensionId; the watching screen share notifications
+    //    and PeerDTO.WatchedScreenShares
     public const int Current = 2;
 
     /// <summary>The oldest client version the server still serves.</summary>

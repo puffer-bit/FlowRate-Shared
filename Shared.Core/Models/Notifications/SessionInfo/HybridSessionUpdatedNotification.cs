@@ -71,6 +71,17 @@ public record HybridSessionPeerUnmutedScreenShareSoundNotification(int SessionId
 public record HybridSessionPeerResumedScreenShareNotification(int SessionId, int UserId)
     : HybridSessionUpdatedNotification;
 
+/// <summary>The peer <paramref name="UserId"/> started watching the screen share of <paramref name="SharerUserId"/>.</summary>
+public record HybridSessionPeerStartedWatchingScreenShareNotification(int SessionId, int UserId, int SharerUserId)
+    : HybridSessionUpdatedNotification;
+
+/// <summary>
+/// The peer <paramref name="UserId"/> no longer watches the screen share of <paramref name="SharerUserId"/>: it stopped
+/// watching, the share stopped or the sharer lost its media. Not sent for a peer that left the session.
+/// </summary>
+public record HybridSessionPeerStoppedWatchingScreenShareNotification(int SessionId, int UserId, int SharerUserId)
+    : HybridSessionUpdatedNotification;
+
 
 public record HybridSessionPeerStartedVideoShareNotification(int SessionId, int UserId, Inbound Inbound)
     : HybridSessionUpdatedNotification;
