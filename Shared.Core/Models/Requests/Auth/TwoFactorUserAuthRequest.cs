@@ -11,6 +11,6 @@ public record TwoFactorUserAuthRequest(
     [property: StringLength(Limits.TwoFactorMaxLength), NoControlCharacters] string? TwoFactorCode) : AuthRequest
 {
     public TwoFactorUserAuthResponse ToResponse(AuthResult authResult, UserDTO? userDTO = null,
-        string? serverMessage = null)
-        => new(RequestId, userDTO, authResult, serverMessage);
+        string? serverMessage = null, string? sessionToken = null)
+        => new(RequestId, userDTO, authResult, serverMessage, sessionToken);
 }

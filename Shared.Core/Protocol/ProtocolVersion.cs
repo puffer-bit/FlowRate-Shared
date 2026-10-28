@@ -19,10 +19,13 @@ public static class ProtocolVersion
     //    and the PokeMembers permission; the User* security requests (password, one-time codes and
     //    passkeys of the sender); Outbound.TransportCcExtensionId; the watching screen share notifications
     //    and PeerDTO.WatchedScreenShares
-    public const int Current = 2;
+    // 3: device sessions: UserAuthRequest.SessionToken and Device, SessionToken in the auth responses;
+    //    UserSessionsRequest, UserSessionRevokeRequest, UserIdentityResetRequest and
+    //    CoordinatorUserSessionEndedNotification
+    public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>
-    public const int MinSupported = 2;
+    public const int MinSupported = 3;
 
     /// <summary>
     /// Request header with the client version. The server answers a version it does not serve with

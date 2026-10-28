@@ -1,4 +1,4 @@
-version 2
+version 3
 AddMessageResult = enum NoError=0, SameMessageAlreadyExist=1, ChatNotExists=2, TimedOut=3, InvalidResponse=4, WrongResponse=5, ReplyTargetNotExists=6, Rejected=7, AttachmentsNotAllowed=8, AttachmentNotReady=9, AttachmentInvalid=10, InternalError=-1
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
@@ -96,6 +96,7 @@ BaseMessage <- "CoordinatorUserListUpdatedNotification": CoordinatorUserListUpda
 BaseMessage <- "CoordinatorUserRolesResponse": CoordinatorUserRolesResponse
 BaseMessage <- "CoordinatorUserSearchRequest": CoordinatorUserSearchRequest
 BaseMessage <- "CoordinatorUserSearchResponse": CoordinatorUserSearchResponse
+BaseMessage <- "CoordinatorUserSessionEndedNotification": CoordinatorUserSessionEndedNotification
 BaseMessage <- "CoordinatorUserUpdatedNotification": CoordinatorUserUpdatedNotification
 BaseMessage <- "CreateSessionCategoryRequest": CreateSessionCategoryRequest
 BaseMessage <- "CreateSessionRequest": CreateSessionRequest
@@ -214,12 +215,17 @@ BaseMessage <- "UnregisterPushTokenRequest": UnregisterPushTokenRequest
 BaseMessage <- "UnregisterPushTokenResponse": UnregisterPushTokenResponse
 BaseMessage <- "UserAuthRequest": UserAuthRequest
 BaseMessage <- "UserAuthResponse": UserAuthResponse
+BaseMessage <- "UserIdentityResetRequest": UserIdentityResetRequest
+BaseMessage <- "UserIdentityResetResponse": UserIdentityResetResponse
 BaseMessage <- "UserPasskeyDeleteRequest": UserPasskeyDeleteRequest
 BaseMessage <- "UserPasskeyOptionsRequest": UserPasskeyOptionsRequest
 BaseMessage <- "UserPasskeyOptionsResponse": UserPasskeyOptionsResponse
 BaseMessage <- "UserPasskeyRegisterRequest": UserPasskeyRegisterRequest
 BaseMessage <- "UserSecurityInfoRequest": UserSecurityInfoRequest
 BaseMessage <- "UserSecurityResponse": UserSecurityResponse
+BaseMessage <- "UserSessionRevokeRequest": UserSessionRevokeRequest
+BaseMessage <- "UserSessionsRequest": UserSessionsRequest
+BaseMessage <- "UserSessionsResponse": UserSessionsResponse
 BaseMessage <- "UserSetPasswordRequest": UserSetPasswordRequest
 BaseMessage <- "UserTwoFactorDisableRequest": UserTwoFactorDisableRequest
 BaseMessage <- "UserTwoFactorEnableRequest": UserTwoFactorEnableRequest
@@ -637,6 +643,8 @@ CoordinatorUserSearchResponse.RequestId: Guid
 CoordinatorUserSearchResponse.Result: UsersRequestResult
 CoordinatorUserSearchResponse.SenderId: Int32
 CoordinatorUserSearchResponse.Users: List<UserDTO>
+CoordinatorUserSessionEndedNotification.Reason: UserSessionEndReason
+CoordinatorUserSessionEndedNotification.SenderId: Int32
 CoordinatorUserUpdatedNotification.SenderId: Int32
 CoordinatorUserUpdatedNotification.User: UserDTO
 CreateSessionCategoryRequest.Name: String
@@ -679,6 +687,9 @@ DeleteTextMessageRequest.SenderId: Int32
 DeleteTextMessageResponse.RequestId: Guid
 DeleteTextMessageResponse.Result: DeleteMessageResult
 DeleteTextMessageResponse.SenderId: Int32
+DeviceInfoDTO.AppVersion: String
+DeviceInfoDTO.Name: String
+DeviceInfoDTO.Platform: String
 EditMessageResponse.RequestId: Guid
 EditMessageResponse.Result: EditMessageResult
 EditMessageResponse.SenderId: Int32
@@ -707,6 +718,7 @@ FIDO2UserAuthResponse.AuthResult: AuthResult
 FIDO2UserAuthResponse.RequestId: Guid
 FIDO2UserAuthResponse.SenderId: Int32
 FIDO2UserAuthResponse.ServerMessage: String
+FIDO2UserAuthResponse.SessionToken: String
 FIDO2UserAuthResponse.UserDTO: UserDTO
 FetchMessageResult = enum NoError=0, UnexpectedError=1, ChatNotExists=2, InvalidResponse=3, MessageNotExists=4, TimedOut=5, WrongResponse=6, Rejected=7, InternalError=-1
 FetchMessagesResult = enum NoError=0, UnexpectedError=1, ChatNotExists=2, InvalidResponse=3, TimedOut=4, WrongResponse=5, Rejected=6, InternalError=-1
@@ -1289,6 +1301,7 @@ TwoFactorUserAuthResponse.AuthResult: AuthResult
 TwoFactorUserAuthResponse.RequestId: Guid
 TwoFactorUserAuthResponse.SenderId: Int32
 TwoFactorUserAuthResponse.ServerMessage: String
+TwoFactorUserAuthResponse.SessionToken: String
 TwoFactorUserAuthResponse.UserDTO: UserDTO
 UnregisterPushTokenRequest.RequestId: Guid
 UnregisterPushTokenRequest.SenderId: Int32
@@ -1296,16 +1309,19 @@ UnregisterPushTokenRequest.Token: String
 UnregisterPushTokenResponse.RequestId: Guid
 UnregisterPushTokenResponse.Result: PushTokenResult
 UnregisterPushTokenResponse.SenderId: Int32
+UserAuthRequest.Device: DeviceInfoDTO
 UserAuthRequest.IsFIDO2AuthRequested: Boolean
 UserAuthRequest.RequestId: Guid
 UserAuthRequest.SenderId: Int32
 UserAuthRequest.ServerPassword: String
+UserAuthRequest.SessionToken: String
 UserAuthRequest.UserIdentity: String
 UserAuthResponse.AuthResult: AuthResult
 UserAuthResponse.FIDO2LoginOptionsDTO: FIDO2LoginOptionsDTO
 UserAuthResponse.RequestId: Guid
 UserAuthResponse.SenderId: Int32
 UserAuthResponse.ServerMessage: String
+UserAuthResponse.SessionToken: String
 UserAuthResponse.UserDTO: UserDTO
 UserAuthResponse.UserIdentity: String
 UserDTO.AvatarUrl: String
@@ -1322,6 +1338,13 @@ UserDTO.RoleIds: List<Int32>
 UserDTO.State: UserState
 UserDTO.Status: UserStatus
 UserDTO.Username: String
+UserIdentityResetRequest.Proof: UserSecurityProofDTO
+UserIdentityResetRequest.RequestId: Guid
+UserIdentityResetRequest.SenderId: Int32
+UserIdentityResetResponse.RequestId: Guid
+UserIdentityResetResponse.Result: UserSecurityResult
+UserIdentityResetResponse.SenderId: Int32
+UserIdentityResetResponse.UserIdentity: String
 UserPasskeyDTO.CreatedAtUtc: DateTime
 UserPasskeyDTO.Id: Int32
 UserPasskeyDTO.Label: String
@@ -1354,7 +1377,25 @@ UserSecurityResponse.RequestId: Guid
 UserSecurityResponse.Result: UserSecurityResult
 UserSecurityResponse.Security: UserSecurityDTO
 UserSecurityResponse.SenderId: Int32
-UserSecurityResult = enum NoError=0, ProofRequired=1, InvalidValue=2, Refused=3, PasskeysUnavailable=4, PasskeyNotFound=5, InternalError=-1
+UserSecurityResult = enum NoError=0, ProofRequired=1, InvalidValue=2, Refused=3, PasskeysUnavailable=4, PasskeyNotFound=5, SessionNotFound=6, InternalError=-1
+UserSessionDTO.CreatedAtUtc: DateTime
+UserSessionDTO.Device: DeviceInfoDTO
+UserSessionDTO.ExpiresAtUtc: DateTime
+UserSessionDTO.Id: Guid
+UserSessionDTO.IsCurrent: Boolean
+UserSessionDTO.IsOnline: Boolean
+UserSessionDTO.LastAddress: String
+UserSessionDTO.LastUsedAtUtc: DateTime
+UserSessionEndReason = enum Revoked=0, IdentityReset=1
+UserSessionRevokeRequest.RequestId: Guid
+UserSessionRevokeRequest.SenderId: Int32
+UserSessionRevokeRequest.SessionId: Guid?
+UserSessionsRequest.RequestId: Guid
+UserSessionsRequest.SenderId: Int32
+UserSessionsResponse.RequestId: Guid
+UserSessionsResponse.Result: UserSecurityResult
+UserSessionsResponse.SenderId: Int32
+UserSessionsResponse.Sessions: List<UserSessionDTO>
 UserSetPasswordRequest.NewPassword: String
 UserSetPasswordRequest.Proof: UserSecurityProofDTO
 UserSetPasswordRequest.RequestId: Guid

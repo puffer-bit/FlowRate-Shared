@@ -18,5 +18,7 @@ public enum UserSecurityResult
     /// <summary>Passkeys are not set up on this server.</summary>
     PasskeysUnavailable = 4,
 
-    PasskeyNotFound = 5
+    PasskeyNotFound = 5,
+
+    SessionNotFound = 6
 }

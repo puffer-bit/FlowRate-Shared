@@ -8,6 +8,11 @@ public static class Limits
 {
     public const int UserIdentityMaxLength = 37;
     public const int PasswordMaxLength = 128;
+    /// <summary>A session token: 32 random bytes, base64url.</summary>
+    public const int SessionTokenMaxLength = 64;
+    public const int DeviceNameMaxLength = 64;
+    public const int DevicePlatformMaxLength = 32;
+    public const int AppVersionMaxLength = 32;
     public const int TwoFactorMaxLength = 6;
     public const int Fido2FieldMaxLength = 4096;
     public const int Fido2UserHandleMaxLength = 128;
