@@ -9,7 +9,7 @@ public record ChatSessionCreateData(
     [property: StringLength(Limits.UrlMaxLength), HttpsUrl] string? IconPath = null,
     bool IsEncrypted = false,
     bool IsAttachmentsAllowed = true,
-    bool IsVoiceMessageAllowed = true,
+    bool IsVoiceMessagesAllowed = true,
     bool IsVideoMessagesAllowed = true,
     bool IsDelayedMessagesAllowed = true
 ) : CreateSessionData

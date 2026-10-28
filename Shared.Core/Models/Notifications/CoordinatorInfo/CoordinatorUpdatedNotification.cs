@@ -5,5 +5,5 @@ namespace Shared.Models.Notifications.CoordinatorInfo;
 
 public abstract record CoordinatorUpdatedNotification : Notification;
 
-public record CoordinatorReconfiguredNotification(CoordinatorSessionDTO CoordinatorSessionDTO)
+public record CoordinatorReconfiguredNotification(CoordinatorSessionDTO Coordinator)
     : CoordinatorUpdatedNotification;

@@ -61,7 +61,7 @@ client                                          coordinator
 Each WebSocket text message is one JSON object, a `BaseMessage`:
 
 ```json
-{"$type":"KickFromSessionRequest","SessionId":1,"UserTargetId":2,"SessionType":2,"Reason":"spam","RequestId":"bc52bace-965d-4ee8-afa6-0b7164708bb6","SenderId":0}
+{"$type":"KickFromSessionRequest","SessionId":1,"TargetUserId":2,"SessionType":2,"Reason":"spam","RequestId":"bc52bace-965d-4ee8-afa6-0b7164708bb6","SenderId":0}
 ```
 
 | Rule | Detail |
@@ -95,11 +95,10 @@ There are three kinds of message:
 
 Each request has exactly one response type. In most cases it is named the same with `Response`
 instead of `Request`, and the request has a `ToResponse(...)` method that builds it. The server
-uses that method, so the `RequestId` is always copied. Exceptions to the naming:
-`EditTextMessageRequest` → `EditMessageResponse`, `ChangeHybridSessionSettingsRequest` →
-`ChangeSessionSettingsResponse`. Requests that change one role are answered with
-`CoordinatorRoleResponse`; assigning and unassigning a role are answered with
-`CoordinatorUserRolesResponse`.
+uses that method, and `ToError(...)` for a failure, so the `RequestId` is always copied. Exceptions
+to the naming: requests that change one role are answered with `CoordinatorRoleResponse`, assigning
+and unassigning a role with `CoordinatorUserRolesResponse`, and `UserAuthRequest` also with
+`ToSecondStageResponse(...)`.
 
 A response is sent on success only and carries what the request asked for, without a result
 code. A request that fails is answered with an `ErrorResponse` instead, with the same `RequestId`:
@@ -169,9 +168,8 @@ that receives a track does not read the session settings itself.
 ## Logging in and account security
 
 A user who has a password, one-time codes (TOTP) or passkeys is answered `SecondStageRequired` to
-`UserAuthRequest`. `ServerMessage` then lists what the user can prove as names of
-`SecondStageAuthType`, comma separated (`Password,TwoFactor,FIDO2`), and `FIDO2LoginOptionsDTO` is set
-when the user has passkeys. The client finishes with either
+`UserAuthRequest`. `SecondStages` then lists what the user can prove (`SecondStageAuthType`), and
+`FIDO2LoginOptions` is set when the user has passkeys. The client finishes with either
 
 - `TwoFactorUserAuthRequest`: the password and the code, each when the user has it, or
 - `FIDO2UserAuthRequest`: a passkey assertion. A passkey alone is enough.

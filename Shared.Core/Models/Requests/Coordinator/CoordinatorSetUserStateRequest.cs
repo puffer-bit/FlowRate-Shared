@@ -11,9 +11,9 @@ namespace Shared.Models.Requests.Coordinator;
 /// but not write, join voice or change anything.
 /// </summary>
 public record CoordinatorSetUserStateRequest(
-    [property: EntityId] int UserTargetId,
+    [property: EntityId] int TargetUserId,
     [property: DefinedEnum] UserState State) : CoordinatorRequest
 {
     public CoordinatorSetUserStateResponse ToResponse(UserDTO user)
-        => new(RequestId, UserTargetId, user);
+        => new(RequestId, TargetUserId, user);
 }

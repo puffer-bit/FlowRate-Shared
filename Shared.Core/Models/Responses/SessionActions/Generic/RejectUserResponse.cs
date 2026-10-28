@@ -5,5 +5,5 @@ namespace Shared.Models.Responses.SessionActions.Generic;
 public record RejectUserResponse(
     Guid RequestId,
     int SessionId,
-    int UserTargetId,
+    int TargetUserId,
     SessionType SessionType) : GenericSessionResponse(RequestId);

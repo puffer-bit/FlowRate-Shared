@@ -8,6 +8,6 @@ namespace Shared.Models.Requests.Coordinator;
 public record CoordinatorUserInfoRequest(
     [property: Required, ItemCount(1, Limits.UserIdsMaxCount)] IList<int> UserIds) : CoordinatorRequest
 {
-    public CoordinatorUserInfoResponse ToResponse(IDictionary<int, UserDTO> userList)
-        => new(RequestId, userList);
+    public CoordinatorUserInfoResponse ToResponse(IDictionary<int, UserDTO> users)
+        => new(RequestId, users);
 }

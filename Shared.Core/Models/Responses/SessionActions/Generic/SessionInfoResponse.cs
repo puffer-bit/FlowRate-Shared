@@ -4,5 +4,5 @@ namespace Shared.Models.Responses.SessionActions.Generic;
 
 public record SessionInfoResponse(
     Guid RequestId,
-    IDictionary<int, SessionDTO> SessionsList,
+    IDictionary<int, SessionDTO> Sessions,
     SessionLayoutDTO? Layout = null) : GenericSessionResponse(RequestId);

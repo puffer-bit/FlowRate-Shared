@@ -5,9 +5,9 @@ namespace Shared.Models.Requests.Coordinator;
 
 /// <summary>Takes a role from a user. Taking a role the user does not have changes nothing.</summary>
 public record CoordinatorUnassignRoleRequest(
-    [property: EntityId] int UserTargetId,
+    [property: EntityId] int TargetUserId,
     [property: EntityId] int RoleId) : CoordinatorRequest
 {
     public CoordinatorUserRolesResponse ToResponse(IList<int> roleIds)
-        => new(RequestId, UserTargetId, roleIds);
+        => new(RequestId, TargetUserId, roleIds);
 }

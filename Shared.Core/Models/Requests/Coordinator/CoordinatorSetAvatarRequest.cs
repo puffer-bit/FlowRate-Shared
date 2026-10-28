@@ -14,7 +14,7 @@ namespace Shared.Models.Requests.Coordinator;
 /// </param>
 public record CoordinatorSetAvatarRequest(
     [property: StringLength(Limits.MediaUploadIdLength * 2), HexBytes(Limits.MediaUploadIdLength)] string? UploadId,
-    int? UserId = null) : CoordinatorRequest
+    int? TargetUserId = null) : CoordinatorRequest
 {
     public CoordinatorSetAvatarResponse ToResponse(UserDTO user)
         => new(RequestId, user);

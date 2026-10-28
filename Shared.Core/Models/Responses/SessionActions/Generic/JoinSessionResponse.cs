@@ -7,4 +7,4 @@ public record JoinSessionResponse(
     Guid RequestId,
     int SessionId,
     SessionType SessionType,
-    TransportData? Data) : GenericSessionResponse(RequestId);
+    TransportData? TransportData) : GenericSessionResponse(RequestId);

@@ -7,11 +7,11 @@ namespace Shared.Models.Requests.SessionActions.Generic;
 
 public record BanInSessionRequest(
     [property: EntityId] int SessionId,
-    [property: EntityId] int UserTargetId,
+    [property: EntityId] int TargetUserId,
     [property: DefinedEnum] SessionType SessionType,
     [property: StringLength(Limits.ReasonMaxLength), NoControlCharacters] string? Reason
 ) : GenericSessionRequest
 {
     public BanInSessionResponse ToResponse()
-        => new(RequestId, SessionId, UserTargetId, SessionType);
+        => new(RequestId, SessionId, TargetUserId, SessionType);
 }

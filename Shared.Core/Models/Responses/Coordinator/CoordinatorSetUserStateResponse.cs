@@ -5,5 +5,5 @@ namespace Shared.Models.Responses.Coordinator;
 /// <param name="User">The user as they are now, when the state was set.</param>
 public record CoordinatorSetUserStateResponse(
     Guid RequestId,
-    int UserTargetId,
+    int TargetUserId,
     UserDTO User) : CoordinatorResponse(RequestId);
