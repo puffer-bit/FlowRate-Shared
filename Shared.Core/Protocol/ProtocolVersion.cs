@@ -32,7 +32,8 @@ public static class ProtocolVersion
     //    SharerUserId, TransportData, Candidates, Message) and Send/Edit/DeleteMessage*,
     //    ChangeHybridSessionSettingsResponse; UserAuthResponse.SecondStages instead of ServerMessage, the
     //    second-stage responses carry the user and the token only
-    // 4: ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification.
+    // 4: ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification;
+    //    opt-in ChatViewersRequest/Response and per-subscription audience diffs.
     public const int Current = 4;
 
     /// <summary>The oldest client version the server still serves.</summary>

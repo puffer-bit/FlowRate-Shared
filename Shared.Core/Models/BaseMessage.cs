@@ -22,6 +22,10 @@ namespace Shared.Models;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
 
+[JsonDerivedType(typeof(ChatViewersRequest), typeDiscriminator: nameof(ChatViewersRequest))]
+[JsonDerivedType(typeof(ChatViewersResponse), typeDiscriminator: nameof(ChatViewersResponse))]
+[JsonDerivedType(typeof(ChatViewersChangedNotification), typeDiscriminator: nameof(ChatViewersChangedNotification))]
+
 // Notifications
 
 [JsonDerivedType(typeof(CoordinatorUserListUpdatedNotification), typeDiscriminator: nameof(CoordinatorUserListUpdatedNotification))]

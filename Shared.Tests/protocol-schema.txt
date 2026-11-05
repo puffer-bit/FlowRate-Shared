@@ -51,6 +51,9 @@ BaseMessage <- "ChatSessionReconfiguredNotification": ChatSessionReconfiguredNot
 BaseMessage <- "ChatSessionUserTypingNotification": ChatSessionUserTypingNotification
 BaseMessage <- "ChatTypingRequest": ChatTypingRequest
 BaseMessage <- "ChatTypingResponse": ChatTypingResponse
+BaseMessage <- "ChatViewersChangedNotification": ChatViewersChangedNotification
+BaseMessage <- "ChatViewersRequest": ChatViewersRequest
+BaseMessage <- "ChatViewersResponse": ChatViewersResponse
 BaseMessage <- "CoordinatorAssignRoleRequest": CoordinatorAssignRoleRequest
 BaseMessage <- "CoordinatorChangeUsernameRequest": CoordinatorChangeUsernameRequest
 BaseMessage <- "CoordinatorChangeUsernameResponse": CoordinatorChangeUsernameResponse
@@ -405,6 +408,19 @@ ChatVideoContentDTO.Size: Int64
 ChatVideoContentDTO.Thumbnail: String
 ChatVideoContentDTO.Type: ChatContentType
 ChatVideoContentDTO.Width: Int32
+ChatViewersChangedNotification.ChatId: Int32
+ChatViewersChangedNotification.Removed: List<Int32>
+ChatViewersChangedNotification.SenderId: Int32
+ChatViewersChangedNotification.SubscriptionId: Guid
+ChatViewersChangedNotification.Upserted: List<UserDTO>
+ChatViewersRequest.ChatId: Int32
+ChatViewersRequest.RequestId: Guid
+ChatViewersRequest.SenderId: Int32
+ChatViewersRequest.Subscribe: Boolean
+ChatViewersRequest.SubscriptionId: Guid
+ChatViewersResponse.RequestId: Guid
+ChatViewersResponse.SenderId: Int32
+ChatViewersResponse.Users: List<UserDTO>
 CoordinatorAssignRoleRequest.RequestId: Guid
 CoordinatorAssignRoleRequest.RoleId: Int32
 CoordinatorAssignRoleRequest.SenderId: Int32
