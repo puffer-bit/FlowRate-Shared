@@ -1,4 +1,4 @@
-version 3
+version 4
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
 ApproveUserRequest.SessionId: Int32
@@ -49,6 +49,8 @@ BaseMessage <- "ChatSessionMessageRequest": ChatSessionMessageRequest
 BaseMessage <- "ChatSessionMessageResponse": ChatSessionMessageResponse
 BaseMessage <- "ChatSessionReconfiguredNotification": ChatSessionReconfiguredNotification
 BaseMessage <- "ChatSessionUserTypingNotification": ChatSessionUserTypingNotification
+BaseMessage <- "ChatTypingRequest": ChatTypingRequest
+BaseMessage <- "ChatTypingResponse": ChatTypingResponse
 BaseMessage <- "CoordinatorAssignRoleRequest": CoordinatorAssignRoleRequest
 BaseMessage <- "CoordinatorChangeUsernameRequest": CoordinatorChangeUsernameRequest
 BaseMessage <- "CoordinatorChangeUsernameResponse": CoordinatorChangeUsernameResponse
@@ -382,10 +384,17 @@ ChatSessionMessageResponse.SenderId: Int32
 ChatSessionReconfiguredNotification.SenderId: Int32
 ChatSessionReconfiguredNotification.Session: ChatSessionDTO
 ChatSessionUserTypingNotification.ChatId: Int32
+ChatSessionUserTypingNotification.IsTyping: Boolean
 ChatSessionUserTypingNotification.SenderId: Int32
 ChatSessionUserTypingNotification.UserId: Int32
 ChatTextContentDTO.Text: String
 ChatTextContentDTO.Type: ChatContentType
+ChatTypingRequest.ChatId: Int32
+ChatTypingRequest.IsTyping: Boolean
+ChatTypingRequest.RequestId: Guid
+ChatTypingRequest.SenderId: Int32
+ChatTypingResponse.RequestId: Guid
+ChatTypingResponse.SenderId: Int32
 ChatVideoContentDTO.Description: String
 ChatVideoContentDTO.Duration: TimeSpan
 ChatVideoContentDTO.FileName: String
