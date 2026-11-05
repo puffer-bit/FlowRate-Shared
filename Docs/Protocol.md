@@ -346,3 +346,19 @@ pulse at most once every two seconds while the input changes, then send false af
 without changes, when the input is cleared, or when closing the chat. Switching chat views does not stop or renew activity. Receivers also expire activity
 five seconds after the last pulse, clear it on an incoming message from that author, and ignore
 activity from their own user (including other devices). Protocol version 4 requires both sides updated.
+
+## Message reactions
+
+`SetMessageReactionRequest(ChatId, MessageId, Emoji, IsAdded)` sets or removes the authenticated
+sender's reaction and is acknowledged by `SetMessageReactionResponse`. The reaction palette is
+`ChatReactionEmoji.All`. The sender needs ViewSessions and SendMessages in that chat. Archived
+and read-only chats and system, deleted or read-only messages reject changes. Repeating the same
+state does not write a revision or broadcast another update. A user can react with multiple emoji.
+
+Changes persist in the existing reaction rows, advance the chat revision and broadcast the existing
+`ChatSessionMessageEditedNotification` with the full message. They do not alter the text or EditTime.
+History and incremental synchronization include reactions as before; no database migration is needed.
+
+The protocol version is intentionally unchanged for this extension. Updated clients and servers are
+required to set reactions. Older clients can still read messages and existing update notifications
+from updated servers; older servers do not support the new request.
