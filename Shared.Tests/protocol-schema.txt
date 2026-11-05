@@ -297,6 +297,7 @@ ChatReadStatesRequest.SenderId: Int32
 ChatReadStatesResponse.RequestId: Guid
 ChatReadStatesResponse.SenderId: Int32
 ChatReadStatesResponse.States: List<ChatReadStateDTO>
+ChatReplyContentDTO.HasAttachments: Boolean
 ChatReplyContentDTO.IsDeleted: Boolean
 ChatReplyContentDTO.MessageId: Int32
 ChatReplyContentDTO.SenderUserId: Int32?
