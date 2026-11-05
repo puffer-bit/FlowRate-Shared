@@ -6,6 +6,7 @@ public class ChatReplyContentDTO
     public int? SenderUserId { get; init; }
     public DateTime SentTime { get; init; }
     public ChatTextContentDTO? TextContent { get; init; }
+    public bool HasAttachments { get; init; }
     public bool IsDeleted { get; set; }
     public ChatContentType Type => ChatContentType.Reply;
 }
