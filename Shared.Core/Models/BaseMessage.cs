@@ -139,6 +139,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatMarkReadRequest), typeDiscriminator: nameof(ChatMarkReadRequest))]
 [JsonDerivedType(typeof(DeleteMessageRequest), typeDiscriminator: nameof(DeleteMessageRequest))]
 [JsonDerivedType(typeof(EditMessageRequest), typeDiscriminator: nameof(EditMessageRequest))]
+[JsonDerivedType(typeof(SetMessageReactionRequest), typeDiscriminator: nameof(SetMessageReactionRequest))]
 [JsonDerivedType(typeof(SendMessageRequest), typeDiscriminator: nameof(SendMessageRequest))]
 
 [JsonDerivedType(typeof(ApproveUserRequest), typeDiscriminator: nameof(ApproveUserRequest))]
@@ -216,6 +217,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatMarkReadResponse), typeDiscriminator: nameof(ChatMarkReadResponse))]
 [JsonDerivedType(typeof(DeleteMessageResponse), typeDiscriminator: nameof(DeleteMessageResponse))]
 [JsonDerivedType(typeof(EditMessageResponse), typeDiscriminator: nameof(EditMessageResponse))]
+[JsonDerivedType(typeof(SetMessageReactionResponse), typeDiscriminator: nameof(SetMessageReactionResponse))]
 [JsonDerivedType(typeof(SendMessageResponse), typeDiscriminator: nameof(SendMessageResponse))]
 
 [JsonDerivedType(typeof(ApproveUserResponse), typeDiscriminator: nameof(ApproveUserResponse))]

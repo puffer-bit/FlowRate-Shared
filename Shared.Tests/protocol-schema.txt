@@ -201,6 +201,8 @@ BaseMessage <- "SessionInfoRequest": SessionInfoRequest
 BaseMessage <- "SessionInfoResponse": SessionInfoResponse
 BaseMessage <- "SessionLayoutChangedNotification": SessionLayoutChangedNotification
 BaseMessage <- "SessionLayoutResponse": SessionLayoutResponse
+BaseMessage <- "SetMessageReactionRequest": SetMessageReactionRequest
+BaseMessage <- "SetMessageReactionResponse": SetMessageReactionResponse
 BaseMessage <- "TwoFactorUserAuthRequest": TwoFactorUserAuthRequest
 BaseMessage <- "TwoFactorUserAuthResponse": TwoFactorUserAuthResponse
 BaseMessage <- "UnregisterPushTokenRequest": UnregisterPushTokenRequest
@@ -1181,6 +1183,14 @@ SessionPermissionOverrideDTO.Allow: Permission
 SessionPermissionOverrideDTO.Deny: Permission
 SessionPermissionOverrideDTO.RoleId: Int32
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
+SetMessageReactionRequest.ChatId: Int32
+SetMessageReactionRequest.Emoji: String
+SetMessageReactionRequest.IsAdded: Boolean
+SetMessageReactionRequest.MessageId: Int32
+SetMessageReactionRequest.RequestId: Guid
+SetMessageReactionRequest.SenderId: Int32
+SetMessageReactionResponse.RequestId: Guid
+SetMessageReactionResponse.SenderId: Int32
 TextChatUserDTO.IsAdmin: Boolean
 TextChatUserDTO.UserId: Int32
 TransportData.DTLSParameters: DTLSParameters
