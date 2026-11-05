@@ -335,3 +335,14 @@ snapshot (git ignores it). Then:
 5. Run the tests and handle the schema snapshot as described in [Versioning](#versioning).
 6. Update the client submodule and implement the server side. Both must be built from the same
    Shared commit.
+
+## Typing activity
+
+`ChatTypingRequest(ChatId, IsTyping)` is acknowledged by `ChatTypingResponse`. The authenticated
+sender must be connected and have ViewSessions and SendMessages in that chat. Activity is sent
+only to users who can view the chat, as `ChatSessionUserTypingNotification(ChatId, UserId, IsTyping)`.
+It is transient: no database writes, history revisions or push notifications. Clients send an active
+pulse at most once every two seconds while the input changes, then send false after five seconds
+without changes, when the input is cleared, or when closing the chat. Switching chat views does not stop or renew activity. Receivers also expire activity
+five seconds after the last pulse, clear it on an incoming message from that author, and ignore
+activity from their own user (including other devices). Protocol version 4 requires both sides updated.
