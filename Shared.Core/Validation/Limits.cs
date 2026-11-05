@@ -30,6 +30,7 @@ public static class Limits
     public const int SessionNameMaxLength = 50;
     public const int SessionCapacityMin = 1;
     public const int SessionCapacityMax = 100;
+    public const int SessionCapacityUnlimited = -1;
     public const int SessionDescriptionMaxLength = 500;
     public const int SessionCategoryNameMaxLength = 50;
     public const int SessionCategoriesMaxCount = 50;
