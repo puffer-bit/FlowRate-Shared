@@ -138,7 +138,7 @@ response. Giving up is the client's own matter and is not an `ErrorCode`.
 | Coordinator | `Requests.Coordinator`, `Notifications.CoordinatorInfo` | Server info, users, profile, settings, roles, push tokens, media token |
 | Account security | `Requests.Coordinator.Security`, `Responses.Coordinator.Security` | The sender's password, one-time codes and passkeys |
 | Heartbeat | `Requests.Heartbeat`, `Notifications.Heartbeat` | Ping, server closing or restarting |
-| Generic sessions | `Requests.SessionActions.Generic`, `Notifications.SessionInfo` | Create, join, leave, kick, ban, approve; categories and layout |
+| Generic sessions | `Requests.SessionActions.Generic`, `Notifications.SessionInfo` | Create, join, leave, kick, approve; categories and layout |
 | Chat sessions | `Requests.SessionActions.ChatSession` | History, paging, changes since a revision, send, edit, delete, read state |
 | Hybrid sessions | `Requests.SessionActions.HybridSession` | Voice and video rooms on an SFU: transport, voice, camera, screen share, mute |
 
