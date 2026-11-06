@@ -13,6 +13,8 @@ public class ChatMessageDTO
     public DateTime? DelayedSentTime { get; set; }
     public DateTime? DisposeTime { get; set; }
     public DateTime? EditTime { get; set; }
+    public DateTime? PinnedAt { get; set; }
+    public int? PinnedByUserId { get; set; }
 
     public required ChatTextContentDTO TextContent { get; set; }
     public required ChatReplyContentDTO ReplyContent { get; init; }
