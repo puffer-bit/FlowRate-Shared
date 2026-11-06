@@ -26,6 +26,18 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatViewersResponse), typeDiscriminator: nameof(ChatViewersResponse))]
 [JsonDerivedType(typeof(ChatViewersChangedNotification), typeDiscriminator: nameof(ChatViewersChangedNotification))]
 
+[JsonDerivedType(typeof(SetMessagePinnedRequest), typeDiscriminator: nameof(SetMessagePinnedRequest))]
+
+[JsonDerivedType(typeof(SetMessagePinnedResponse), typeDiscriminator: nameof(SetMessagePinnedResponse))]
+
+[JsonDerivedType(typeof(ChatPinnedMessagesRequest), typeDiscriminator: nameof(ChatPinnedMessagesRequest))]
+
+[JsonDerivedType(typeof(ChatPinnedMessagesResponse), typeDiscriminator: nameof(ChatPinnedMessagesResponse))]
+
+[JsonDerivedType(typeof(ChatHistoryWindowRequest), typeDiscriminator: nameof(ChatHistoryWindowRequest))]
+
+[JsonDerivedType(typeof(ChatHistoryWindowResponse), typeDiscriminator: nameof(ChatHistoryWindowResponse))]
+
 // Notifications
 
 [JsonDerivedType(typeof(CoordinatorUserListUpdatedNotification), typeDiscriminator: nameof(CoordinatorUserListUpdatedNotification))]

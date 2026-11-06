@@ -1,4 +1,4 @@
-version 4
+version 5
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
 ApproveUserRequest.SessionId: Int32
@@ -29,8 +29,12 @@ BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettings
 BaseMessage <- "ChangeHybridSessionSettingsResponse": ChangeHybridSessionSettingsResponse
 BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsRequest
 BaseMessage <- "ChangeSessionPermissionsResponse": ChangeSessionPermissionsResponse
+BaseMessage <- "ChatHistoryWindowRequest": ChatHistoryWindowRequest
+BaseMessage <- "ChatHistoryWindowResponse": ChatHistoryWindowResponse
 BaseMessage <- "ChatMarkReadRequest": ChatMarkReadRequest
 BaseMessage <- "ChatMarkReadResponse": ChatMarkReadResponse
+BaseMessage <- "ChatPinnedMessagesRequest": ChatPinnedMessagesRequest
+BaseMessage <- "ChatPinnedMessagesResponse": ChatPinnedMessagesResponse
 BaseMessage <- "ChatReadStateChangedNotification": ChatReadStateChangedNotification
 BaseMessage <- "ChatReadStatesRequest": ChatReadStatesRequest
 BaseMessage <- "ChatReadStatesResponse": ChatReadStatesResponse
@@ -201,6 +205,8 @@ BaseMessage <- "SessionInfoRequest": SessionInfoRequest
 BaseMessage <- "SessionInfoResponse": SessionInfoResponse
 BaseMessage <- "SessionLayoutChangedNotification": SessionLayoutChangedNotification
 BaseMessage <- "SessionLayoutResponse": SessionLayoutResponse
+BaseMessage <- "SetMessagePinnedRequest": SetMessagePinnedRequest
+BaseMessage <- "SetMessagePinnedResponse": SetMessagePinnedResponse
 BaseMessage <- "SetMessageReactionRequest": SetMessageReactionRequest
 BaseMessage <- "SetMessageReactionResponse": SetMessageReactionResponse
 BaseMessage <- "TwoFactorUserAuthRequest": TwoFactorUserAuthRequest
@@ -249,6 +255,19 @@ ChatFileContentDTO.Id: Int32
 ChatFileContentDTO.MimeType: String
 ChatFileContentDTO.Size: Int64
 ChatFileContentDTO.Type: ChatContentType
+ChatHistoryDirection = enum Before=0, After=1, Around=2
+ChatHistoryWindowRequest.ChatId: Int32
+ChatHistoryWindowRequest.Direction: ChatHistoryDirection
+ChatHistoryWindowRequest.MessageId: Int32
+ChatHistoryWindowRequest.RequestId: Guid
+ChatHistoryWindowRequest.SenderId: Int32
+ChatHistoryWindowRequest.Take: Int32
+ChatHistoryWindowResponse.CurrentRevision: Int64
+ChatHistoryWindowResponse.HasNewer: Boolean
+ChatHistoryWindowResponse.HasOlder: Boolean
+ChatHistoryWindowResponse.Messages: List<ChatMessageDTO>
+ChatHistoryWindowResponse.RequestId: Guid
+ChatHistoryWindowResponse.SenderId: Int32
 ChatImageContentDTO.Description: String
 ChatImageContentDTO.FileName: String
 ChatImageContentDTO.Height: Int32
@@ -283,6 +302,8 @@ ChatMessageDTO.IsSystem: Boolean
 ChatMessageDTO.MentionedUserIds: List<Int32>
 ChatMessageDTO.MentionsEveryone: Boolean
 ChatMessageDTO.MentionsHere: Boolean
+ChatMessageDTO.PinnedAt: DateTime?
+ChatMessageDTO.PinnedByUserId: Int32?
 ChatMessageDTO.Reactions: List<ChatReactionDTO>
 ChatMessageDTO.ReplyContent: ChatReplyContentDTO
 ChatMessageDTO.Revision: Int64
@@ -291,6 +312,13 @@ ChatMessageDTO.SentTime: DateTime
 ChatMessageDTO.TextContent: ChatTextContentDTO
 ChatMessageDTO.UsersIds: List<String>
 ChatMessageDTO.Video: List<ChatVideoContentDTO>
+ChatPinnedMessagesRequest.ChatId: Int32
+ChatPinnedMessagesRequest.RequestId: Guid
+ChatPinnedMessagesRequest.SenderId: Int32
+ChatPinnedMessagesResponse.CurrentRevision: Int64
+ChatPinnedMessagesResponse.Messages: List<ChatMessageDTO>
+ChatPinnedMessagesResponse.RequestId: Guid
+ChatPinnedMessagesResponse.SenderId: Int32
 ChatReactionDTO.Emoji: String
 ChatReactionDTO.UserId: Int32
 ChatReadStateChangedNotification.SenderId: Int32
@@ -1183,6 +1211,13 @@ SessionPermissionOverrideDTO.Allow: Permission
 SessionPermissionOverrideDTO.Deny: Permission
 SessionPermissionOverrideDTO.RoleId: Int32
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
+SetMessagePinnedRequest.ChatId: Int32
+SetMessagePinnedRequest.IsPinned: Boolean
+SetMessagePinnedRequest.MessageId: Int32
+SetMessagePinnedRequest.RequestId: Guid
+SetMessagePinnedRequest.SenderId: Int32
+SetMessagePinnedResponse.RequestId: Guid
+SetMessagePinnedResponse.SenderId: Int32
 SetMessageReactionRequest.ChatId: Int32
 SetMessageReactionRequest.Emoji: String
 SetMessageReactionRequest.IsAdded: Boolean
