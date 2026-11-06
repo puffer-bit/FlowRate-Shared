@@ -109,7 +109,7 @@ public enum ErrorCode
     /// <summary>Users cannot do this to themselves (poke, kick, ban, freeze, delete), nor to the system user.</summary>
     CannotTargetSelf = 314,
 
-    /// <summary>The host of a session cannot be banned from it.</summary>
+    /// <summary>Reserved legacy error code.</summary>
     TargetIsHost = 315,
 
     /// <summary>The role or the user is not below the sender's highest role.</summary>
