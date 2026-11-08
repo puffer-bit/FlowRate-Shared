@@ -30,9 +30,6 @@ public record HybridSessionPeerKickedNotification(int SessionId, int UserId, int
 public record HybridSessionPeerIdleKickedNotification(int SessionId, int UserId)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionPeerBannedNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
 public record HybridSessionPeerApprovedNotification(int SessionId, int UserId, int InitiatorUserId)
     : HybridSessionUpdatedNotification;
 

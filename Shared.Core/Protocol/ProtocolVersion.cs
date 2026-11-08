@@ -34,7 +34,8 @@ public static class ProtocolVersion
     //    second-stage responses carry the user and the token only
     // 4: ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification;
     //    opt-in ChatViewersRequest/Response and per-subscription audience diffs.
-    public const int Current = 4;
+    // 5: pinned message metadata, SetMessagePinned, ChatPinnedMessages and bidirectional ChatHistoryWindow.
+    public const int Current = 5;
 
     /// <summary>The oldest client version the server still serves.</summary>
     public const int MinSupported = 4;

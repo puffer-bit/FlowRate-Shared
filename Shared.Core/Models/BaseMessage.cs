@@ -26,6 +26,18 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatViewersResponse), typeDiscriminator: nameof(ChatViewersResponse))]
 [JsonDerivedType(typeof(ChatViewersChangedNotification), typeDiscriminator: nameof(ChatViewersChangedNotification))]
 
+[JsonDerivedType(typeof(SetMessagePinnedRequest), typeDiscriminator: nameof(SetMessagePinnedRequest))]
+
+[JsonDerivedType(typeof(SetMessagePinnedResponse), typeDiscriminator: nameof(SetMessagePinnedResponse))]
+
+[JsonDerivedType(typeof(ChatPinnedMessagesRequest), typeDiscriminator: nameof(ChatPinnedMessagesRequest))]
+
+[JsonDerivedType(typeof(ChatPinnedMessagesResponse), typeDiscriminator: nameof(ChatPinnedMessagesResponse))]
+
+[JsonDerivedType(typeof(ChatHistoryWindowRequest), typeDiscriminator: nameof(ChatHistoryWindowRequest))]
+
+[JsonDerivedType(typeof(ChatHistoryWindowResponse), typeDiscriminator: nameof(ChatHistoryWindowResponse))]
+
 // Notifications
 
 [JsonDerivedType(typeof(CoordinatorUserListUpdatedNotification), typeDiscriminator: nameof(CoordinatorUserListUpdatedNotification))]
@@ -68,7 +80,6 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionPeerLeftNotification), typeDiscriminator: nameof(HybridSessionPeerLeftNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerKickedNotification), typeDiscriminator: nameof(HybridSessionPeerKickedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerIdleKickedNotification), typeDiscriminator: nameof(HybridSessionPeerIdleKickedNotification))]
-[JsonDerivedType(typeof(HybridSessionPeerBannedNotification), typeDiscriminator: nameof(HybridSessionPeerBannedNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerMovedOutNotification), typeDiscriminator: nameof(HybridSessionPeerMovedOutNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerMovedInNotification), typeDiscriminator: nameof(HybridSessionPeerMovedInNotification))]
 [JsonDerivedType(typeof(HybridSessionPeerStartedScreenShareNotification), typeDiscriminator: nameof(HybridSessionPeerStartedScreenShareNotification))]
@@ -102,6 +113,10 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorChangeUsernameRequest), typeDiscriminator: nameof(CoordinatorChangeUsernameRequest))]
 [JsonDerivedType(typeof(CoordinatorSetAvatarRequest), typeDiscriminator: nameof(CoordinatorSetAvatarRequest))]
 [JsonDerivedType(typeof(CoordinatorSetUserStatusRequest), typeDiscriminator: nameof(CoordinatorSetUserStatusRequest))]
+[JsonDerivedType(typeof(CoordinatorBansRequest), typeDiscriminator: nameof(CoordinatorBansRequest))]
+[JsonDerivedType(typeof(CoordinatorRevokeBanRequest), typeDiscriminator: nameof(CoordinatorRevokeBanRequest))]
+[JsonDerivedType(typeof(CoordinatorBansResponse), typeDiscriminator: nameof(CoordinatorBansResponse))]
+[JsonDerivedType(typeof(CoordinatorRevokeBanResponse), typeDiscriminator: nameof(CoordinatorRevokeBanResponse))]
 [JsonDerivedType(typeof(CoordinatorSetUserStateRequest), typeDiscriminator: nameof(CoordinatorSetUserStateRequest))]
 [JsonDerivedType(typeof(CoordinatorDeleteUserRequest), typeDiscriminator: nameof(CoordinatorDeleteUserRequest))]
 [JsonDerivedType(typeof(CoordinatorSettingsRequest), typeDiscriminator: nameof(CoordinatorSettingsRequest))]
@@ -143,7 +158,6 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(SendMessageRequest), typeDiscriminator: nameof(SendMessageRequest))]
 
 [JsonDerivedType(typeof(ApproveUserRequest), typeDiscriminator: nameof(ApproveUserRequest))]
-[JsonDerivedType(typeof(BanInSessionRequest), typeDiscriminator: nameof(BanInSessionRequest))]
 [JsonDerivedType(typeof(CreateSessionRequest), typeDiscriminator: nameof(CreateSessionRequest))]
 [JsonDerivedType(typeof(DeleteSessionRequest), typeDiscriminator: nameof(DeleteSessionRequest))]
 [JsonDerivedType(typeof(JoinSessionRequest), typeDiscriminator: nameof(JoinSessionRequest))]
@@ -221,7 +235,6 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(SendMessageResponse), typeDiscriminator: nameof(SendMessageResponse))]
 
 [JsonDerivedType(typeof(ApproveUserResponse), typeDiscriminator: nameof(ApproveUserResponse))]
-[JsonDerivedType(typeof(BanInSessionResponse), typeDiscriminator: nameof(BanInSessionResponse))]
 [JsonDerivedType(typeof(CreateSessionResponse), typeDiscriminator: nameof(CreateSessionResponse))]
 [JsonDerivedType(typeof(DeleteSessionResponse), typeDiscriminator: nameof(DeleteSessionResponse))]
 [JsonDerivedType(typeof(JoinSessionResponse), typeDiscriminator: nameof(JoinSessionResponse))]

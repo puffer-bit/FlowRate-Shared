@@ -138,7 +138,7 @@ response. Giving up is the client's own matter and is not an `ErrorCode`.
 | Coordinator | `Requests.Coordinator`, `Notifications.CoordinatorInfo` | Server info, users, profile, settings, roles, push tokens, media token |
 | Account security | `Requests.Coordinator.Security`, `Responses.Coordinator.Security` | The sender's password, one-time codes and passkeys |
 | Heartbeat | `Requests.Heartbeat`, `Notifications.Heartbeat` | Ping, server closing or restarting |
-| Generic sessions | `Requests.SessionActions.Generic`, `Notifications.SessionInfo` | Create, join, leave, kick, ban, approve; categories and layout |
+| Generic sessions | `Requests.SessionActions.Generic`, `Notifications.SessionInfo` | Create, join, leave, kick, approve; categories and layout |
 | Chat sessions | `Requests.SessionActions.ChatSession` | History, paging, changes since a revision, send, edit, delete, read state |
 | Hybrid sessions | `Requests.SessionActions.HybridSession` | Voice and video rooms on an SFU: transport, voice, camera, screen share, mute |
 
@@ -362,3 +362,27 @@ History and incremental synchronization include reactions as before; no database
 The protocol version is intentionally unchanged for this extension. Updated clients and servers are
 required to set reactions. Older clients can still read messages and existing update notifications
 from updated servers; older servers do not support the new request.
+
+
+### Pinned messages and history windows (protocol 5)
+
+`SetMessagePinnedRequest(ChatId, MessageId, IsPinned)` requires `ViewSessions` and
+`ManageMessages` in the chat. Repeating the current state is harmless; at most 100 messages
+may be pinned in a chat. Archived chats and system messages cannot be pinned. Read-only
+chats still allow moderators to manage pins. `PinnedAt` (UTC) and `PinnedByUserId` describe
+the current pin; both are null after unpinning. Pin changes increment the chat revision and
+use the existing message-edited notification, without changing `EditTime` or sending a push.
+Deleting a message clears its pin.
+
+`ChatPinnedMessagesRequest(ChatId)` returns the full independently loaded pin list and its
+revision. `ChatHistoryWindowRequest(ChatId, MessageId, Direction, Take)` returns up to `Take`
+live messages in ascending ID order. `Around` includes the live target, with half the page
+before it and the remaining messages after it. `Before` and `After` exclude the cursor and
+can continue from a soft-deleted cursor. All targets and cursors must belong to the chat.
+`HasOlder` and `HasNewer` describe the returned page boundaries. Both reads require view
+access. Window responses are serialized with writes in that chat, so revision and boundaries
+refer to the same state.
+
+Clients keep a historical window separate from their contiguous cached tail. Live messages
+beyond an unfilled gap update the cache and unread indicator; they are not appended to the
+historical window. Returning to latest replaces the visible window with the current tail.

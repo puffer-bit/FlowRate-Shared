@@ -1,4 +1,4 @@
-version 4
+version 5
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
 ApproveUserRequest.SessionId: Int32
@@ -10,27 +10,29 @@ ApproveUserResponse.SessionId: Int32
 ApproveUserResponse.SessionType: SessionType
 ApproveUserResponse.TargetUserId: Int32
 AuthResult = enum Success=0, SecondStageRequired=1
-BanInSessionRequest.Reason: String
-BanInSessionRequest.RequestId: Guid
-BanInSessionRequest.SenderId: Int32
-BanInSessionRequest.SessionId: Int32
-BanInSessionRequest.SessionType: SessionType
-BanInSessionRequest.TargetUserId: Int32
-BanInSessionResponse.RequestId: Guid
-BanInSessionResponse.SenderId: Int32
-BanInSessionResponse.SessionId: Int32
-BanInSessionResponse.SessionType: SessionType
-BanInSessionResponse.TargetUserId: Int32
+BanDTO.Address: String
+BanDTO.CreatedAt: DateTime
+BanDTO.CreatedBy: Int32
+BanDTO.ExpiresAt: DateTime?
+BanDTO.Id: Guid
+BanDTO.Kind: BanKind
+BanDTO.Reason: String
+BanDTO.RevokedAt: DateTime?
+BanDTO.RevokedBy: Int32?
+BanDTO.UserId: Int32?
+BanKind = enum Account=0, Ip=1, Hardware=2
 BaseMessage <- "ApproveUserRequest": ApproveUserRequest
 BaseMessage <- "ApproveUserResponse": ApproveUserResponse
-BaseMessage <- "BanInSessionRequest": BanInSessionRequest
-BaseMessage <- "BanInSessionResponse": BanInSessionResponse
 BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettingsRequest
 BaseMessage <- "ChangeHybridSessionSettingsResponse": ChangeHybridSessionSettingsResponse
 BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsRequest
 BaseMessage <- "ChangeSessionPermissionsResponse": ChangeSessionPermissionsResponse
+BaseMessage <- "ChatHistoryWindowRequest": ChatHistoryWindowRequest
+BaseMessage <- "ChatHistoryWindowResponse": ChatHistoryWindowResponse
 BaseMessage <- "ChatMarkReadRequest": ChatMarkReadRequest
 BaseMessage <- "ChatMarkReadResponse": ChatMarkReadResponse
+BaseMessage <- "ChatPinnedMessagesRequest": ChatPinnedMessagesRequest
+BaseMessage <- "ChatPinnedMessagesResponse": ChatPinnedMessagesResponse
 BaseMessage <- "ChatReadStateChangedNotification": ChatReadStateChangedNotification
 BaseMessage <- "ChatReadStatesRequest": ChatReadStatesRequest
 BaseMessage <- "ChatReadStatesResponse": ChatReadStatesResponse
@@ -55,6 +57,8 @@ BaseMessage <- "ChatViewersChangedNotification": ChatViewersChangedNotification
 BaseMessage <- "ChatViewersRequest": ChatViewersRequest
 BaseMessage <- "ChatViewersResponse": ChatViewersResponse
 BaseMessage <- "CoordinatorAssignRoleRequest": CoordinatorAssignRoleRequest
+BaseMessage <- "CoordinatorBansRequest": CoordinatorBansRequest
+BaseMessage <- "CoordinatorBansResponse": CoordinatorBansResponse
 BaseMessage <- "CoordinatorChangeUsernameRequest": CoordinatorChangeUsernameRequest
 BaseMessage <- "CoordinatorChangeUsernameResponse": CoordinatorChangeUsernameResponse
 BaseMessage <- "CoordinatorCreateRoleRequest": CoordinatorCreateRoleRequest
@@ -67,6 +71,8 @@ BaseMessage <- "CoordinatorOnlineUsersChangedNotification": CoordinatorOnlineUse
 BaseMessage <- "CoordinatorPermissionsChangedNotification": CoordinatorPermissionsChangedNotification
 BaseMessage <- "CoordinatorReconfiguredNotification": CoordinatorReconfiguredNotification
 BaseMessage <- "CoordinatorReorderRolesRequest": CoordinatorReorderRolesRequest
+BaseMessage <- "CoordinatorRevokeBanRequest": CoordinatorRevokeBanRequest
+BaseMessage <- "CoordinatorRevokeBanResponse": CoordinatorRevokeBanResponse
 BaseMessage <- "CoordinatorRoleResponse": CoordinatorRoleResponse
 BaseMessage <- "CoordinatorRolesChangedNotification": CoordinatorRolesChangedNotification
 BaseMessage <- "CoordinatorRolesRequest": CoordinatorRolesRequest
@@ -125,7 +131,6 @@ BaseMessage <- "HybridSessionLeaveRequest": HybridSessionLeaveRequest
 BaseMessage <- "HybridSessionLeaveResponse": HybridSessionLeaveResponse
 BaseMessage <- "HybridSessionPeerAfkChangedNotification": HybridSessionPeerAfkChangedNotification
 BaseMessage <- "HybridSessionPeerApprovedNotification": HybridSessionPeerApprovedNotification
-BaseMessage <- "HybridSessionPeerBannedNotification": HybridSessionPeerBannedNotification
 BaseMessage <- "HybridSessionPeerIdleKickedNotification": HybridSessionPeerIdleKickedNotification
 BaseMessage <- "HybridSessionPeerJoinedNotification": HybridSessionPeerJoinedNotification
 BaseMessage <- "HybridSessionPeerKickedNotification": HybridSessionPeerKickedNotification
@@ -201,6 +206,8 @@ BaseMessage <- "SessionInfoRequest": SessionInfoRequest
 BaseMessage <- "SessionInfoResponse": SessionInfoResponse
 BaseMessage <- "SessionLayoutChangedNotification": SessionLayoutChangedNotification
 BaseMessage <- "SessionLayoutResponse": SessionLayoutResponse
+BaseMessage <- "SetMessagePinnedRequest": SetMessagePinnedRequest
+BaseMessage <- "SetMessagePinnedResponse": SetMessagePinnedResponse
 BaseMessage <- "SetMessageReactionRequest": SetMessageReactionRequest
 BaseMessage <- "SetMessageReactionResponse": SetMessageReactionResponse
 BaseMessage <- "TwoFactorUserAuthRequest": TwoFactorUserAuthRequest
@@ -249,6 +256,19 @@ ChatFileContentDTO.Id: Int32
 ChatFileContentDTO.MimeType: String
 ChatFileContentDTO.Size: Int64
 ChatFileContentDTO.Type: ChatContentType
+ChatHistoryDirection = enum Before=0, After=1, Around=2
+ChatHistoryWindowRequest.ChatId: Int32
+ChatHistoryWindowRequest.Direction: ChatHistoryDirection
+ChatHistoryWindowRequest.MessageId: Int32
+ChatHistoryWindowRequest.RequestId: Guid
+ChatHistoryWindowRequest.SenderId: Int32
+ChatHistoryWindowRequest.Take: Int32
+ChatHistoryWindowResponse.CurrentRevision: Int64
+ChatHistoryWindowResponse.HasNewer: Boolean
+ChatHistoryWindowResponse.HasOlder: Boolean
+ChatHistoryWindowResponse.Messages: List<ChatMessageDTO>
+ChatHistoryWindowResponse.RequestId: Guid
+ChatHistoryWindowResponse.SenderId: Int32
 ChatImageContentDTO.Description: String
 ChatImageContentDTO.FileName: String
 ChatImageContentDTO.Height: Int32
@@ -283,6 +303,8 @@ ChatMessageDTO.IsSystem: Boolean
 ChatMessageDTO.MentionedUserIds: List<Int32>
 ChatMessageDTO.MentionsEveryone: Boolean
 ChatMessageDTO.MentionsHere: Boolean
+ChatMessageDTO.PinnedAt: DateTime?
+ChatMessageDTO.PinnedByUserId: Int32?
 ChatMessageDTO.Reactions: List<ChatReactionDTO>
 ChatMessageDTO.ReplyContent: ChatReplyContentDTO
 ChatMessageDTO.Revision: Int64
@@ -291,6 +313,13 @@ ChatMessageDTO.SentTime: DateTime
 ChatMessageDTO.TextContent: ChatTextContentDTO
 ChatMessageDTO.UsersIds: List<String>
 ChatMessageDTO.Video: List<ChatVideoContentDTO>
+ChatPinnedMessagesRequest.ChatId: Int32
+ChatPinnedMessagesRequest.RequestId: Guid
+ChatPinnedMessagesRequest.SenderId: Int32
+ChatPinnedMessagesResponse.CurrentRevision: Int64
+ChatPinnedMessagesResponse.Messages: List<ChatMessageDTO>
+ChatPinnedMessagesResponse.RequestId: Guid
+ChatPinnedMessagesResponse.SenderId: Int32
 ChatReactionDTO.Emoji: String
 ChatReactionDTO.UserId: Int32
 ChatReadStateChangedNotification.SenderId: Int32
@@ -427,6 +456,12 @@ CoordinatorAssignRoleRequest.RequestId: Guid
 CoordinatorAssignRoleRequest.RoleId: Int32
 CoordinatorAssignRoleRequest.SenderId: Int32
 CoordinatorAssignRoleRequest.TargetUserId: Int32
+CoordinatorBansRequest.IncludeHistory: Boolean
+CoordinatorBansRequest.RequestId: Guid
+CoordinatorBansRequest.SenderId: Int32
+CoordinatorBansResponse.Bans: List<BanDTO>
+CoordinatorBansResponse.RequestId: Guid
+CoordinatorBansResponse.SenderId: Int32
 CoordinatorChangeUsernameRequest.RequestId: Guid
 CoordinatorChangeUsernameRequest.SenderId: Int32
 CoordinatorChangeUsernameRequest.TargetUserId: Int32?
@@ -477,6 +512,11 @@ CoordinatorReconfiguredNotification.SenderId: Int32
 CoordinatorReorderRolesRequest.RequestId: Guid
 CoordinatorReorderRolesRequest.RoleIds: IList<Int32>
 CoordinatorReorderRolesRequest.SenderId: Int32
+CoordinatorRevokeBanRequest.BanId: Guid
+CoordinatorRevokeBanRequest.RequestId: Guid
+CoordinatorRevokeBanRequest.SenderId: Int32
+CoordinatorRevokeBanResponse.RequestId: Guid
+CoordinatorRevokeBanResponse.SenderId: Int32
 CoordinatorRoleResponse.RequestId: Guid
 CoordinatorRoleResponse.Role: RoleDTO
 CoordinatorRoleResponse.SenderId: Int32
@@ -515,6 +555,10 @@ CoordinatorSetAvatarRequest.UploadId: String
 CoordinatorSetAvatarResponse.RequestId: Guid
 CoordinatorSetAvatarResponse.SenderId: Int32
 CoordinatorSetAvatarResponse.User: UserDTO
+CoordinatorSetUserStateRequest.Address: String
+CoordinatorSetUserStateRequest.ExpiresAt: DateTime?
+CoordinatorSetUserStateRequest.Kind: BanKind
+CoordinatorSetUserStateRequest.Reason: String
 CoordinatorSetUserStateRequest.RequestId: Guid
 CoordinatorSetUserStateRequest.SenderId: Int32
 CoordinatorSetUserStateRequest.State: UserState
@@ -772,11 +816,6 @@ HybridSessionPeerApprovedNotification.InitiatorUserId: Int32
 HybridSessionPeerApprovedNotification.SenderId: Int32
 HybridSessionPeerApprovedNotification.SessionId: Int32
 HybridSessionPeerApprovedNotification.UserId: Int32
-HybridSessionPeerBannedNotification.InitiatorUserId: Int32?
-HybridSessionPeerBannedNotification.Reason: String
-HybridSessionPeerBannedNotification.SenderId: Int32
-HybridSessionPeerBannedNotification.SessionId: Int32
-HybridSessionPeerBannedNotification.UserId: Int32
 HybridSessionPeerIdleKickedNotification.SenderId: Int32
 HybridSessionPeerIdleKickedNotification.SessionId: Int32
 HybridSessionPeerIdleKickedNotification.UserId: Int32
@@ -1183,6 +1222,13 @@ SessionPermissionOverrideDTO.Allow: Permission
 SessionPermissionOverrideDTO.Deny: Permission
 SessionPermissionOverrideDTO.RoleId: Int32
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
+SetMessagePinnedRequest.ChatId: Int32
+SetMessagePinnedRequest.IsPinned: Boolean
+SetMessagePinnedRequest.MessageId: Int32
+SetMessagePinnedRequest.RequestId: Guid
+SetMessagePinnedRequest.SenderId: Int32
+SetMessagePinnedResponse.RequestId: Guid
+SetMessagePinnedResponse.SenderId: Int32
 SetMessageReactionRequest.ChatId: Int32
 SetMessageReactionRequest.Emoji: String
 SetMessageReactionRequest.IsAdded: Boolean
