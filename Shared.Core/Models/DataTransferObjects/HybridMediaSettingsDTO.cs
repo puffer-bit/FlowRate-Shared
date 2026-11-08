@@ -18,7 +18,7 @@ public record HybridMediaSettingsDTO : IValidatableObject
 {
     /// <summary>The video codecs a session may pick; the SFU knows no other.</summary>
     public static readonly IReadOnlyList<WebRTCVideoCodecs> SupportedVideoCodecs =
-        [WebRTCVideoCodecs.VP8, WebRTCVideoCodecs.H264];
+        [WebRTCVideoCodecs.VP8, WebRTCVideoCodecs.H264, WebRTCVideoCodecs.AV1];
 
     /// <summary>The audio codecs a session may pick; the SFU knows no other.</summary>
     public static readonly IReadOnlyList<WebRTCAudioCodecs> SupportedAudioCodecs = [WebRTCAudioCodecs.Opus];
