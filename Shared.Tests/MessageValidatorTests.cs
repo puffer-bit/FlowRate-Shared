@@ -28,6 +28,20 @@ namespace Shared.Tests;
 
 public class MessageValidatorTests
 {
+    [Fact]
+    public void Av1SessionCanBeCreatedAndUpdated()
+    {
+        var media = new HybridMediaSettingsDTO
+        {
+            CameraCodec = WebRTCVideoCodecs.AV1,
+            ScreenCodec = WebRTCVideoCodecs.AV1
+        };
+        Assert.True(MessageValidator.TryValidate(new CreateSessionRequest(new CreateSessionModel("Room", 10,
+            new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: media))), out _));
+        Assert.True(MessageValidator.TryValidate(
+            new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, media), out _));
+    }
+
     // A video cannot be attached so far, and a request with one is rejected as a whole, so its
     // fields get limits once it can be uploaded
     private static readonly HashSet<Type> PendingMediaTypes =
@@ -179,7 +193,7 @@ public class MessageValidatorTests
         { new CreateSessionRequest(new CreateSessionModel("Room", Limits.SessionCapacityMax + 1, new HybridSessionCreateData(WebRTCEngine.Mediasoup))), "Capacity" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(IconPath: "file:///etc/passwd"))), "IconPath" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData((WebRTCEngine)99))), "EngineType" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.AV1 }))), "CameraCodec" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.H265 }))), "CameraCodec" },
         { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { AudioCodec = WebRTCAudioCodecs.G711 }))), "AudioCodec" },
         { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { OpusPacketLossPercent = 101 }), "OpusPacketLossPercent" },
         { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { VoiceJitterBufferMs = 5 }), "VoiceJitterBufferMs" },
