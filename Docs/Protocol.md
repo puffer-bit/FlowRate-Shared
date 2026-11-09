@@ -297,6 +297,9 @@ may not write there, 404 for a chat that does not exist and 429 for too many req
 messages: a field removed or renamed, a type changed, an enum member renumbered, a request old
 servers do not know. `MinSupported` is the oldest client version the server still serves.
 
+The current protocol version and minimum supported version are both 5. Clients using earlier
+versions are rejected during the WebSocket upgrade with 426 Upgrade Required.
+
 So that no such change goes unnoticed, `ProtocolSchemaTests` describes the whole schema as text.
 The description contains every type reachable from `BaseMessage`, `PushReplyRequest` and
 `PushMarkReadRequest`, with property types, `$type` discriminators and enum numbers. The test
