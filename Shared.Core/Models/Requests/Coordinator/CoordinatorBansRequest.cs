@@ -3,7 +3,7 @@ using Shared.Models.Responses.Coordinator;
 
 namespace Shared.Models.Requests.Coordinator;
 
-public record CoordinatorBansRequest(bool IncludeHistory = false) : CoordinatorRequest
+public record CoordinatorBansRequest : CoordinatorRequest
 {
     public CoordinatorBansResponse ToResponse(List<BanDTO> bans) => new(RequestId, bans);
 }

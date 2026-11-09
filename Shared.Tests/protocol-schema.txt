@@ -17,8 +17,6 @@ BanDTO.ExpiresAt: DateTime?
 BanDTO.Id: Guid
 BanDTO.Kind: BanKind
 BanDTO.Reason: String
-BanDTO.RevokedAt: DateTime?
-BanDTO.RevokedBy: Int32?
 BanDTO.UserId: Int32?
 BanKind = enum Account=0, Ip=1, Hardware=2
 BaseMessage <- "ApproveUserRequest": ApproveUserRequest
@@ -456,7 +454,6 @@ CoordinatorAssignRoleRequest.RequestId: Guid
 CoordinatorAssignRoleRequest.RoleId: Int32
 CoordinatorAssignRoleRequest.SenderId: Int32
 CoordinatorAssignRoleRequest.TargetUserId: Int32
-CoordinatorBansRequest.IncludeHistory: Boolean
 CoordinatorBansRequest.RequestId: Guid
 CoordinatorBansRequest.SenderId: Int32
 CoordinatorBansResponse.Bans: List<BanDTO>
