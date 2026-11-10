@@ -389,3 +389,18 @@ refer to the same state.
 Clients keep a historical window separate from their contiguous cached tail. Live messages
 beyond an unfilled gap update the cache and unread indicator; they are not appended to the
 historical window. Returning to latest replaces the visible window with the current tail.
+
+## Chat commands
+
+When a new message starts with `/roll` or `/flip`, the server validates and executes the command
+once, before persistence and the existing message-added notification. `/roll` defaults to 1–100;
+`/roll minimum-maximum` accepts inclusive bounds from 1 to 1000. `/flip` has no arguments.
+Invalid arguments return `InvalidValue` without storing a message. Unknown commands remain text.
+
+`ChatTextContentDTO.CommandResult` is optional, server-owned metadata (`Kind`: Roll=1, Flip=2;
+`Minimum`, `Maximum`, `Value`). Flip uses 0=heads, 1=tails. Client-supplied results are ignored.
+`Text` contains a readable fallback with the resolved result for older clients, replies and exports.
+Command messages cannot be edited; deletion, replies, attachments, pins and reactions keep their
+existing behavior. History and cache preserve the outcome. Clients animate only a newly received
+message, once, and show the stored outcome immediately for history, sync and pinned copies.
+This optional field is backward compatible and does not change the protocol version.

@@ -248,6 +248,11 @@ ChangeSessionPermissionsRequest.SessionId: Int32
 ChangeSessionPermissionsResponse.RequestId: Guid
 ChangeSessionPermissionsResponse.SenderId: Int32
 ChangeSessionPermissionsResponse.SessionId: Int32
+ChatCommandKind = enum Roll=1, Flip=2
+ChatCommandResult.Kind: ChatCommandKind
+ChatCommandResult.Maximum: Int32
+ChatCommandResult.Minimum: Int32
+ChatCommandResult.Value: Int32
 ChatContentType = enum File=0, Text=1, Image=2, Video=3, Reply=4
 ChatFileContentDTO.FileName: String
 ChatFileContentDTO.Id: Int32
@@ -419,6 +424,7 @@ ChatSessionUserTypingNotification.ChatId: Int32
 ChatSessionUserTypingNotification.IsTyping: Boolean
 ChatSessionUserTypingNotification.SenderId: Int32
 ChatSessionUserTypingNotification.UserId: Int32
+ChatTextContentDTO.CommandResult: ChatCommandResult
 ChatTextContentDTO.Text: String
 ChatTextContentDTO.Type: ChatContentType
 ChatTypingRequest.ChatId: Int32
