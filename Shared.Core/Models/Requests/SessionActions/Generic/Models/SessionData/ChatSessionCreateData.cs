@@ -18,6 +18,8 @@ public record ChatSessionCreateData(
 {
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
+        if (SessionType != SessionType.Chat)
+            yield return new ValidationResult("Chat data must create a text chat.", [nameof(SessionType)]);
         if (MemberIds is { Length: > 100 } || MemberIds?.Any(id => id <= 0) == true)
             yield return new ValidationResult("Invalid chat membership.", [nameof(MemberIds)]);
     }
