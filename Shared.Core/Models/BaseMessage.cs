@@ -38,6 +38,9 @@ namespace Shared.Models;
 
 [JsonDerivedType(typeof(ChatHistoryWindowResponse), typeDiscriminator: nameof(ChatHistoryWindowResponse))]
 
+[JsonDerivedType(typeof(ChangeGroupRequest), typeDiscriminator: nameof(ChangeGroupRequest))]
+[JsonDerivedType(typeof(ChangeGroupResponse), typeDiscriminator: nameof(ChangeGroupResponse))]
+
 // Notifications
 
 [JsonDerivedType(typeof(CoordinatorUserListUpdatedNotification), typeDiscriminator: nameof(CoordinatorUserListUpdatedNotification))]

@@ -4,6 +4,10 @@ namespace Shared.Models.DataTransferObjects.ChatSession;
 
 public class ChatSessionDTO : SessionDTO
 {
+    public Shared.Enums.ChatKind Kind { get; set; }
+    public int[] MemberIds { get; set; } = [];
+    public Messages.ChatMessageDTO? LastMessage { get; set; }
+
     public required int CreatorUserId { get; set; }
     public int AdminUserId { get; set; }
     public string? Description { get; set; }

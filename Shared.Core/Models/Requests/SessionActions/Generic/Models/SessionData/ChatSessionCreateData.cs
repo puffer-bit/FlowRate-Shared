@@ -11,8 +11,16 @@ public record ChatSessionCreateData(
     bool IsAttachmentsAllowed = true,
     bool IsVoiceMessagesAllowed = true,
     bool IsVideoMessagesAllowed = true,
-    bool IsDelayedMessagesAllowed = true
-) : CreateSessionData
+    bool IsDelayedMessagesAllowed = true,
+    [property: DefinedEnum] ChatKind Kind = ChatKind.ServerChannel,
+    [property: ItemCount(0, 100)] int[]? MemberIds = null
+) : CreateSessionData, IValidatableObject
 {
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (MemberIds is { Length: > 100 } || MemberIds?.Any(id => id <= 0) == true)
+            yield return new ValidationResult("Invalid chat membership.", [nameof(MemberIds)]);
+    }
+
     public override SessionType SessionType { get; init; } = SessionType.Chat;
 }

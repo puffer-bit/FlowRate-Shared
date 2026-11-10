@@ -404,3 +404,30 @@ Command messages cannot be edited; deletion, replies, attachments, pins and reac
 existing behavior. History and cache preserve the outcome. Clients animate only a newly received
 message, once, and show the stored outcome immediately for history, sync and pinned copies.
 This optional field is backward compatible and does not change the protocol version.
+
+### Personal chats and groups (protocol 5)
+
+`ChatSessionDTO.Kind` distinguishes `ServerChannel` (0), `Direct` (1), and `Group` (2).
+Personal conversations belong to the coordinator and never enter the shared session category layout.
+`MemberIds` is persistent membership, independent of online presence and viewer subscriptions.
+Only members receive the conversation, its messages, read state, typing, or media. Server role
+administration does not grant access to a personal conversation.
+
+Use `CreateSessionRequest` with `ChatSessionCreateData.Kind` and `MemberIds` for conversations.
+The authenticated sender is included automatically. A direct conversation has exactly two members;
+creation for an existing unordered pair returns that conversation, including for simultaneous requests.
+Groups initially require at least two members and allow up to 100. Group names need not be unique.
+Creation of personal conversations does not require `CreateSessions`.
+
+`ChangeGroupRequest` replaces the name, membership and owner, and requires the current group owner.
+The new owner must be a member. `Leave = true` instead removes the sender; an owner must transfer
+ownership or delete the group first. Added members see the existing history. Removing a member
+immediately revokes access and removes the conversation from that member's live list.
+
+`ChatSessionDTO.LastMessage` contains the latest nondeleted message, or `null` for an empty chat.
+It is included in the initial session list and refreshed through `ChatSessionReconfiguredNotification`
+when the latest message is sent, edited, or deleted. Deletion restores the previous nondeleted message.
+Consumers can render text or attachment previews without fetching each chat's history. The last
+message carries its author, sent time, ID and revision using the existing message DTO.
+
+These changes extend the protocol 5 development branch; `Current` and `MinSupported` remain 5.

@@ -21,6 +21,8 @@ BanDTO.UserId: Int32?
 BanKind = enum Account=0, Ip=1, Hardware=2
 BaseMessage <- "ApproveUserRequest": ApproveUserRequest
 BaseMessage <- "ApproveUserResponse": ApproveUserResponse
+BaseMessage <- "ChangeGroupRequest": ChangeGroupRequest
+BaseMessage <- "ChangeGroupResponse": ChangeGroupResponse
 BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettingsRequest
 BaseMessage <- "ChangeHybridSessionSettingsResponse": ChangeHybridSessionSettingsResponse
 BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsRequest
@@ -231,6 +233,16 @@ BaseMessage <- "UserTwoFactorEnableRequest": UserTwoFactorEnableRequest
 BaseMessage <- "UserTwoFactorSetupRequest": UserTwoFactorSetupRequest
 BaseMessage <- "UserTwoFactorSetupResponse": UserTwoFactorSetupResponse
 BaseMessage.SenderId: Int32
+ChangeGroupRequest.Leave: Boolean
+ChangeGroupRequest.MemberIds: Int32[]
+ChangeGroupRequest.Name: String
+ChangeGroupRequest.OwnerId: Int32
+ChangeGroupRequest.RequestId: Guid
+ChangeGroupRequest.SenderId: Int32
+ChangeGroupRequest.SessionId: Int32
+ChangeGroupResponse.RequestId: Guid
+ChangeGroupResponse.SenderId: Int32
+ChangeGroupResponse.SessionId: Int32
 ChangeHybridSessionSettingsRequest.Capacity: Int32
 ChangeHybridSessionSettingsRequest.IsHostMustApprove: Boolean
 ChangeHybridSessionSettingsRequest.Media: HybridMediaSettingsDTO
@@ -281,6 +293,7 @@ ChatImageContentDTO.Size: Int64
 ChatImageContentDTO.Thumbnail: String
 ChatImageContentDTO.Type: ChatContentType
 ChatImageContentDTO.Width: Int32
+ChatKind = enum ServerChannel=0, Direct=1, Group=2
 ChatMarkReadRequest.ChatId: Int32
 ChatMarkReadRequest.MessageId: Int32
 ChatMarkReadRequest.RequestId: Guid
@@ -361,6 +374,8 @@ ChatSessionCreateData.IsDelayedMessagesAllowed: Boolean
 ChatSessionCreateData.IsEncrypted: Boolean
 ChatSessionCreateData.IsVideoMessagesAllowed: Boolean
 ChatSessionCreateData.IsVoiceMessagesAllowed: Boolean
+ChatSessionCreateData.Kind: ChatKind
+ChatSessionCreateData.MemberIds: Int32[]
 ChatSessionCreateData.SessionType: SessionType
 ChatSessionCreatedNotification.SenderId: Int32
 ChatSessionCreatedNotification.Session: ChatSessionDTO
@@ -378,6 +393,9 @@ ChatSessionDTO.IsEntered: Boolean
 ChatSessionDTO.IsReadOnly: Boolean
 ChatSessionDTO.IsVideoMessagesAllowed: Boolean
 ChatSessionDTO.IsVoiceMessagesAllowed: Boolean
+ChatSessionDTO.Kind: ChatKind
+ChatSessionDTO.LastMessage: ChatMessageDTO
+ChatSessionDTO.MemberIds: Int32[]
 ChatSessionDTO.Name: String
 ChatSessionDTO.PermissionOverrides: List<SessionPermissionOverrideDTO>
 ChatSessionDTO.SessionType: SessionType
