@@ -1,4 +1,4 @@
-version 5
+version 6
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
 ApproveUserRequest.SessionId: Int32
@@ -112,6 +112,9 @@ BaseMessage <- "DeleteMessageResponse": DeleteMessageResponse
 BaseMessage <- "DeleteSessionCategoryRequest": DeleteSessionCategoryRequest
 BaseMessage <- "DeleteSessionRequest": DeleteSessionRequest
 BaseMessage <- "DeleteSessionResponse": DeleteSessionResponse
+BaseMessage <- "DirectCallChangedNotification": DirectCallChangedNotification
+BaseMessage <- "DirectCallRequest": DirectCallRequest
+BaseMessage <- "DirectCallResponse": DirectCallResponse
 BaseMessage <- "EditMessageRequest": EditMessageRequest
 BaseMessage <- "EditMessageResponse": EditMessageResponse
 BaseMessage <- "ErrorResponse": ErrorResponse
@@ -444,6 +447,8 @@ ChatSessionUserTypingNotification.IsTyping: Boolean
 ChatSessionUserTypingNotification.SenderId: Int32
 ChatSessionUserTypingNotification.UserId: Int32
 ChatSystemContent.ActorUserId: Int32?
+ChatSystemContent.CallDurationSeconds: Int32?
+ChatSystemContent.CallEndReason: DirectCallEndReason?
 ChatSystemContent.CallId: Guid?
 ChatSystemContent.Kind: ChatSystemEventKind
 ChatSystemContent.SubjectUserId: Int32?
@@ -740,6 +745,29 @@ DeleteSessionResponse.SenderId: Int32
 DeviceInfoDTO.AppVersion: String
 DeviceInfoDTO.Name: String
 DeviceInfoDTO.Platform: String
+DirectCallAction = enum Start=0, Accept=1, Decline=2, End=3
+DirectCallChangedNotification.Call: DirectCallDTO
+DirectCallChangedNotification.SenderId: Int32
+DirectCallDTO.CallId: Guid
+DirectCallDTO.CalleeId: Int32
+DirectCallDTO.CallerId: Int32
+DirectCallDTO.ChatId: Int32
+DirectCallDTO.CreatedAt: DateTimeOffset
+DirectCallDTO.EndReason: DirectCallEndReason?
+DirectCallDTO.IsSelectedDevice: Boolean
+DirectCallDTO.Session: HybridSessionDTO
+DirectCallDTO.StartedAt: DateTimeOffset?
+DirectCallDTO.State: DirectCallState
+DirectCallEndReason = enum Completed=0, Declined=1, Cancelled=2, Missed=3, Disconnected=4
+DirectCallRequest.Action: DirectCallAction
+DirectCallRequest.CallId: Guid
+DirectCallRequest.ChatId: Int32
+DirectCallRequest.RequestId: Guid
+DirectCallRequest.SenderId: Int32
+DirectCallResponse.Call: DirectCallDTO
+DirectCallResponse.RequestId: Guid
+DirectCallResponse.SenderId: Int32
+DirectCallState = enum Ringing=0, Active=1, Ended=2
 EditMessageRequest.ChatId: Int32
 EditMessageRequest.MessageId: Int32
 EditMessageRequest.RequestId: Guid

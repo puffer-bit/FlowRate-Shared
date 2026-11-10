@@ -297,7 +297,7 @@ may not write there, 404 for a chat that does not exist and 429 for too many req
 messages: a field removed or renamed, a type changed, an enum member renumbered, a request old
 servers do not know. `MinSupported` is the oldest client version the server still serves.
 
-The current protocol version and minimum supported version are both 5. Clients using earlier
+The current protocol version and minimum supported version are both 6. Clients using earlier
 versions are rejected during the WebSocket upgrade with 426 Upgrade Required.
 
 So that no such change goes unnoticed, `ProtocolSchemaTests` describes the whole schema as text.
@@ -453,6 +453,45 @@ notifications. Read-only chat settings do not suppress server events.
 
 The server-only `IChatSessionManager.AddCallSystemMessageAsync` entry point records call start/end
 events using the same storage and delivery path. The call lifecycle must invoke it after a successful
-transition and ensure each transition is recorded once; this extension does not implement calling.
+transition and ensure each transition is recorded once; direct calls invoke this entry point as described below.
 
 `SystemContent` is an optional, backward-compatible field; protocol version remains 5.
+
+
+## Direct audio calls (protocol 6)
+
+`DirectCallRequest(ChatId, CallId, Action)` supports Start, Accept, Decline and End. The caller generates
+one nonempty GUID and reuses it on retries. Calls are supported only in Direct chats, and require
+membership independently of server roles. The caller must be connected; the recipient may be offline. Both must be free of another call or
+voice session. A competing start returns Conflict. Invitations expire after 45 seconds.
+
+`DirectCallResponse.Call` and `DirectCallChangedNotification.Call` carry Ringing, Active or Ended,
+creation/start timestamps and the outcome (Completed, Declined, Cancelled, Missed or Disconnected).
+Only the callee can accept or decline; cancellation and hangup require the selected caller/callee
+device. Accepting on another device after an answer returns Conflict. Recent completed call IDs
+are retained for harmless retries. Notifications go only to the two members, with IsSelectedDevice
+computed separately per connection. Connection identifiers never cross the protocol boundary.
+
+Accepting creates a runtime hybrid media session under the chat ID. It is omitted from channel lists
+and uses the existing SFU/WebRTC transport. Only the two selected connections may join or send media
+requests. Video and screen sharing are refused. Leaving, disconnecting the selected device or a
+graceful server shutdown closes the call and releases the media session. Calls are transient and do
+not resume after a coordinator connection is lost. Losing an SFU node follows existing media recovery.
+
+Clients show incoming calls in FlowRate's notification system with Accept and Decline actions.
+Answering, cancellation or timeout dismisses the invitation on all devices. Only the recipient hears
+the ringing signal, which respects notification muting and repeats until the invitation resolves. Android also receives encrypted high-priority
+FCM data pushes on every registered recipient device, including when disconnected. Call pushes carry
+callId, callState, recipientId and expiresAt, with a 45-second transport TTL. Android shows a system call
+notification with Accept and Decline actions while the app is in the background. An action opens the app,
+reconnects the saved recipient account using its normal authentication/certificate flow, and submits the
+call action over the authenticated connection. Active/Ended pushes dismiss the invitation; expired or
+reordered invitations are ignored. Loading the session list also restores a pending invitation for the
+reconnected recipient. Push delivery requires configured FCM/relay and a registered device; offline
+calling otherwise times out as missed. Existing Android ongoing-call foreground notifications remain in use.
+
+Accepted calls append CallStarted once. Every finished call, including unanswered invitations, appends
+CallEnded with optional CallEndReason and CallDurationSeconds. Duration is present for accepted calls.
+The DirectCallOutcomes server migration adds nullable outcome and duration columns to ChatMessages;
+existing system messages remain readable. Revisions and privacy remain unchanged. Clients localize the stored outcome.
+Protocol 6 requires updating both client and coordinator.

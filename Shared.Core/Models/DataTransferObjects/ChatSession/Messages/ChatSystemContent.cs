@@ -16,8 +16,13 @@ public sealed record ChatSystemContent
     public int? ActorUserId { get; init; }
     public int? SubjectUserId { get; init; }
     public Guid? CallId { get; init; }
+    public Shared.Models.DataTransferObjects.DirectCallEndReason? CallEndReason { get; init; }
+    public int? CallDurationSeconds { get; init; }
 
-    public bool IsValid() => Enum.IsDefined(Kind) && ActorUserId is not <= 0 && (Kind switch
+    public bool IsValid() => Enum.IsDefined(Kind)
+        && (CallEndReason == null || Enum.IsDefined(CallEndReason.Value))
+        && CallDurationSeconds is not < 0
+        && (Kind == ChatSystemEventKind.CallEnded || (CallEndReason == null && CallDurationSeconds == null)) && ActorUserId is not <= 0 && (Kind switch
     {
         ChatSystemEventKind.MemberAdded or ChatSystemEventKind.MemberRemoved =>
             ActorUserId.HasValue && SubjectUserId is > 0 && CallId == null,
@@ -36,7 +41,8 @@ public sealed record ChatSystemContent
         ChatSystemEventKind.MemberRemoved => $"User {ActorUserId} removed user {SubjectUserId}.",
         ChatSystemEventKind.MemberLeft => $"User {SubjectUserId} left the group.",
         ChatSystemEventKind.CallStarted => $"User {ActorUserId} started a call.",
-        ChatSystemEventKind.CallEnded => "The call ended.",
+        ChatSystemEventKind.CallEnded => $"Call {CallEndReason?.ToString().ToLowerInvariant() ?? "ended"}." +
+            (CallDurationSeconds is { } duration ? $" Duration: {duration} seconds." : string.Empty),
         _ => throw new InvalidOperationException("Unknown system event.")
     };
 }

@@ -35,10 +35,11 @@ public static class ProtocolVersion
     // 4: ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification;
     //    opt-in ChatViewersRequest/Response and per-subscription audience diffs.
     // 5: pinned messages and history windows; direct/group chat membership, ChangeGroup and last messages.
-    public const int Current = 5;
+    // 6: direct audio calls and device-selected call notifications.
+    public const int Current = 6;
 
     /// <summary>The oldest client version the server still serves.</summary>
-    public const int MinSupported = 5;
+    public const int MinSupported = 6;
 
     /// <summary>
     /// Request header with the client version. The server answers a version it does not serve with

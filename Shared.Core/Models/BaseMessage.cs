@@ -21,6 +21,9 @@ using Shared.Models.Responses.SessionActions.HybridSession;
 namespace Shared.Models;
 
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(DirectCallRequest), typeDiscriminator: nameof(DirectCallRequest))]
+[JsonDerivedType(typeof(DirectCallResponse), typeDiscriminator: nameof(DirectCallResponse))]
+[JsonDerivedType(typeof(DirectCallChangedNotification), typeDiscriminator: nameof(DirectCallChangedNotification))]
 
 [JsonDerivedType(typeof(ChatViewersRequest), typeDiscriminator: nameof(ChatViewersRequest))]
 [JsonDerivedType(typeof(ChatViewersResponse), typeDiscriminator: nameof(ChatViewersResponse))]
