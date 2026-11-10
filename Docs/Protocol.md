@@ -431,3 +431,28 @@ Consumers can render text or attachment previews without fetching each chat's hi
 message carries its author, sent time, ID and revision using the existing message DTO.
 
 These changes extend the protocol 5 development branch; `Current` and `MinSupported` remain 5.
+
+## System chat messages
+
+System events use the existing `ChatMessageDTO`, history, incremental revisions, last-message preview
+and `ChatSessionMessageAddedNotification`. `IsSystem` and `IsReadOnly` are true; the sender is the
+server system user (-1). Clients cannot create these messages through `NewChatMessageModel`.
+
+Optional `SystemContent` contains `Kind` (`MemberAdded`=1, `MemberRemoved`=2, `MemberLeft`=3,
+`CallStarted`=4, `CallEnded`=5), `ActorUserId`, `SubjectUserId` and `CallId`. Member events identify
+the affected user; call events identify the call by GUID. A server-ended call may have no actor.
+Clients should localize the structured event; `TextContent.Text` supplies a readable fallback.
+Older stored system messages may have no `SystemContent`.
+
+Successful group membership changes append one message per added/removed member, or a
+`MemberLeft` message for voluntary departure. Membership and messages commit atomically.
+Unchanged membership and rejected changes create no messages. Initial group creation does not
+append membership-change messages. Removed users lose access before notifications are delivered.
+System messages cannot be edited, deleted, pinned or reacted to and do not generate message push
+notifications. Read-only chat settings do not suppress server events.
+
+The server-only `IChatSessionManager.AddCallSystemMessageAsync` entry point records call start/end
+events using the same storage and delivery path. The call lifecycle must invoke it after a successful
+transition and ensure each transition is recorded once; this extension does not implement calling.
+
+`SystemContent` is an optional, backward-compatible field; protocol version remains 5.

@@ -326,6 +326,7 @@ ChatMessageDTO.ReplyContent: ChatReplyContentDTO
 ChatMessageDTO.Revision: Int64
 ChatMessageDTO.SenderUserId: Int32
 ChatMessageDTO.SentTime: DateTime
+ChatMessageDTO.SystemContent: ChatSystemContent
 ChatMessageDTO.TextContent: ChatTextContentDTO
 ChatMessageDTO.UsersIds: List<String>
 ChatMessageDTO.Video: List<ChatVideoContentDTO>
@@ -442,6 +443,11 @@ ChatSessionUserTypingNotification.ChatId: Int32
 ChatSessionUserTypingNotification.IsTyping: Boolean
 ChatSessionUserTypingNotification.SenderId: Int32
 ChatSessionUserTypingNotification.UserId: Int32
+ChatSystemContent.ActorUserId: Int32?
+ChatSystemContent.CallId: Guid?
+ChatSystemContent.Kind: ChatSystemEventKind
+ChatSystemContent.SubjectUserId: Int32?
+ChatSystemEventKind = enum MemberAdded=1, MemberRemoved=2, MemberLeft=3, CallStarted=4, CallEnded=5
 ChatTextContentDTO.CommandResult: ChatCommandResult
 ChatTextContentDTO.Text: String
 ChatTextContentDTO.Type: ChatContentType

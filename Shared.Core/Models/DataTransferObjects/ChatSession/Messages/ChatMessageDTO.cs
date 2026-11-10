@@ -38,6 +38,7 @@ public class ChatMessageDTO
     public bool IsDeleted { get; set; }
     public bool IsReadOnly { get; set; }
     public bool IsSystem { get; set; }
+    public ChatSystemContent? SystemContent { get; init; }
     public bool IsDisposable { get; set; }
 }
 
