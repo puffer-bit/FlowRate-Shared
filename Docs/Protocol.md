@@ -297,7 +297,7 @@ may not write there, 404 for a chat that does not exist and 429 for too many req
 messages: a field removed or renamed, a type changed, an enum member renumbered, a request old
 servers do not know. `MinSupported` is the oldest client version the server still serves.
 
-The current protocol version and minimum supported version are both 6. Clients using earlier
+The current protocol version and minimum supported version are both 3. Clients using earlier
 versions are rejected during the WebSocket upgrade with 426 Upgrade Required.
 
 So that no such change goes unnoticed, `ProtocolSchemaTests` describes the whole schema as text.
@@ -348,7 +348,7 @@ It is transient: no database writes, history revisions or push notifications. Cl
 pulse at most once every two seconds while the input changes, then send false after five seconds
 without changes, when the input is cleared, or when closing the chat. Switching chat views does not stop or renew activity. Receivers also expire activity
 five seconds after the last pulse, clear it on an incoming message from that author, and ignore
-activity from their own user (including other devices). Protocol version 4 requires both sides updated.
+activity from their own user (including other devices). Protocol version 3 requires both sides updated.
 
 ## Message reactions
 
@@ -367,7 +367,7 @@ required to set reactions. Older clients can still read messages and existing up
 from updated servers; older servers do not support the new request.
 
 
-### Pinned messages and history windows (protocol 5)
+### Pinned messages and history windows (protocol 3)
 
 `SetMessagePinnedRequest(ChatId, MessageId, IsPinned)` requires `ViewSessions` and
 `ManageMessages` in the chat. Repeating the current state is harmless; at most 100 messages
@@ -405,7 +405,7 @@ existing behavior. History and cache preserve the outcome. Clients animate only 
 message, once, and show the stored outcome immediately for history, sync and pinned copies.
 This optional field is backward compatible and does not change the protocol version.
 
-### Personal chats and groups (protocol 5)
+### Personal chats and groups (protocol 3)
 
 `ChatSessionDTO.Kind` distinguishes `ServerChannel` (0), `Direct` (1), and `Group` (2).
 Personal conversations belong to the coordinator and never enter the shared session category layout.
@@ -430,7 +430,7 @@ when the latest message is sent, edited, or deleted. Deletion restores the previ
 Consumers can render text or attachment previews without fetching each chat's history. The last
 message carries its author, sent time, ID and revision using the existing message DTO.
 
-These changes extend the protocol 5 development branch; `Current` and `MinSupported` remain 5.
+These changes are included in protocol 3; `Current` and `MinSupported` remain 3.
 
 ## System chat messages
 
@@ -455,10 +455,10 @@ The server-only `IChatSessionManager.AddCallSystemMessageAsync` entry point reco
 events using the same storage and delivery path. The call lifecycle must invoke it after a successful
 transition and ensure each transition is recorded once; direct calls invoke this entry point as described below.
 
-`SystemContent` is an optional, backward-compatible field; protocol version remains 5.
+`SystemContent` is an optional, backward-compatible field; protocol version remains 3.
 
 
-## Direct audio calls (protocol 6)
+## Direct audio calls (protocol 3)
 
 `DirectCallRequest(ChatId, CallId, Action)` supports Start, Accept, Decline and End. The caller generates
 one nonempty GUID and reuses it on retries. Calls are supported only in Direct chats, and require

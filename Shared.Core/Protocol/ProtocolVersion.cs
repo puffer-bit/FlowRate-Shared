@@ -32,14 +32,14 @@ public static class ProtocolVersion
     //    SharerUserId, TransportData, Candidates, Message) and Send/Edit/DeleteMessage*,
     //    ChangeHybridSessionSettingsResponse; UserAuthResponse.SecondStages instead of ServerMessage, the
     //    second-stage responses carry the user and the token only
-    // 4: ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification;
+    //    ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification;
     //    opt-in ChatViewersRequest/Response and per-subscription audience diffs.
-    // 5: pinned messages and history windows; direct/group chat membership, ChangeGroup and last messages.
-    // 6: direct audio calls and device-selected call notifications.
-    public const int Current = 6;
+    //    pinned messages and history windows; direct/group chat membership, ChangeGroup and last messages.
+    //    direct audio calls and device-selected call notifications.
+    public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>
-    public const int MinSupported = 6;
+    public const int MinSupported = 3;
 
     /// <summary>
     /// Request header with the client version. The server answers a version it does not serve with

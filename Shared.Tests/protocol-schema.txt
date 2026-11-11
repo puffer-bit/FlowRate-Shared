@@ -1,4 +1,4 @@
-version 6
+version 3
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SenderId: Int32
 ApproveUserRequest.SessionId: Int32
