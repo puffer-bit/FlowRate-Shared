@@ -31,6 +31,9 @@ BaseMessage <- "ChatHistoryWindowRequest": ChatHistoryWindowRequest
 BaseMessage <- "ChatHistoryWindowResponse": ChatHistoryWindowResponse
 BaseMessage <- "ChatMarkReadRequest": ChatMarkReadRequest
 BaseMessage <- "ChatMarkReadResponse": ChatMarkReadResponse
+BaseMessage <- "ChatMessageReadersRequest": ChatMessageReadersRequest
+BaseMessage <- "ChatMessageReadersResponse": ChatMessageReadersResponse
+BaseMessage <- "ChatPeerReadNotification": ChatPeerReadNotification
 BaseMessage <- "ChatPinnedMessagesRequest": ChatPinnedMessagesRequest
 BaseMessage <- "ChatPinnedMessagesResponse": ChatPinnedMessagesResponse
 BaseMessage <- "ChatReadStateChangedNotification": ChatReadStateChangedNotification
@@ -333,6 +336,20 @@ ChatMessageDTO.SystemContent: ChatSystemContent
 ChatMessageDTO.TextContent: ChatTextContentDTO
 ChatMessageDTO.UsersIds: List<String>
 ChatMessageDTO.Video: List<ChatVideoContentDTO>
+ChatMessageReaderDTO.ReadAt: DateTime?
+ChatMessageReaderDTO.UserId: Int32
+ChatMessageReadersRequest.ChatId: Int32
+ChatMessageReadersRequest.MessageId: Int32
+ChatMessageReadersRequest.RequestId: Guid
+ChatMessageReadersRequest.SenderId: Int32
+ChatMessageReadersResponse.Readers: List<ChatMessageReaderDTO>
+ChatMessageReadersResponse.RequestId: Guid
+ChatMessageReadersResponse.SenderId: Int32
+ChatPeerReadNotification.ChatId: Int32
+ChatPeerReadNotification.LastReadMessageId: Int32
+ChatPeerReadNotification.ReadAt: DateTime
+ChatPeerReadNotification.ReaderUserId: Int32
+ChatPeerReadNotification.SenderId: Int32
 ChatPinnedMessagesRequest.ChatId: Int32
 ChatPinnedMessagesRequest.RequestId: Guid
 ChatPinnedMessagesRequest.SenderId: Int32
@@ -341,12 +358,14 @@ ChatPinnedMessagesResponse.Messages: List<ChatMessageDTO>
 ChatPinnedMessagesResponse.RequestId: Guid
 ChatPinnedMessagesResponse.SenderId: Int32
 ChatReactionDTO.Emoji: String
+ChatReactionDTO.ReactedAt: DateTime?
 ChatReactionDTO.UserId: Int32
 ChatReadStateChangedNotification.SenderId: Int32
 ChatReadStateChangedNotification.State: ChatReadStateDTO
 ChatReadStateDTO.ChatId: Int32
 ChatReadStateDTO.LastReadMessageId: Int32
 ChatReadStateDTO.MentionCount: Int32
+ChatReadStateDTO.PeerReadMessageId: Int32
 ChatReadStateDTO.UnreadCount: Int32
 ChatReadStatesRequest.RequestId: Guid
 ChatReadStatesRequest.SenderId: Int32
@@ -775,7 +794,7 @@ EditMessageRequest.SenderId: Int32
 EditMessageRequest.Text: String
 EditMessageResponse.RequestId: Guid
 EditMessageResponse.SenderId: Int32
-ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, TargetIsHost=315, HierarchyViolation=316, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
+ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, TargetIsHost=315, HierarchyViolation=316, NotMessageAuthor=317, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
 ErrorResponse.Code: ErrorCode
 ErrorResponse.Details: String
 ErrorResponse.Fields: IDictionary<String, String[]>

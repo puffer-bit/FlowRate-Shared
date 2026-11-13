@@ -24,3 +24,11 @@ public record ChatSessionUserTypingNotification(int ChatId, int UserId, bool IsT
 /// </summary>
 public record ChatReadStateChangedNotification(ChatReadStateDTO State)
     : ChatSessionUpdatedNotification;
+
+/// <summary>
+/// Sent to the other members of a direct chat or a group when <paramref name="ReaderUserId"/> moved their
+/// read position up to <paramref name="LastReadMessageId"/> at <paramref name="ReadAt"/> (UTC). Never sent
+/// for server channels.
+/// </summary>
+public record ChatPeerReadNotification(int ChatId, int ReaderUserId, int LastReadMessageId, DateTime ReadAt)
+    : ChatSessionUpdatedNotification;

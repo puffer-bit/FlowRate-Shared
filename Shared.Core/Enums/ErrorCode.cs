@@ -115,6 +115,9 @@ public enum ErrorCode
     /// <summary>The role or the user is not below the sender's highest role.</summary>
     HierarchyViolation = 316,
 
+    /// <summary>Only the author of the message may do this, e.g. see who has read it.</summary>
+    NotMessageAuthor = 317,
+
     // Values the format allows but the server cannot use
 
     /// <summary>

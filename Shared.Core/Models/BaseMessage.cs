@@ -67,6 +67,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatSessionMessageDeletedNotification), typeDiscriminator: nameof(ChatSessionMessageDeletedNotification))]
 [JsonDerivedType(typeof(ChatSessionUserTypingNotification), typeDiscriminator: nameof(ChatSessionUserTypingNotification))]
 [JsonDerivedType(typeof(ChatReadStateChangedNotification), typeDiscriminator: nameof(ChatReadStateChangedNotification))]
+[JsonDerivedType(typeof(ChatPeerReadNotification), typeDiscriminator: nameof(ChatPeerReadNotification))]
 
 [JsonDerivedType(typeof(HybridSessionCreatedNotification), typeDiscriminator: nameof(HybridSessionCreatedNotification))]
 [JsonDerivedType(typeof(HybridSessionReconfiguredNotification), typeDiscriminator: nameof(HybridSessionReconfiguredNotification))]
@@ -158,6 +159,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatReadStatesRequest), typeDiscriminator: nameof(ChatReadStatesRequest))]
 [JsonDerivedType(typeof(ChatTypingRequest), typeDiscriminator: nameof(ChatTypingRequest))]
 [JsonDerivedType(typeof(ChatMarkReadRequest), typeDiscriminator: nameof(ChatMarkReadRequest))]
+[JsonDerivedType(typeof(ChatMessageReadersRequest), typeDiscriminator: nameof(ChatMessageReadersRequest))]
 [JsonDerivedType(typeof(DeleteMessageRequest), typeDiscriminator: nameof(DeleteMessageRequest))]
 [JsonDerivedType(typeof(EditMessageRequest), typeDiscriminator: nameof(EditMessageRequest))]
 [JsonDerivedType(typeof(SetMessageReactionRequest), typeDiscriminator: nameof(SetMessageReactionRequest))]
@@ -235,6 +237,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(ChatReadStatesResponse), typeDiscriminator: nameof(ChatReadStatesResponse))]
 [JsonDerivedType(typeof(ChatTypingResponse), typeDiscriminator: nameof(ChatTypingResponse))]
 [JsonDerivedType(typeof(ChatMarkReadResponse), typeDiscriminator: nameof(ChatMarkReadResponse))]
+[JsonDerivedType(typeof(ChatMessageReadersResponse), typeDiscriminator: nameof(ChatMessageReadersResponse))]
 [JsonDerivedType(typeof(DeleteMessageResponse), typeDiscriminator: nameof(DeleteMessageResponse))]
 [JsonDerivedType(typeof(EditMessageResponse), typeDiscriminator: nameof(EditMessageResponse))]
 [JsonDerivedType(typeof(SetMessageReactionResponse), typeDiscriminator: nameof(SetMessageReactionResponse))]

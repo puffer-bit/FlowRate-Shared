@@ -35,7 +35,8 @@ public static class ProtocolVersion
     //    chat: ChatTypingRequest and ChatSessionUserTypingNotification.IsTyping, ChatViewersRequest and
     //    ChatViewersChangedNotification, SetMessageReactionRequest, SetMessagePinnedRequest,
     //    ChatPinnedMessagesRequest, ChatHistoryWindowRequest, ChatTextContentDTO.CommandResult,
-    //    ChatMessageDTO.SystemContent; personal chats: ChatSessionDTO.Kind, MemberIds and LastMessage,
+    //    ChatMessageDTO.SystemContent; read receipts: ChatReadStateDTO.PeerReadMessageId,
+    //    ChatPeerReadNotification, ChatMessageReadersRequest, ChatReactionDTO.ReactedAt; personal chats: ChatSessionDTO.Kind, MemberIds and LastMessage,
     //    ChangeGroupRequest; DirectCallRequest and DirectCallChangedNotification; global bans:
     //    CoordinatorBansRequest, CoordinatorRevokeBanRequest and the ban fields of CoordinatorSetUserStateRequest
     //    (BanInSessionRequest and HybridSessionPeerBannedNotification removed); AV1 in hybrid media settings.
