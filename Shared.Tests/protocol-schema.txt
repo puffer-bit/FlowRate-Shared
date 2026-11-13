@@ -1188,6 +1188,7 @@ PeerDTO.State: HybridSessionPeerState
 PeerDTO.UserId: Int32
 PeerDTO.WatchedScreenShares: List<Int32>
 Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, All=262143
+PushDeclineCallRequest.CallId: Guid
 PushMarkReadRequest.ChatId: Int32
 PushMarkReadRequest.MessageId: Int32
 PushPlatform = enum Android=0, Ios=1

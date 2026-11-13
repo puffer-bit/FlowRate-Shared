@@ -287,9 +287,12 @@ token it got on registering. Bodies are serialized with the same context.
 |------|------|-----|
 | `POST /push/reply` | `PushReplyRequest` | Sends a text message to a chat |
 | `POST /push/read` | `PushMarkReadRequest` | Moves the read position, like "Mark as read" |
+| `POST /push/call/decline` | `PushDeclineCallRequest` | Declines a direct call ringing for the user, like "Decline" of an incoming call |
 
-Both answer 204 on success, 400 for an invalid body, 401 for an unknown token, 403 when the user
-may not write there, 404 for a chat that does not exist and 429 for too many requests.
+All answer 204 on success, 400 for an invalid body, 401 for an unknown token, 403 when the user
+may not write there, 404 for a chat that does not exist and 429 for too many requests. Declining a
+call answers 204 also when the call has already ended, 403 when it does not ring for the user or was
+answered on another device, and 404 for a call the server does not know.
 
 ## Versioning
 

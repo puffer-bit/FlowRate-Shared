@@ -23,6 +23,14 @@ public static class PushEndpoints
     /// stored, and the same error codes as <see cref="Reply"/>.
     /// </summary>
     public const string MarkRead = "/push/read";
+
+    /// <summary>
+    /// <c>POST</c> with a <see cref="PushDeclineCallRequest"/> body declines a direct call that rings
+    /// for the user, as the "Decline" button of an incoming call does. Answers 204 when the call is
+    /// declined or has already ended, 403 when it does not ring for the user, 404 for a call that is
+    /// not known, and the same other error codes as <see cref="Reply"/>.
+    /// </summary>
+    public const string DeclineCall = "/push/call/decline";
 }
 
 public sealed record PushReplyRequest(
@@ -32,3 +40,5 @@ public sealed record PushReplyRequest(
 public sealed record PushMarkReadRequest(
     [property: EntityId] int ChatId,
     [property: EntityId] int MessageId);
+
+public sealed record PushDeclineCallRequest(Guid CallId);

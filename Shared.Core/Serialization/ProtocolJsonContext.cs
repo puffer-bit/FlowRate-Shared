@@ -14,4 +14,5 @@ namespace Shared.Serialization;
 [JsonSerializable(typeof(BaseMessage))]
 [JsonSerializable(typeof(PushReplyRequest))]
 [JsonSerializable(typeof(PushMarkReadRequest))]
+[JsonSerializable(typeof(PushDeclineCallRequest))]
 public sealed partial class ProtocolJsonContext : JsonSerializerContext;

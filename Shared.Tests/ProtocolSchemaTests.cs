@@ -80,7 +80,8 @@ public class ProtocolSchemaTests
     {
         var lines = new SortedSet<string>(StringComparer.Ordinal);
         var seen = new HashSet<Type>();
-        var pending = new Queue<Type>([typeof(BaseMessage), typeof(PushReplyRequest), typeof(PushMarkReadRequest)]);
+        var pending = new Queue<Type>([typeof(BaseMessage), typeof(PushReplyRequest), typeof(PushMarkReadRequest),
+            typeof(PushDeclineCallRequest)]);
 
         while (pending.TryDequeue(out var type))
         {
