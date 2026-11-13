@@ -31,11 +31,16 @@ public static class ProtocolVersion
     //    FIDO2, MOTD); fields named for what they hold (User, Coordinator, Sessions, Users, TargetUserId,
     //    SharerUserId, TransportData, Candidates, Message) and Send/Edit/DeleteMessage*,
     //    ChangeHybridSessionSettingsResponse; UserAuthResponse.SecondStages instead of ServerMessage, the
-    //    second-stage responses carry the user and the token only
-    //    ChatTypingRequest/Response and IsTyping in ChatSessionUserTypingNotification;
-    //    opt-in ChatViewersRequest/Response and per-subscription audience diffs.
-    //    pinned messages and history windows; direct/group chat membership, ChangeGroup and last messages.
-    //    direct audio calls and device-selected call notifications.
+    //    second-stage responses carry the user and the token only;
+    //    chat: ChatTypingRequest and ChatSessionUserTypingNotification.IsTyping, ChatViewersRequest and
+    //    ChatViewersChangedNotification, SetMessageReactionRequest, SetMessagePinnedRequest,
+    //    ChatPinnedMessagesRequest, ChatHistoryWindowRequest, ChatTextContentDTO.CommandResult,
+    //    ChatMessageDTO.SystemContent; personal chats: ChatSessionDTO.Kind, MemberIds and LastMessage,
+    //    ChangeGroupRequest; DirectCallRequest and DirectCallChangedNotification; global bans:
+    //    CoordinatorBansRequest, CoordinatorRevokeBanRequest and the ban fields of CoordinatorSetUserStateRequest
+    //    (BanInSessionRequest and HybridSessionPeerBannedNotification removed); AV1 in hybrid media settings.
+    //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
+    //    the next breaking change after the release of 3 is 4.
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

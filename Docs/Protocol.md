@@ -300,6 +300,11 @@ servers do not know. `MinSupported` is the oldest client version the server stil
 The current protocol version and minimum supported version are both 3. Clients using earlier
 versions are rejected during the WebSocket upgrade with 426 Upgrade Required.
 
+Protocol 3 was still being shaped while pre-release builds went out: some of them announce 3
+with an earlier schema, others 4, 5 or 6. Every feature described below is part of protocol 3,
+those pre-releases are not supported and will be withdrawn. Once a release ships protocol 3,
+the next breaking change raises the version to 4.
+
 So that no such change goes unnoticed, `ProtocolSchemaTests` describes the whole schema as text.
 The description contains every type reachable from `BaseMessage`, `PushReplyRequest` and
 `PushMarkReadRequest`, with property types, `$type` discriminators and enum numbers. The test
@@ -346,9 +351,10 @@ sender must be connected and have ViewSessions and SendMessages in that chat. Ac
 only to users who can view the chat, as `ChatSessionUserTypingNotification(ChatId, UserId, IsTyping)`.
 It is transient: no database writes, history revisions or push notifications. Clients send an active
 pulse at most once every two seconds while the input changes, then send false after five seconds
-without changes, when the input is cleared, or when closing the chat. Switching chat views does not stop or renew activity. Receivers also expire activity
+without changes, when the input is cleared, or when closing the chat.
+Switching chat views does not stop or renew activity. Receivers also expire activity
 five seconds after the last pulse, clear it on an incoming message from that author, and ignore
-activity from their own user (including other devices). Protocol version 3 requires both sides updated.
+activity from their own user (including other devices).
 
 ## Message reactions
 
@@ -362,12 +368,7 @@ Changes persist in the existing reaction rows, advance the chat revision and bro
 `ChatSessionMessageEditedNotification` with the full message. They do not alter the text or EditTime.
 History and incremental synchronization include reactions as before; no database migration is needed.
 
-The protocol version is intentionally unchanged for this extension. Updated clients and servers are
-required to set reactions. Older clients can still read messages and existing update notifications
-from updated servers; older servers do not support the new request.
-
-
-### Pinned messages and history windows (protocol 3)
+## Pinned messages and history windows
 
 `SetMessagePinnedRequest(ChatId, MessageId, IsPinned)` requires `ViewSessions` and
 `ManageMessages` in the chat. Repeating the current state is harmless; at most 100 messages
@@ -399,13 +400,12 @@ Invalid arguments return `InvalidValue` without storing a message. Unknown comma
 
 `ChatTextContentDTO.CommandResult` is optional, server-owned metadata (`Kind`: Roll=1, Flip=2;
 `Minimum`, `Maximum`, `Value`). Flip uses 0=heads, 1=tails. Client-supplied results are ignored.
-`Text` contains a readable fallback with the resolved result for older clients, replies and exports.
+`Text` contains a readable fallback with the resolved result for replies, previews and exports.
 Command messages cannot be edited; deletion, replies, attachments, pins and reactions keep their
 existing behavior. History and cache preserve the outcome. Clients animate only a newly received
 message, once, and show the stored outcome immediately for history, sync and pinned copies.
-This optional field is backward compatible and does not change the protocol version.
 
-### Personal chats and groups (protocol 3)
+## Personal chats and groups
 
 `ChatSessionDTO.Kind` distinguishes `ServerChannel` (0), `Direct` (1), and `Group` (2).
 Personal conversations belong to the coordinator and never enter the shared session category layout.
@@ -430,8 +430,6 @@ when the latest message is sent, edited, or deleted. Deletion restores the previ
 Consumers can render text or attachment previews without fetching each chat's history. The last
 message carries its author, sent time, ID and revision using the existing message DTO.
 
-These changes are included in protocol 3; `Current` and `MinSupported` remain 3.
-
 ## System chat messages
 
 System events use the existing `ChatMessageDTO`, history, incremental revisions, last-message preview
@@ -455,10 +453,7 @@ The server-only `IChatSessionManager.AddCallSystemMessageAsync` entry point reco
 events using the same storage and delivery path. The call lifecycle must invoke it after a successful
 transition and ensure each transition is recorded once; direct calls invoke this entry point as described below.
 
-`SystemContent` is an optional, backward-compatible field; protocol version remains 3.
-
-
-## Direct audio calls (protocol 3)
+## Direct audio calls
 
 `DirectCallRequest(ChatId, CallId, Action)` supports Start, Accept, Decline and End. The caller generates
 one nonempty GUID and reuses it on retries. Calls are supported only in Direct chats, and require
@@ -494,4 +489,3 @@ Accepted calls append CallStarted once. Every finished call, including unanswere
 CallEnded with optional CallEndReason and CallDurationSeconds. Duration is present for accepted calls.
 The DirectCallOutcomes server migration adds nullable outcome and duration columns to ChatMessages;
 existing system messages remain readable. Revisions and privacy remain unchanged. Clients localize the stored outcome.
-Protocol 6 requires updating both client and coordinator.
