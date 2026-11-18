@@ -29,6 +29,8 @@ BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsReques
 BaseMessage <- "ChangeSessionPermissionsResponse": ChangeSessionPermissionsResponse
 BaseMessage <- "ChatHistoryWindowRequest": ChatHistoryWindowRequest
 BaseMessage <- "ChatHistoryWindowResponse": ChatHistoryWindowResponse
+BaseMessage <- "ChatLinkPreviewRequest": ChatLinkPreviewRequest
+BaseMessage <- "ChatLinkPreviewResponse": ChatLinkPreviewResponse
 BaseMessage <- "ChatMarkReadRequest": ChatMarkReadRequest
 BaseMessage <- "ChatMarkReadResponse": ChatMarkReadResponse
 BaseMessage <- "ChatMessageReadersRequest": ChatMessageReadersRequest
@@ -300,6 +302,22 @@ ChatImageContentDTO.Thumbnail: String
 ChatImageContentDTO.Type: ChatContentType
 ChatImageContentDTO.Width: Int32
 ChatKind = enum ServerChannel=0, Direct=1, Group=2
+ChatLinkPreviewDTO.Description: String
+ChatLinkPreviewDTO.HasImage: Boolean
+ChatLinkPreviewDTO.Id: Int32
+ChatLinkPreviewDTO.ImageHeight: Int32
+ChatLinkPreviewDTO.ImageWidth: Int32
+ChatLinkPreviewDTO.IsLargeImage: Boolean
+ChatLinkPreviewDTO.SiteName: String
+ChatLinkPreviewDTO.Title: String
+ChatLinkPreviewDTO.Url: String
+ChatLinkPreviewRequest.ChatId: Int32
+ChatLinkPreviewRequest.RequestId: Guid
+ChatLinkPreviewRequest.SenderId: Int32
+ChatLinkPreviewRequest.Url: String
+ChatLinkPreviewResponse.Preview: ChatLinkPreviewDTO
+ChatLinkPreviewResponse.RequestId: Guid
+ChatLinkPreviewResponse.SenderId: Int32
 ChatMarkReadRequest.ChatId: Int32
 ChatMarkReadRequest.MessageId: Int32
 ChatMarkReadRequest.RequestId: Guid
@@ -319,9 +337,11 @@ ChatMessageDTO.IsDeleted: Boolean
 ChatMessageDTO.IsDelivered: Boolean
 ChatMessageDTO.IsDisposable: Boolean
 ChatMessageDTO.IsEdited: Boolean
+ChatMessageDTO.IsLinkPreviewDisabled: Boolean
 ChatMessageDTO.IsReadOnly: Boolean
 ChatMessageDTO.IsReposted: Boolean
 ChatMessageDTO.IsSystem: Boolean
+ChatMessageDTO.LinkPreview: ChatLinkPreviewDTO
 ChatMessageDTO.MentionedUserIds: List<Int32>
 ChatMessageDTO.MentionsEveryone: Boolean
 ChatMessageDTO.MentionsHere: Boolean
@@ -788,6 +808,7 @@ DirectCallResponse.RequestId: Guid
 DirectCallResponse.SenderId: Int32
 DirectCallState = enum Ringing=0, Active=1, Ended=2
 EditMessageRequest.ChatId: Int32
+EditMessageRequest.IsLinkPreviewDisabled: Boolean?
 EditMessageRequest.MessageId: Int32
 EditMessageRequest.RequestId: Guid
 EditMessageRequest.SenderId: Int32
@@ -1171,6 +1192,7 @@ NewChatMessageModel.Files: List<NewChatFileModel>
 NewChatMessageModel.Images: List<NewChatImageModel>
 NewChatMessageModel.IsDelayed: Boolean
 NewChatMessageModel.IsDisposable: Boolean
+NewChatMessageModel.IsLinkPreviewDisabled: Boolean
 NewChatMessageModel.ReplyToMessageId: Int32?
 NewChatMessageModel.TextContent: ChatTextContentDTO
 NewChatMessageModel.Video: List<ChatVideoContentDTO>

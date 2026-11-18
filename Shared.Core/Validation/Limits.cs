@@ -54,6 +54,11 @@ public static class Limits
     public const int FileNameMaxLength = 255;
     public const int MimeTypeMaxLength = 100;
 
+    // Longer texts of a page are cut by the server
+    public const int LinkPreviewSiteNameMaxLength = 100;
+    public const int LinkPreviewTitleMaxLength = 300;
+    public const int LinkPreviewDescriptionMaxLength = 1000;
+
     // Bytes of the random id an upload is known by, written in hex
     public const int MediaUploadIdLength = 16;
 
