@@ -140,6 +140,12 @@ public enum ErrorCode
     /// </summary>
     ImageNotCompressed = 405,
 
+    /// <summary>
+    /// A video is not one the server takes uncompressed: it accepts only MP4 videos reduced to its
+    /// video side and the bitrate of that side.
+    /// </summary>
+    VideoNotCompressed = 406,
+
     // Account security
 
     /// <summary>The proof is missing or does not hold: the current password and/or one-time code.</summary>

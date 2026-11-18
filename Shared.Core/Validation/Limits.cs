@@ -55,6 +55,24 @@ public static class Limits
     public const int ChatImageCompressedSideMin = 320;
     public const int ChatImageQualityMin = 30;
     public const int ChatImageQualityMax = 100;
+
+    // What a coordinator may ask videos to be compressed to: the shorter side, like 720 for 720p
+    public const int ChatVideoCompressedSideMin = 240;
+    public const int ChatVideoCompressedSideMax = 2160;
+    public const int ChatVideoAudioKbps = 128;
+
+    /// <summary>
+    /// The video bitrate, in kbit/s, a video of <paramref name="shortSide"/> is compressed to at up to
+    /// 30 frames per second: about 2.5 Mbit/s for 720p.
+    /// </summary>
+    public static int ChatVideoKbps(int shortSide) => (int)((long)shortSide * shortSide * 16 / 9 * 27 / 10_000);
+
+    /// <summary>
+    /// The highest average bitrate, sound included, the server takes of a video of <paramref name="shortSide"/>
+    /// when it accepts only compressed ones: three times the compressed one, for 60 frames per second and
+    /// encoders that overshoot.
+    /// </summary>
+    public static int ChatVideoMaxKbps(int shortSide) => ChatVideoKbps(shortSide) * 3 + ChatVideoAudioKbps * 2;
     public const int AvatarMaxSize = 1024 * 1024;
     public const int FileNameMaxLength = 255;
     public const int MimeTypeMaxLength = 100;

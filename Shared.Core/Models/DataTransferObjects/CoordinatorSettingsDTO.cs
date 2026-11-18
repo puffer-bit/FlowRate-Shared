@@ -46,6 +46,17 @@ public class CoordinatorSettingsDTO
     /// </summary>
     public bool AllowOriginalImages { get; set; }
 
+    /// <summary>
+    /// The shorter side videos are reduced to when compressed before sending, like 720 for 720p.
+    /// </summary>
+    public int VideoMaxSide { get; set; }
+
+    /// <summary>
+    /// Videos may be sent as they are. Otherwise the server refuses one that is not an MP4 within
+    /// <see cref="VideoMaxSide"/> and its bitrate.
+    /// </summary>
+    public bool AllowOriginalVideos { get; set; }
+
     /// <summary>How many uploads one user may keep before attaching them to a message.</summary>
     public int MaxUnattachedUploadsPerUser { get; set; }
 
@@ -104,6 +115,8 @@ public class CoordinatorSettingsUpdateDTO
     public int ImageMaxSide { get; set; }
     public int ImageQuality { get; set; }
     public bool AllowOriginalImages { get; set; }
+    public int VideoMaxSide { get; set; }
+    public bool AllowOriginalVideos { get; set; }
 
     public int MaxUnattachedUploadsPerUser { get; set; }
     public int UnattachedUploadLifetimeHours { get; set; }

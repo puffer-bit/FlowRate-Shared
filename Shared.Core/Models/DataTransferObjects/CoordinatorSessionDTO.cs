@@ -45,6 +45,17 @@ public class CoordinatorSessionDTO
     /// </summary>
     public bool AllowOriginalImages { get; set; }
 
+    /// <summary>
+    /// The shorter side videos are reduced to when compressed before sending, like 720 for 720p.
+    /// </summary>
+    public int VideoMaxSide { get; set; }
+
+    /// <summary>
+    /// Videos may be sent as they are. Otherwise the server refuses one that is not an MP4 within
+    /// <see cref="VideoMaxSide"/> and its bitrate.
+    /// </summary>
+    public bool AllowOriginalVideos { get; set; }
+
     /// <summary>The revision of the stored settings these values come from.</summary>
     public long SettingsRevision { get; set; }
 }
