@@ -35,6 +35,17 @@ public class CoordinatorSettingsDTO
     /// <summary>0 when the media storage is not limited.</summary>
     public long StorageQuotaBytes { get; set; }
 
+    /// <summary>The longest side images are reduced to when compressed before sending.</summary>
+    public int ImageMaxSide { get; set; }
+
+    /// <summary>The JPEG or WebP quality of compressed images, from 30 to 100.</summary>
+    public int ImageQuality { get; set; }
+
+    /// <summary>
+    /// Images may be sent as they are. Otherwise the server refuses any larger than <see cref="ImageMaxSide"/>.
+    /// </summary>
+    public bool AllowOriginalImages { get; set; }
+
     /// <summary>How many uploads one user may keep before attaching them to a message.</summary>
     public int MaxUnattachedUploadsPerUser { get; set; }
 
@@ -89,6 +100,10 @@ public class CoordinatorSettingsUpdateDTO
 
     public long MaxFileSizeBytes { get; set; }
     public long StorageQuotaBytes { get; set; }
+
+    public int ImageMaxSide { get; set; }
+    public int ImageQuality { get; set; }
+    public bool AllowOriginalImages { get; set; }
 
     public int MaxUnattachedUploadsPerUser { get; set; }
     public int UnattachedUploadLifetimeHours { get; set; }

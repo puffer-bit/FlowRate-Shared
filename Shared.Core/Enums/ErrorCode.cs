@@ -134,6 +134,12 @@ public enum ErrorCode
     AttachmentInvalid = 403,
     UnsupportedMedia = 404,
 
+    /// <summary>
+    /// An image is larger than the server takes uncompressed: it accepts only images reduced to its
+    /// image side limit.
+    /// </summary>
+    ImageNotCompressed = 405,
+
     // Account security
 
     /// <summary>The proof is missing or does not hold: the current password and/or one-time code.</summary>
