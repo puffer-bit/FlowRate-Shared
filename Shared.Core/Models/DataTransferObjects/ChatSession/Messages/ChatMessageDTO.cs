@@ -23,6 +23,15 @@ public class ChatMessageDTO
     public required List<ChatVideoContentDTO> Video { get; init; }
     public required List<ChatFileContentDTO> Files { get; init; }
 
+    /// <summary>
+    /// The preview of the first address in the text. It comes a moment after the message, in a change
+    /// of it, once the server has fetched the page; null when there is none.
+    /// </summary>
+    public ChatLinkPreviewDTO? LinkPreview { get; set; }
+
+    /// <summary>The author sent the message without a preview of its link.</summary>
+    public bool IsLinkPreviewDisabled { get; set; }
+
     public required List<ChatReactionDTO> Reactions { get; init; }
     public required List<string> UsersIds { get; init; }
 

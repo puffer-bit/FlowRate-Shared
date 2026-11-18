@@ -25,6 +25,13 @@ public static class MediaEndpoints
     /// </summary>
     public const string Avatars = "/media/avatars";
 
+    /// <summary>
+    /// <c>GET {LinkPreviewImages}/{id}</c> returns the image of a link preview, by
+    /// <see cref="DataTransferObjects.ChatSession.Messages.Content.ChatLinkPreviewDTO.Id"/>. A preview never
+    /// changes, so what was fetched once stays valid.
+    /// </summary>
+    public const string LinkPreviewImages = "/media/link-previews";
+
     public const string VariantParameter = "variant";
     public const string VariantOriginal = "original";
     public const string VariantPreview = "preview";

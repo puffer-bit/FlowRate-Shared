@@ -29,6 +29,9 @@ public class NewChatMessageModel : IValidatableObject
     public bool IsDelayed { get; set; }
     public bool IsDisposable { get; set; }
 
+    /// <summary>The message goes without a preview of its link, as the author closed it in the composer.</summary>
+    public bool IsLinkPreviewDisabled { get; set; }
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var attachments = Images.Count + Video.Count + Files.Count;

@@ -279,6 +279,7 @@ an endpoint answers 401.
 | `/media/uploads` | Uploads by the tus protocol 1.0.0. `Upload-Metadata` keys are in `MediaUploadMetadata` (`chatId`, `mimeType`, `kind`) |
 | `GET /media/images/{id}?variant=original\|preview` | An image of a chat message; byte ranges supported |
 | `GET /media/avatars/{id}` | A user avatar; a new avatar has a new id, so a fetched one never changes |
+| `GET /media/link-previews/{id}` | The image of a link preview; a preview never changes, so a fetched one stays valid |
 
 **Push** (`PushEndpoints`). A device answers a notification without a connection, using the reply
 token it got on registering. Bodies are serialized with the same context.
@@ -370,6 +371,30 @@ state does not write a revision or broadcast another update. A user can react wi
 Changes persist in the existing reaction rows, advance the chat revision and broadcast the existing
 `ChatSessionMessageEditedNotification` with the full message. They do not alter the text or EditTime.
 History and incremental synchronization include reactions as before; no database migration is needed.
+
+## Link previews
+
+A message shows a preview of the first web address in its text, as `ChatLinkPreviewDTO`: the site
+name, title, description and an image of the page. Client and server find the address with the same
+`ChatLinks.PreviewTarget`.
+
+The server makes previews. A sent or edited message is stored and broadcast at once; the server then
+fetches the page in the background and puts the preview into the message as an ordinary change (a
+new revision, no `EditTime`). Pages are cached by address for a day, so the same link in another
+message or chat is not fetched again.
+
+The composer asks for the preview of the address being typed with
+`ChatLinkPreviewRequest(ChatId, Url)`, answered by `ChatLinkPreviewResponse(Preview)`; `Preview` is
+null when the page has nothing to show or cannot be fetched. It needs the rights to send messages
+there. A message sent with the same address then carries the preview from the cache.
+
+The author can send a message without its preview (`NewChatMessageModel.IsLinkPreviewDisabled`) and
+turn it off or back on when editing (`EditMessageRequest.IsLinkPreviewDisabled`, null leaves it as it
+was). `ChatMessageDTO.IsLinkPreviewDisabled` tells that it was turned off.
+
+The server fetches only http and https on ports 80 and 443, never addresses of its own networks
+(loopback, private, link-local and similar ranges, checked on every connection and redirect), with
+a short timeout and limits on the size of the page and the image.
 
 ## Pinned messages and history windows
 
