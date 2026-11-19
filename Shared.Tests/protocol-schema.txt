@@ -137,6 +137,8 @@ BaseMessage <- "HybridSessionJoinRequest": HybridSessionJoinRequest
 BaseMessage <- "HybridSessionJoinResponse": HybridSessionJoinResponse
 BaseMessage <- "HybridSessionLeaveRequest": HybridSessionLeaveRequest
 BaseMessage <- "HybridSessionLeaveResponse": HybridSessionLeaveResponse
+BaseMessage <- "HybridSessionMovePeerRequest": HybridSessionMovePeerRequest
+BaseMessage <- "HybridSessionMovePeerResponse": HybridSessionMovePeerResponse
 BaseMessage <- "HybridSessionPeerAfkChangedNotification": HybridSessionPeerAfkChangedNotification
 BaseMessage <- "HybridSessionPeerApprovedNotification": HybridSessionPeerApprovedNotification
 BaseMessage <- "HybridSessionPeerIdleKickedNotification": HybridSessionPeerIdleKickedNotification
@@ -922,6 +924,16 @@ HybridSessionLeaveRequest.SenderId: Int32
 HybridSessionLeaveRequest.SessionId: Int32
 HybridSessionLeaveResponse.RequestId: Guid
 HybridSessionLeaveResponse.SenderId: Int32
+HybridSessionMovePeerRequest.RequestId: Guid
+HybridSessionMovePeerRequest.SenderId: Int32
+HybridSessionMovePeerRequest.SessionId: Int32
+HybridSessionMovePeerRequest.TargetSessionId: Int32
+HybridSessionMovePeerRequest.TargetUserId: Int32
+HybridSessionMovePeerResponse.RequestId: Guid
+HybridSessionMovePeerResponse.SenderId: Int32
+HybridSessionMovePeerResponse.SessionId: Int32
+HybridSessionMovePeerResponse.TargetSessionId: Int32
+HybridSessionMovePeerResponse.TargetUserId: Int32
 HybridSessionNodeState = enum Active=0, WaitingForSFUNode=1
 HybridSessionPeerAfkChangedNotification.IsAfk: Boolean
 HybridSessionPeerAfkChangedNotification.Reason: String
@@ -958,12 +970,14 @@ HybridSessionPeerMicrophoneMuteChangedNotification.SenderId: Int32
 HybridSessionPeerMicrophoneMuteChangedNotification.SessionId: Int32
 HybridSessionPeerMicrophoneMuteChangedNotification.UserId: Int32
 HybridSessionPeerMovedInNotification.InitiatorUserId: Int32?
+HybridSessionPeerMovedInNotification.Peer: PeerDTO
 HybridSessionPeerMovedInNotification.SenderId: Int32
 HybridSessionPeerMovedInNotification.SessionId: Int32
-HybridSessionPeerMovedInNotification.UserId: Int32
+HybridSessionPeerMovedInNotification.SourceSessionId: Int32
 HybridSessionPeerMovedOutNotification.InitiatorUserId: Int32?
 HybridSessionPeerMovedOutNotification.SenderId: Int32
 HybridSessionPeerMovedOutNotification.SessionId: Int32
+HybridSessionPeerMovedOutNotification.TargetSessionId: Int32
 HybridSessionPeerMovedOutNotification.UserId: Int32
 HybridSessionPeerPokedNotification.InitiatorUserId: Int32
 HybridSessionPeerPokedNotification.Message: String
@@ -1250,7 +1264,7 @@ PeerDTO.Outbounds: Dictionary<String, Outbound>
 PeerDTO.State: HybridSessionPeerState
 PeerDTO.UserId: Int32
 PeerDTO.WatchedScreenShares: List<Int32>
-Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, All=262143
+Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, MoveMembers=262144, All=524287
 PushDeclineCallRequest.CallId: Guid
 PushMarkReadRequest.ChatId: Int32
 PushMarkReadRequest.MessageId: Int32

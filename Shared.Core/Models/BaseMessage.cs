@@ -198,6 +198,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionSetSoundMuteRequest), typeDiscriminator: nameof(HybridSessionSetSoundMuteRequest))]
 [JsonDerivedType(typeof(HybridSessionSetAfkRequest), typeDiscriminator: nameof(HybridSessionSetAfkRequest))]
 [JsonDerivedType(typeof(HybridSessionPokeRequest), typeDiscriminator: nameof(HybridSessionPokeRequest))]
+[JsonDerivedType(typeof(HybridSessionMovePeerRequest), typeDiscriminator: nameof(HybridSessionMovePeerRequest))]
 
 
 // Responses
@@ -273,6 +274,7 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(HybridSessionSetSoundMuteResponse), typeDiscriminator: nameof(HybridSessionSetSoundMuteResponse))]
 [JsonDerivedType(typeof(HybridSessionSetAfkResponse), typeDiscriminator: nameof(HybridSessionSetAfkResponse))]
 [JsonDerivedType(typeof(HybridSessionPokeResponse), typeDiscriminator: nameof(HybridSessionPokeResponse))]
+[JsonDerivedType(typeof(HybridSessionMovePeerResponse), typeDiscriminator: nameof(HybridSessionMovePeerResponse))]
 
 
 [JsonDerivedType(typeof(ErrorResponse), typeDiscriminator: nameof(ErrorResponse))]

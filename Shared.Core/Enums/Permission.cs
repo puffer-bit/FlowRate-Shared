@@ -56,9 +56,16 @@ public enum Permission : ulong
     /// <summary>Poke other peers of a hybrid session.</summary>
     PokeMembers = 1UL << 17,
 
+    /// <summary>
+    /// Move a peer of a hybrid session to another hybrid session, past its capacity and approval. Only a user
+    /// who already takes part in a session can be moved. Also lets one join a full hybrid session oneself;
+    /// approval still holds then.
+    /// </summary>
+    MoveMembers = 1UL << 18,
+
     All = Administrator | ViewCoordinatorSettings | ManageCoordinatorSettings | ManageRoles | CreateSessions
           | ManageSessions | KickMembers | BanMembers | ApproveMembers | ManageMessages | ManageUsers
-          | ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers,
+          | ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers | MoveMembers,
 
     /// <summary>What the everyone role has on a new coordinator, and what it gains on an older one.</summary>
     Default = ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers,
