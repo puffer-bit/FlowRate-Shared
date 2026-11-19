@@ -36,10 +36,21 @@ public record HybridSessionPeerApprovedNotification(int SessionId, int UserId, i
 public record HybridSessionPeerRejectedNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionPeerMovedOutNotification(int SessionId, int UserId, int? InitiatorUserId = null)
+/// <summary>
+/// The peer <paramref name="UserId"/> was moved out of <paramref name="SessionId"/> to
+/// <paramref name="TargetSessionId"/>. Its media in <paramref name="SessionId"/> is gone; the client of the moved
+/// user joins <paramref name="TargetSessionId"/>, where a place is kept for it for a while.
+/// </summary>
+public record HybridSessionPeerMovedOutNotification(int SessionId, int UserId, int TargetSessionId,
+    int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionPeerMovedInNotification(int SessionId, int UserId, int? InitiatorUserId = null)
+/// <summary>
+/// The peer was moved into <paramref name="SessionId"/> from <paramref name="SourceSessionId"/>. It waits for its
+/// client to join (<see cref="Enums.HybridSessionPeerState.WaitingForServer"/>) and leaves if it does not in time.
+/// </summary>
+public record HybridSessionPeerMovedInNotification(int SessionId, PeerDTO Peer, int SourceSessionId,
+    int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
 
 
