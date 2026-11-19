@@ -681,6 +681,7 @@ CoordinatorSettingsDTO.UnattachedUploadLifetimeHours: Int32
 CoordinatorSettingsDTO.VideoMaxSide: Int32
 CoordinatorSettingsRequest.RequestId: Guid
 CoordinatorSettingsRequest.SenderId: Int32
+CoordinatorSettingsResponse.DatabaseProvider: String
 CoordinatorSettingsResponse.RequestId: Guid
 CoordinatorSettingsResponse.SFUNodes: IList<SFUNodeDTO>
 CoordinatorSettingsResponse.SenderId: Int32

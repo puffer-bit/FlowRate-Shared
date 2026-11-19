@@ -365,9 +365,14 @@ activity from their own user (including other devices).
 ## Message reactions
 
 `SetMessageReactionRequest(ChatId, MessageId, Emoji, IsAdded)` sets or removes the authenticated
-sender's reaction and is acknowledged by `SetMessageReactionResponse`. The reaction palette is
-`ChatReactionEmoji.All`. The sender needs ViewSessions and SendMessages in that chat. Archived
-and read-only chats and system, deleted or read-only messages reject changes. Repeating the same
+sender's reaction and is acknowledged by `SetMessageReactionResponse`.
+`ChatReactionEmoji.All` supplies the eight default quick choices. A reaction may be any single
+Unicode Emoji 16.0 sequence accepted by `ChatReactionEmoji.IsSupported`, including skin tones,
+joined emoji, flags and keycaps. Fully qualified, minimally qualified and unqualified forms are
+accepted and preserved as submitted; standalone components, plain text and multiple emoji are
+rejected. The existing 32 UTF-16 code unit limit remains in place. The sender needs ViewSessions
+and SendMessages in that chat. Archived and read-only chats and system, deleted or read-only
+messages reject changes. Repeating the same
 state does not write a revision or broadcast another update. A user can react with multiple emoji.
 
 Changes persist in the existing reaction rows, advance the chat revision and broadcast the existing
@@ -519,3 +524,12 @@ Accepted calls append CallStarted once. Every finished call, including unanswere
 CallEnded with optional CallEndReason and CallDurationSeconds. Duration is present for accepted calls.
 The DirectCallOutcomes server migration adds nullable outcome and duration columns to ChatMessages;
 existing system messages remain readable. Revisions and privacy remain unchanged. Clients localize the stored outcome.
+
+## Server database information
+
+`CoordinatorSettingsResponse.DatabaseProvider` is the read-only database name (`SQLite` or
+`PostgreSQL`), read from the server's database configuration. It is separate from the editable
+coordinator settings and is not accepted by `CoordinatorUpdateSettingsRequest`. It contains no
+connection string, host, credentials or database path. The existing ViewCoordinatorSettings
+permission guards the response. Clients must handle null or missing values from earlier servers.
+This optional response field and the expanded reaction acceptance remain part of protocol 3.

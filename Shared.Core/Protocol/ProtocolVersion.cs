@@ -40,6 +40,8 @@ public static class ProtocolVersion
     //    ChangeGroupRequest; DirectCallRequest and DirectCallChangedNotification; global bans:
     //    CoordinatorBansRequest, CoordinatorRevokeBanRequest and the ban fields of CoordinatorSetUserStateRequest
     //    (BanInSessionRequest and HybridSessionPeerBannedNotification removed); AV1 in hybrid media settings.
+    //    CoordinatorSettingsResponse.DatabaseProvider (read-only, optional); reactions accept Unicode emoji
+    //    beyond the default quick choices, without changing their message format.
     //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
     //    the next breaking change after the release of 3 is 4.
     public const int Current = 3;

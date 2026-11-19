@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
+using Shared.Models.DataTransferObjects.ChatSession.Messages.Reactions;
 
 namespace Shared.Models.Requests.SessionActions.ChatSession;
 
@@ -8,7 +9,7 @@ namespace Shared.Models.Requests.SessionActions.ChatSession;
 public record SetMessageReactionRequest(
     [property: EntityId] int ChatId,
     [property: EntityId] int MessageId,
-    [property: Required, NotBlank, StringLength(32), NoControlCharacters] string Emoji,
+    [property: Required, NotBlank, StringLength(ChatReactionEmoji.MaxLength), NoControlCharacters, ReactionEmoji] string Emoji,
     bool IsAdded
 ) : ChatSessionRequest
 {
