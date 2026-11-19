@@ -16,6 +16,8 @@ public static class MediaEndpoints
 
     /// <summary>
     /// <c>GET {Files}/{id}</c> returns a file of a message, to be saved and not shown; byte ranges are supported.
+    /// <c>GET {Files}/{id}?variant=preview</c> returns the frame a video is shown with, when
+    /// <see cref="DataTransferObjects.ChatSession.Messages.Content.ChatFileVideoDTO.HasPreview"/> says it has one.
     /// </summary>
     public const string Files = "/media/files";
 

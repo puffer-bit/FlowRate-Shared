@@ -278,6 +278,8 @@ an endpoint answers 401.
 |------|-----|
 | `/media/uploads` | Uploads by the tus protocol 1.0.0. `Upload-Metadata` keys are in `MediaUploadMetadata` (`chatId`, `mimeType`, `kind`) |
 | `GET /media/images/{id}?variant=original\|preview` | An image of a chat message; byte ranges supported |
+| `GET /media/files/{id}` | A file of a chat message, to be saved; byte ranges supported, so a video plays while it downloads |
+| `GET /media/files/{id}?variant=preview` | The frame a video is shown with, when `ChatFileVideoDTO.HasPreview` says it has one. The sender uploads it as `imagePreview` and names it in `NewChatFileModel.PreviewUploadId` |
 | `GET /media/avatars/{id}` | A user avatar; a new avatar has a new id, so a fetched one never changes |
 | `GET /media/link-previews/{id}` | The image of a link preview; a preview never changes, so a fetched one stays valid |
 

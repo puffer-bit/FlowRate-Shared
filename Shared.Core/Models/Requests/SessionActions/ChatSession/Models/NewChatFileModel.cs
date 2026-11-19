@@ -14,4 +14,11 @@ public class NewChatFileModel
 
     [Required, NotBlank, StringLength(Limits.FileNameMaxLength), NoControlCharacters]
     public required string FileName { get; init; }
+
+    /// <summary>
+    /// A frame of a video, uploaded as <see cref="Media.MediaUploadMetadata.KindImagePreview"/>, shown in its
+    /// place until it is played. Only a file that plays as a video carries one.
+    /// </summary>
+    [StringLength(Limits.MediaUploadIdLength * 2), HexBytes(Limits.MediaUploadIdLength)]
+    public string? PreviewUploadId { get; init; }
 }
