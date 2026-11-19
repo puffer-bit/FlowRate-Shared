@@ -279,6 +279,11 @@ ChatFileContentDTO.Id: Int32
 ChatFileContentDTO.MimeType: String
 ChatFileContentDTO.Size: Int64
 ChatFileContentDTO.Type: ChatContentType
+ChatFileContentDTO.Video: ChatFileVideoDTO
+ChatFileVideoDTO.Duration: TimeSpan?
+ChatFileVideoDTO.HasPreview: Boolean
+ChatFileVideoDTO.Height: Int32
+ChatFileVideoDTO.Width: Int32
 ChatHistoryDirection = enum Before=0, After=1, Around=2
 ChatHistoryWindowRequest.ChatId: Int32
 ChatHistoryWindowRequest.Direction: ChatHistoryDirection
@@ -1193,6 +1198,7 @@ MoveSessionRequest.RequestId: Guid
 MoveSessionRequest.SenderId: Int32
 MoveSessionRequest.SessionId: Int32
 NewChatFileModel.FileName: String
+NewChatFileModel.PreviewUploadId: String
 NewChatFileModel.UploadId: String
 NewChatImageModel.Description: String
 NewChatImageModel.FileName: String

@@ -47,7 +47,7 @@ public class NewChatMessageModel : IValidatableObject
             yield return new ValidationResult("Video attachments are not supported.");
 
         var uploads = Images.SelectMany(image => new[] { image.UploadId, image.PreviewUploadId })
-            .Concat(Files.Select(file => file.UploadId))
+            .Concat(Files.SelectMany(file => file.PreviewUploadId is { } preview ? new[] { file.UploadId, preview } : [file.UploadId]))
             .ToList();
         if (uploads.Distinct(StringComparer.OrdinalIgnoreCase).Count() != uploads.Count)
             yield return new ValidationResult("An upload is attached once.", [nameof(Images), nameof(Files)]);

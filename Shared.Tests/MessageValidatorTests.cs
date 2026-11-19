@@ -234,6 +234,8 @@ public class MessageValidatorTests
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")], Files = [File("B")] }), "attached once" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a"), File("A")] }), "attached once" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a", "bad\u0001name")] }), "FileName" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = File("a").UploadId, FileName = "a.mp4", PreviewUploadId = File("A").UploadId }] }), "attached once" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = File("a").UploadId, FileName = "a.mp4", PreviewUploadId = "not-hex" }] }), "PreviewUploadId" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = "not-hex", FileName = "a.txt" }] }), "UploadId" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => File($"a{i:x}")).ToList() }), "Files" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, IsDelayed = true }), "DelayedSentTime" },
