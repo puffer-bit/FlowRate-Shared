@@ -306,11 +306,21 @@ public class MessageValidatorTests
     public void EmptyGuids_AreRefused()
     {
         Assert.False(MessageValidator.TryValidate(
-            new Shared.Models.Requests.Coordinator.CoordinatorRevokeBanRequest(Guid.Empty), out _));
+            new CoordinatorRevokeBanRequest(Guid.Empty), out _));
         Assert.False(MessageValidator.TryValidate(
-            new Shared.Models.Requests.Coordinator.CoordinatorRevokeBanRequest(Guid.NewGuid()) { RequestId = Guid.Empty }, out var errors));
+            new CoordinatorRevokeBanRequest(Guid.NewGuid()) { RequestId = Guid.Empty }, out var errors));
         Assert.Contains(errors, error => error.Contains("RequestId"));
         Assert.True(MessageValidator.TryValidate(
-            new Shared.Models.Requests.Coordinator.CoordinatorRevokeBanRequest(Guid.NewGuid()), out _));
+            new CoordinatorRevokeBanRequest(Guid.NewGuid()), out _));
+    }
+
+    [Fact]
+    public void SetUserState_OnlyFreezesOrReinstates()
+    {
+        Assert.True(MessageValidator.TryValidate(new CoordinatorSetUserStateRequest(2, Shared.Enums.User.UserState.Suspended), out _));
+        Assert.True(MessageValidator.TryValidate(new CoordinatorSetUserStateRequest(2, Shared.Enums.User.UserState.Normal), out _));
+        Assert.False(MessageValidator.TryValidate(new CoordinatorSetUserStateRequest(2, Shared.Enums.User.UserState.Banned), out _));
+        Assert.True(MessageValidator.TryValidate(new CoordinatorBanRequest(2, Shared.Enums.User.BanKind.Ip, "spam"), out _));
+        Assert.False(MessageValidator.TryValidate(new CoordinatorBanRequest(2, Shared.Enums.User.BanKind.Ip, new string('a', 1001)), out _));
     }
 }

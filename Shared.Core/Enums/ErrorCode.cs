@@ -75,6 +75,9 @@ public enum ErrorCode
     /// <summary>The direct call is not known, or ended long ago.</summary>
     CallNotFound = 211,
 
+    /// <summary>The ban to lift is not known, or has expired.</summary>
+    BanNotFound = 212,
+
     // The state of things does not allow the request
 
     /// <summary>

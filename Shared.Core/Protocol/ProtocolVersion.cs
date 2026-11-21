@@ -48,6 +48,8 @@ public static class ProtocolVersion
     //    Release preparation: ErrorCode.UnsupportedRequest for requests the server does not know;
     //    LeaveGroupRequest instead of ChangeGroupRequest.Leave; CallNotFound, CallBusy and
     //    CallAnsweredElsewhere for direct calls (TargetIsHost removed); empty GUIDs refused.
+    //    Bans: CoordinatorBanRequest instead of the ban fields of CoordinatorSetUserStateRequest, which only
+    //    freezes and reinstates; BanNotFound; the BannedIps settings field removed (IP bans are bans).
     //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
     //    the next breaking change after the release of 3 is 4.
     public const int Current = 3;

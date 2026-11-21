@@ -25,7 +25,6 @@ public class CoordinatorSettingsDTO
     public string? MOTDText { get; set; }
 
     public List<string> AllowedIps { get; set; } = [];
-    public List<string> BannedIps { get; set; } = [];
 
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
@@ -102,9 +101,6 @@ public class CoordinatorSettingsUpdateDTO
 
     [Required, ItemCount(Limits.IpListMaxCount)]
     public List<string> AllowedIps { get; set; } = [];
-
-    [Required, ItemCount(Limits.IpListMaxCount)]
-    public List<string> BannedIps { get; set; } = [];
 
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }

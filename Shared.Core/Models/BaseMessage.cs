@@ -124,6 +124,8 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorSetUserStatusRequest), typeDiscriminator: nameof(CoordinatorSetUserStatusRequest))]
 [JsonDerivedType(typeof(CoordinatorBansRequest), typeDiscriminator: nameof(CoordinatorBansRequest))]
 [JsonDerivedType(typeof(CoordinatorRevokeBanRequest), typeDiscriminator: nameof(CoordinatorRevokeBanRequest))]
+[JsonDerivedType(typeof(CoordinatorBanRequest), typeDiscriminator: nameof(CoordinatorBanRequest))]
+[JsonDerivedType(typeof(CoordinatorBanResponse), typeDiscriminator: nameof(CoordinatorBanResponse))]
 [JsonDerivedType(typeof(CoordinatorBansResponse), typeDiscriminator: nameof(CoordinatorBansResponse))]
 [JsonDerivedType(typeof(CoordinatorRevokeBanResponse), typeDiscriminator: nameof(CoordinatorRevokeBanResponse))]
 [JsonDerivedType(typeof(CoordinatorSetUserStateRequest), typeDiscriminator: nameof(CoordinatorSetUserStateRequest))]

@@ -62,6 +62,8 @@ BaseMessage <- "ChatViewersChangedNotification": ChatViewersChangedNotification
 BaseMessage <- "ChatViewersRequest": ChatViewersRequest
 BaseMessage <- "ChatViewersResponse": ChatViewersResponse
 BaseMessage <- "CoordinatorAssignRoleRequest": CoordinatorAssignRoleRequest
+BaseMessage <- "CoordinatorBanRequest": CoordinatorBanRequest
+BaseMessage <- "CoordinatorBanResponse": CoordinatorBanResponse
 BaseMessage <- "CoordinatorBansRequest": CoordinatorBansRequest
 BaseMessage <- "CoordinatorBansResponse": CoordinatorBansResponse
 BaseMessage <- "CoordinatorChangeUsernameRequest": CoordinatorChangeUsernameRequest
@@ -536,6 +538,17 @@ CoordinatorAssignRoleRequest.RequestId: Guid
 CoordinatorAssignRoleRequest.RoleId: Int32
 CoordinatorAssignRoleRequest.SenderId: Int32
 CoordinatorAssignRoleRequest.TargetUserId: Int32
+CoordinatorBanRequest.Address: String
+CoordinatorBanRequest.ExpiresAt: DateTime?
+CoordinatorBanRequest.Kind: BanKind
+CoordinatorBanRequest.Reason: String
+CoordinatorBanRequest.RequestId: Guid
+CoordinatorBanRequest.SenderId: Int32
+CoordinatorBanRequest.TargetUserId: Int32
+CoordinatorBanResponse.Ban: BanDTO
+CoordinatorBanResponse.RequestId: Guid
+CoordinatorBanResponse.SenderId: Int32
+CoordinatorBanResponse.User: UserDTO
 CoordinatorBansRequest.RequestId: Guid
 CoordinatorBansRequest.SenderId: Int32
 CoordinatorBansResponse.Bans: List<BanDTO>
@@ -639,10 +652,6 @@ CoordinatorSetAvatarRequest.UploadId: String
 CoordinatorSetAvatarResponse.RequestId: Guid
 CoordinatorSetAvatarResponse.SenderId: Int32
 CoordinatorSetAvatarResponse.User: UserDTO
-CoordinatorSetUserStateRequest.Address: String
-CoordinatorSetUserStateRequest.ExpiresAt: DateTime?
-CoordinatorSetUserStateRequest.Kind: BanKind
-CoordinatorSetUserStateRequest.Reason: String
 CoordinatorSetUserStateRequest.RequestId: Guid
 CoordinatorSetUserStateRequest.SenderId: Int32
 CoordinatorSetUserStateRequest.State: UserState
@@ -660,7 +669,6 @@ CoordinatorSetUserStatusResponse.User: UserDTO
 CoordinatorSettingsDTO.AllowOriginalImages: Boolean
 CoordinatorSettingsDTO.AllowOriginalVideos: Boolean
 CoordinatorSettingsDTO.AllowedIps: List<String>
-CoordinatorSettingsDTO.BannedIps: List<String>
 CoordinatorSettingsDTO.HeartbeatIntervalSeconds: Int32
 CoordinatorSettingsDTO.HeartbeatTimeoutSeconds: Int32
 CoordinatorSettingsDTO.ImageMaxSide: Int32
@@ -692,7 +700,6 @@ CoordinatorSettingsResponse.Settings: CoordinatorSettingsDTO
 CoordinatorSettingsUpdateDTO.AllowOriginalImages: Boolean
 CoordinatorSettingsUpdateDTO.AllowOriginalVideos: Boolean
 CoordinatorSettingsUpdateDTO.AllowedIps: List<String>
-CoordinatorSettingsUpdateDTO.BannedIps: List<String>
 CoordinatorSettingsUpdateDTO.HeartbeatIntervalSeconds: Int32
 CoordinatorSettingsUpdateDTO.HeartbeatTimeoutSeconds: Int32
 CoordinatorSettingsUpdateDTO.ImageMaxSide: Int32
@@ -839,7 +846,7 @@ EditMessageRequest.SenderId: Int32
 EditMessageRequest.Text: String
 EditMessageResponse.RequestId: Guid
 EditMessageResponse.SenderId: Int32
-ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, UnsupportedRequest=9, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, CallNotFound=211, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, HierarchyViolation=316, NotMessageAuthor=317, CallBusy=318, CallAnsweredElsewhere=319, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ImageNotCompressed=405, VideoNotCompressed=406, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
+ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, UnsupportedRequest=9, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, CallNotFound=211, BanNotFound=212, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, HierarchyViolation=316, NotMessageAuthor=317, CallBusy=318, CallAnsweredElsewhere=319, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ImageNotCompressed=405, VideoNotCompressed=406, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
 ErrorResponse.Code: ErrorCode
 ErrorResponse.Details: String
 ErrorResponse.Fields: IDictionary<String, String[]>
