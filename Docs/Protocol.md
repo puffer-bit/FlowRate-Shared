@@ -28,7 +28,7 @@ rules they follow, and what to check when you change them.
 ```
 client                                          coordinator
   │  GET wss://host:port/                            │
-  │  FlowRate-Protocol: 1                            │
+  │  FlowRate-Protocol: 3                            │
   │ ───────────────────────────────────────────────► │
   │                                                  │  version served?
   │ ◄─── 101 Switching Protocols ─────────────────── │  yes
@@ -67,7 +67,7 @@ Each WebSocket text message is one JSON object, a `BaseMessage`:
 | Rule | Detail |
 |------|--------|
 | `$type` comes first | It names the concrete record, exactly its C# type name. A reader rejects an object whose `$type` is not the first property |
-| Unknown `$type` | Deserialization fails with a `JsonException`. A new message type therefore needs a new version, see [Versioning](#versioning) |
+| Unknown `$type` | Deserialization fails with a `JsonException`. The server answers such a message with `ErrorResponse` and `UnsupportedRequest` when it can read its `RequestId`, and a request it reads but does not serve the same way; a client drops a notification it cannot read. See [Versioning](#versioning) |
 | Property names | PascalCase, as in C#. Reading ignores case |
 | Unknown properties | Ignored when reading |
 | Enums | Written as numbers, not names. Renumbering a member is a breaking change |
@@ -114,7 +114,7 @@ a code is about (`SessionNotFound` of a join is the session to join):
 
 | Codes | Group |
 |-------|-------|
-| 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled` |
+| 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled`, `UnsupportedRequest` (the server does not know the request: the client is newer) |
 | 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached` |
 | 200–299 | What the request is about does not exist: `UserNotFound`, `SessionNotFound`, `PeerNotFound`... |
 | 300–399 | The state of things does not allow it: `Conflict`, `NameTaken`, `SessionFull`, `NotAdmitted`, `CannotTargetSelf`, `HierarchyViolation`... |
@@ -300,8 +300,8 @@ answered on another device, and 404 for a call the server does not know.
 ## Versioning
 
 `ProtocolVersion.Current` must change whenever old clients or servers can no longer read the
-messages: a field removed or renamed, a type changed, an enum member renumbered, a request old
-servers do not know. `MinSupported` is the oldest client version the server still serves.
+messages: a field removed or renamed, a type changed, an enum member renumbered. A new request
+does not need it, since older servers answer it with `UnsupportedRequest`. `MinSupported` is the oldest client version the server still serves.
 
 The current protocol version and minimum supported version are both 3. Clients using earlier
 versions are rejected during the WebSocket upgrade with 426 Upgrade Required.
@@ -328,7 +328,11 @@ When the schema differs, the test fails and writes `protocol-schema.received.txt
 snapshot (git ignores it). Then:
 
 1. Decide whether the change is breaking. Adding an optional field that old readers can ignore
-   usually is not. Adding a message old servers cannot read is.
+   usually is not. Adding a request is not either: an older server answers it with
+   `UnsupportedRequest`, and the client tells the user the server is outdated. A field of an existing
+   request that changes what it does is, when ignoring it would be wrong (an older server would
+   silently do the old thing). Removing or renaming anything, changing a type or renumbering an enum
+   member always is.
 2. If it is, raise `Current`. Raise `MinSupported` too once the server stops serving the old
    version.
 3. Replace `protocol-schema.txt` with the received file and commit it with the change.
@@ -455,8 +459,8 @@ Groups initially require at least two members and allow up to 100. Group names n
 Creation of personal conversations does not require `CreateSessions`.
 
 `ChangeGroupRequest` replaces the name, membership and owner, and requires the current group owner.
-The new owner must be a member. `Leave = true` instead removes the sender; an owner must transfer
-ownership or delete the group first. Added members see the existing history. Removing a member
+The new owner must be a member, and member ids must not repeat. `LeaveGroupRequest(SessionId)` removes
+the sender; an owner gets `Conflict` and must transfer ownership or delete the group first. Added members see the existing history. Removing a member
 immediately revokes access and removes the conversation from that member's live list.
 
 `ChatSessionDTO.LastMessage` contains the latest nondeleted message, or `null` for an empty chat.
@@ -493,12 +497,12 @@ transition and ensure each transition is recorded once; direct calls invoke this
 `DirectCallRequest(ChatId, CallId, Action)` supports Start, Accept, Decline and End. The caller generates
 one nonempty GUID and reuses it on retries. Calls are supported only in Direct chats, and require
 membership independently of server roles. The caller must be connected; the recipient may be offline. Both must be free of another call or
-voice session. A competing start returns Conflict. Invitations expire after 45 seconds.
+voice session. A competing start returns `CallBusy`; an action on a call the server does not know, `CallNotFound`. Invitations expire after 45 seconds.
 
 `DirectCallResponse.Call` and `DirectCallChangedNotification.Call` carry Ringing, Active or Ended,
 creation/start timestamps and the outcome (Completed, Declined, Cancelled, Missed or Disconnected).
 Only the callee can accept or decline; cancellation and hangup require the selected caller/callee
-device. Accepting on another device after an answer returns Conflict. Recent completed call IDs
+device. Accepting or declining on another device after an answer returns `CallAnsweredElsewhere`. Recent completed call IDs
 are retained for harmless retries. Notifications go only to the two members, with IsSelectedDevice
 computed separately per connection. Connection identifiers never cross the protocol boundary.
 

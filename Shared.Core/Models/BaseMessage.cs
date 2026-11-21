@@ -43,6 +43,8 @@ namespace Shared.Models;
 
 [JsonDerivedType(typeof(ChangeGroupRequest), typeDiscriminator: nameof(ChangeGroupRequest))]
 [JsonDerivedType(typeof(ChangeGroupResponse), typeDiscriminator: nameof(ChangeGroupResponse))]
+[JsonDerivedType(typeof(LeaveGroupRequest), typeDiscriminator: nameof(LeaveGroupRequest))]
+[JsonDerivedType(typeof(LeaveGroupResponse), typeDiscriminator: nameof(LeaveGroupResponse))]
 
 // Notifications
 

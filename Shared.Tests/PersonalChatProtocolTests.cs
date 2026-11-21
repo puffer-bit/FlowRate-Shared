@@ -41,5 +41,8 @@ public sealed class PersonalChatProtocolTests
         Assert.False(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", new int[101], 1), out _));
         Assert.False(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", [1, -2], 1), out _));
         Assert.True(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", [1, 2], 1), out _));
+        Assert.False(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", [1, 2, 2], 1), out _));
+        Assert.True(MessageValidator.TryValidate(new LeaveGroupRequest(1), out _));
+        Assert.False(MessageValidator.TryValidate(new LeaveGroupRequest(0), out _));
     }
 }

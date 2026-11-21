@@ -64,6 +64,15 @@ public sealed class HttpsUrlAttribute : ValidationAttribute
     public override string FormatErrorMessage(string name) => $"{name} must be an absolute https URL.";
 }
 
+/// <summary>A GUID that names something, so never <see cref="Guid.Empty"/>.</summary>
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+public sealed class NotEmptyGuidAttribute : ValidationAttribute
+{
+    public override bool IsValid(object? value) => value is not Guid guid || guid != Guid.Empty;
+
+    public override string FormatErrorMessage(string name) => $"{name} must not be empty.";
+}
+
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
 public sealed class GuidStringAttribute : ValidationAttribute
 {

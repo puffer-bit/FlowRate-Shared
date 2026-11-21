@@ -301,4 +301,16 @@ public class MessageValidatorTests
         foreach (var candidate in SharedAssembly.GetTypes().Where(t => type.IsAssignableFrom(t) && !t.IsAbstract))
             CollectUnbounded(candidate, path, unbounded, visited);
     }
+
+    [Fact]
+    public void EmptyGuids_AreRefused()
+    {
+        Assert.False(MessageValidator.TryValidate(
+            new Shared.Models.Requests.Coordinator.CoordinatorRevokeBanRequest(Guid.Empty), out _));
+        Assert.False(MessageValidator.TryValidate(
+            new Shared.Models.Requests.Coordinator.CoordinatorRevokeBanRequest(Guid.NewGuid()) { RequestId = Guid.Empty }, out var errors));
+        Assert.Contains(errors, error => error.Contains("RequestId"));
+        Assert.True(MessageValidator.TryValidate(
+            new Shared.Models.Requests.Coordinator.CoordinatorRevokeBanRequest(Guid.NewGuid()), out _));
+    }
 }

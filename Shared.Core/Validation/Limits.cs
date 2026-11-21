@@ -42,6 +42,8 @@ public static class Limits
     public const int JitterBufferMaxMs = 2000;
 
     public const int ReasonMaxLength = 200;
+    public const int BanReasonMaxLength = 1000;
+    public const int GroupMembersMaxCount = 100;
     public const int PokeMessageMaxLength = 200;
 
     public const int ChatTextMaxLength = 4000;

@@ -33,6 +33,12 @@ public enum ErrorCode
     /// <summary>The server does not offer this: media uploads, push or passkeys are not set up.</summary>
     FeatureDisabled = 8,
 
+    /// <summary>
+    /// The server does not know the request: the client is newer than the server. Also the answer to a
+    /// message whose <c>$type</c> the server cannot read, when its <c>RequestId</c> can be read.
+    /// </summary>
+    UnsupportedRequest = 9,
+
     // Logging in
 
     /// <summary>The identity, password, one-time code or passkey does not hold.</summary>
@@ -65,6 +71,9 @@ public enum ErrorCode
     UploadNotFound = 209,
 
     PasskeyNotFound = 210,
+
+    /// <summary>The direct call is not known, or ended long ago.</summary>
+    CallNotFound = 211,
 
     // The state of things does not allow the request
 
@@ -109,14 +118,17 @@ public enum ErrorCode
     /// <summary>Users cannot do this to themselves (poke, kick, ban, freeze, delete), nor to the system user.</summary>
     CannotTargetSelf = 314,
 
-    /// <summary>Reserved legacy error code.</summary>
-    TargetIsHost = 315,
-
     /// <summary>The role or the user is not below the sender's highest role.</summary>
     HierarchyViolation = 316,
 
     /// <summary>Only the author of the message may do this, e.g. see who has read it.</summary>
     NotMessageAuthor = 317,
+
+    /// <summary>The caller or the callee is already in another direct call.</summary>
+    CallBusy = 318,
+
+    /// <summary>The call was accepted on another device of the callee.</summary>
+    CallAnsweredElsewhere = 319,
 
     // Values the format allows but the server cannot use
 

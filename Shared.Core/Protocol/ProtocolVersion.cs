@@ -10,7 +10,8 @@ public static class ProtocolVersion
 {
     /// <summary>
     /// Raised by every change old clients or servers cannot understand: a removed or renamed field,
-    /// a changed type or enum number, a request old servers do not know. Shared.Tests fails on any
+    /// a changed type or enum number. A new request does not raise it: older servers answer it with
+    /// ErrorCode.UnsupportedRequest. Shared.Tests fails on any
     /// change of the message schema until it is looked at.
     /// </summary>
     // 2: a message carries files (NewChatMessageModel.Files is a list of NewChatFileModel);
@@ -44,6 +45,9 @@ public static class ProtocolVersion
     //    beyond the default quick choices, without changing their message format.
     //    Moving peers: HybridSessionMovePeerRequest and the MoveMembers permission; HybridSessionPeerMovedOutNotification
     //    carries TargetSessionId, HybridSessionPeerMovedInNotification the Peer and SourceSessionId.
+    //    Release preparation: ErrorCode.UnsupportedRequest for requests the server does not know;
+    //    LeaveGroupRequest instead of ChangeGroupRequest.Leave; CallNotFound, CallBusy and
+    //    CallAnsweredElsewhere for direct calls (TargetIsHost removed); empty GUIDs refused.
     //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
     //    the next breaking change after the release of 3 is 4.
     public const int Current = 3;

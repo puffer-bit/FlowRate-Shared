@@ -5,13 +5,8 @@ using Shared.Validation;
 
 namespace Shared.Models.Requests.SessionActions.ChatSession;
 
-public record DirectCallRequest([property: EntityId] int ChatId, Guid CallId,
-    [property: DefinedEnum] DirectCallAction Action) : ChatSessionRequest, IValidatableObject
+public record DirectCallRequest([property: EntityId] int ChatId, [property: NotEmptyGuid] Guid CallId,
+    [property: DefinedEnum] DirectCallAction Action) : ChatSessionRequest
 {
-    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
-    {
-        if (CallId == Guid.Empty) yield return new ValidationResult("Call ID must not be empty.", [nameof(CallId)]);
-    }
-
     public DirectCallResponse ToResponse(DirectCallDTO call) => new(RequestId, call);
 }

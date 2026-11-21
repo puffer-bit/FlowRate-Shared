@@ -7,7 +7,7 @@ namespace Shared.Models.Requests.SessionActions.ChatSession;
 public record ChatHistoryWindowRequest(
     [property: EntityId] int ChatId,
     [property: EntityId] int MessageId,
-    [property: EnumDataType(typeof(ChatHistoryDirection))] ChatHistoryDirection Direction,
+    [property: DefinedEnum] ChatHistoryDirection Direction,
     [property: Range(1, Limits.ChatHistoryMaxTake)] int Take
 ) : ChatSessionRequest;
 
