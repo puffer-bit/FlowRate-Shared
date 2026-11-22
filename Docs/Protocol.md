@@ -215,7 +215,8 @@ client keeps it, and it logs in from any device. The server keeps only its SHA-2
 - Every successful login, by identity or by token, answers with `SessionToken` (in `UserAuthResponse`,
   `TwoFactorUserAuthResponse` or `FIDO2UserAuthResponse`): 32 random bytes, base64url. The client
   keeps it with the identity and sends it with the next `UserAuthRequest`, along with `UserIdentity`
-  and `Device` (`DeviceInfoDTO`: name, platform, client version).
+  and `Device` (`DeviceInfoDTO`: name, platform, client version, and optionally the system with its
+  version and the processor architecture).
 - A token the server knows logs the device in at once, without the second stage, and is answered with
   the next token. The token before stays valid until the next one is used, for a device that lost
   the answer. `UserIdentity` is null in that response: the client keeps its own.
@@ -235,6 +236,16 @@ Requests of the sender (`Requests.Coordinator.Security`, answered with `UserSess
 
 The connections of an ended session get `CoordinatorUserSessionEndedNotification` (`Revoked` or
 `IdentityReset`) and are closed. The client drops its token and does not reconnect on its own.
+
+### The device others see
+
+`UserDTO.Device` (`UserDeviceDTO`: platform, system and version, architecture, client version) tells
+everyone which device a user is on. The server remembers the device of every open connection, in memory
+only, and shows one: a phone (`DevicePlatforms.IsMobile`: Android, iOS) when one is connected, since a phone
+is connected only while it is used, otherwise the device connected last. The name of the device is never
+shown to others. Like the status, it is null while others see the user offline or invisible; the user
+always gets their own. A change of the device shown is announced with `CoordinatorUserUpdatedNotification`.
+Clients draw a phone instead of the dot of the online status for a user on a phone.
 
 ## Validation
 

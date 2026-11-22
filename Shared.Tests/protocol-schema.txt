@@ -700,7 +700,9 @@ DeleteSessionRequest.RequestId: Guid
 DeleteSessionRequest.SessionId: Int32
 DeleteSessionResponse.RequestId: Guid
 DeviceInfoDTO.AppVersion: String
+DeviceInfoDTO.Architecture: String
 DeviceInfoDTO.Name: String
+DeviceInfoDTO.OsVersion: String
 DeviceInfoDTO.Platform: String
 EditMessageRequest.ChatId: Int32
 EditMessageRequest.IsLinkPreviewDisabled: Boolean?
@@ -1119,6 +1121,7 @@ UserAuthResponse.User: UserDTO
 UserAuthResponse.UserIdentity: String
 UserDTO.AvatarUrl: String
 UserDTO.CoordinatorInstanceId: String
+UserDTO.Device: UserDeviceDTO
 UserDTO.DisplayName: String
 UserDTO.FirstConnectedAt: DateTimeOffset
 UserDTO.Id: Int32
@@ -1131,6 +1134,10 @@ UserDTO.RoleIds: List<Int32>
 UserDTO.State: UserState
 UserDTO.Status: UserStatus
 UserDTO.Username: String
+UserDeviceDTO.AppVersion: String
+UserDeviceDTO.Architecture: String
+UserDeviceDTO.OsVersion: String
+UserDeviceDTO.Platform: String
 UserIdentityResetRequest.Proof: UserSecurityProofDTO
 UserIdentityResetRequest.RequestId: Guid
 UserIdentityResetResponse.RequestId: Guid
