@@ -23,6 +23,20 @@ public record ChangeGroupRequest(
     public ChangeGroupResponse ToResponse() => new(RequestId, SessionId);
 }
 
+/// <summary>
+/// The owner puts an uploaded picture on a group, or takes it off when <see cref="UploadId"/> is null.
+/// </summary>
+/// <param name="UploadId">
+/// A finished upload of the kind <see cref="Shared.Models.Media.MediaUploadMetadata.KindAvatar"/> by the sender.
+/// </param>
+public record SetGroupAvatarRequest(
+    [property: EntityId] int SessionId,
+    [property: StringLength(Limits.MediaUploadIdLength * 2), HexBytes(Limits.MediaUploadIdLength)] string? UploadId
+) : GenericSessionRequest
+{
+    public SetGroupAvatarResponse ToResponse() => new(RequestId, SessionId);
+}
+
 /// <summary>The sender leaves a group they are a member of. The owner cannot (<c>Conflict</c>): they hand the group to another member first.</summary>
 public record LeaveGroupRequest([property: EntityId] int SessionId) : GenericSessionRequest
 {

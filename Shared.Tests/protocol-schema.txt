@@ -201,6 +201,8 @@ BaseMessage <- "SessionInfoRequest": SessionInfoRequest
 BaseMessage <- "SessionInfoResponse": SessionInfoResponse
 BaseMessage <- "SessionLayoutChangedNotification": SessionLayoutChangedNotification
 BaseMessage <- "SessionLayoutResponse": SessionLayoutResponse
+BaseMessage <- "SetGroupAvatarRequest": SetGroupAvatarRequest
+BaseMessage <- "SetGroupAvatarResponse": SetGroupAvatarResponse
 BaseMessage <- "SetMessagePinnedRequest": SetMessagePinnedRequest
 BaseMessage <- "SetMessagePinnedResponse": SetMessagePinnedResponse
 BaseMessage <- "SetMessageReactionRequest": SetMessageReactionRequest
@@ -395,7 +397,6 @@ ChatSessionChangesResponse.Messages: List<ChatMessageDTO>
 ChatSessionChangesResponse.RequestId: Guid
 ChatSessionChangesResponse.Reset: Boolean
 ChatSessionCreateData.Description: String
-ChatSessionCreateData.IconPath: String
 ChatSessionCreateData.IsAttachmentsAllowed: Boolean
 ChatSessionCreateData.IsDelayedMessagesAllowed: Boolean
 ChatSessionCreateData.IsVideoMessagesAllowed: Boolean
@@ -404,10 +405,10 @@ ChatSessionCreateData.Kind: ChatKind
 ChatSessionCreateData.MemberIds: Int32[]
 ChatSessionCreateData.SessionType: SessionType
 ChatSessionCreatedNotification.Session: ChatSessionDTO
+ChatSessionDTO.AvatarUrl: String
 ChatSessionDTO.CoordinatorInstanceId: String
 ChatSessionDTO.CreatorUserId: Int32
 ChatSessionDTO.Description: String
-ChatSessionDTO.IconPath: String
 ChatSessionDTO.Id: Int32
 ChatSessionDTO.IsArchived: Boolean
 ChatSessionDTO.IsAttachmentsAllowed: Boolean
@@ -1078,6 +1079,11 @@ SessionPermissionOverrideDTO.Allow: Permission
 SessionPermissionOverrideDTO.Deny: Permission
 SessionPermissionOverrideDTO.RoleId: Int32
 SessionType = enum Undefined=0, Chat=1, Hybrid=2, Voice=3
+SetGroupAvatarRequest.RequestId: Guid
+SetGroupAvatarRequest.SessionId: Int32
+SetGroupAvatarRequest.UploadId: String
+SetGroupAvatarResponse.RequestId: Guid
+SetGroupAvatarResponse.SessionId: Int32
 SetMessagePinnedRequest.ChatId: Int32
 SetMessagePinnedRequest.IsPinned: Boolean
 SetMessagePinnedRequest.MessageId: Int32
