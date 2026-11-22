@@ -9,7 +9,8 @@ public class ChatSessionDTO : SessionDTO
     public Messages.ChatMessageDTO? LastMessage { get; set; }
 
     public required int CreatorUserId { get; set; }
-    public int AdminUserId { get; set; }
+    /// <summary>The owner of a group, who alone changes its members and name; 0 for other chats.</summary>
+    public int OwnerUserId { get; set; }
     public string? Description { get; set; }
     public string? IconPath { get; set; }
 

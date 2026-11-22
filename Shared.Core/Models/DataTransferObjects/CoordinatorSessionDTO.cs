@@ -14,9 +14,9 @@ public class CoordinatorSessionDTO
     /// <summary>The OS and architecture the server runs on, such as "Linux x64".</summary>
     public string ServerPlatform { get; set; } = string.Empty;
 
-    public DateTime CreateTime { get; set; }
-    public DateTime FirstLaunchTime { get; set; }
-    public DateTime CurrentLaunchTime { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset FirstLaunchedAt { get; set; }
+    public DateTimeOffset LaunchedAt { get; set; }
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
 

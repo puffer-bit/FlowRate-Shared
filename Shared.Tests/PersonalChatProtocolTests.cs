@@ -17,7 +17,7 @@ public sealed class PersonalChatProtocolTests
     [Fact]
     public void PrivateCreation_CannotDisguiseAHybridSession()
     {
-        var request = new CreateSessionRequest(new CreateSessionModel("Private", -1,
+        var request = new CreateSessionRequest(new CreateSessionModel("Private",
             new ChatSessionCreateData(Kind: ChatKind.Direct, MemberIds: [2]) { SessionType = SessionType.Hybrid }));
         Assert.False(MessageValidator.TryValidate(request, out _));
     }
@@ -25,7 +25,7 @@ public sealed class PersonalChatProtocolTests
     [Fact]
     public void DirectCreation_RoundTripsThroughSourceGeneratedProtocol()
     {
-        BaseMessage request = new CreateSessionRequest(new CreateSessionModel("Private", -1,
+        BaseMessage request = new CreateSessionRequest(new CreateSessionModel("Private",
             new ChatSessionCreateData(Kind: ChatKind.Direct, MemberIds: [2])));
         var json = JsonSerializer.Serialize(request, ProtocolJsonContext.Default.BaseMessage);
         var decoded = Assert.IsType<CreateSessionRequest>(JsonSerializer.Deserialize(json, ProtocolJsonContext.Default.BaseMessage));
@@ -41,5 +41,8 @@ public sealed class PersonalChatProtocolTests
         Assert.False(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", new int[101], 1), out _));
         Assert.False(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", [1, -2], 1), out _));
         Assert.True(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", [1, 2], 1), out _));
+        Assert.False(MessageValidator.TryValidate(new ChangeGroupRequest(1, "Group", [1, 2, 2], 1), out _));
+        Assert.True(MessageValidator.TryValidate(new LeaveGroupRequest(1), out _));
+        Assert.False(MessageValidator.TryValidate(new LeaveGroupRequest(0), out _));
     }
 }

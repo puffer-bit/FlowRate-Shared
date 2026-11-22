@@ -16,8 +16,8 @@ public record UserSecurityDTO(
 public record UserPasskeyDTO(
     int Id,
     string Label,
-    DateTime CreatedAtUtc,
-    DateTime? LastUsedAtUtc);
+    DateTimeOffset CreatedAt,
+    DateTimeOffset? LastUsedAt);
 
 /// <summary>
 /// The current password and one-time code of the sender, asked for by every change while the user has them, so an

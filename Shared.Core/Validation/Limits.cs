@@ -30,7 +30,6 @@ public static class Limits
     public const int SessionNameMaxLength = 50;
     public const int SessionCapacityMin = 1;
     public const int SessionCapacityMax = 100;
-    public const int SessionCapacityUnlimited = -1;
     public const int SessionDescriptionMaxLength = 500;
     public const int SessionCategoryNameMaxLength = 50;
     public const int SessionCategoriesMaxCount = 50;
@@ -42,6 +41,8 @@ public static class Limits
     public const int JitterBufferMaxMs = 2000;
 
     public const int ReasonMaxLength = 200;
+    public const int BanReasonMaxLength = 1000;
+    public const int GroupMembersMaxCount = 100;
     public const int PokeMessageMaxLength = 200;
 
     public const int ChatTextMaxLength = 4000;

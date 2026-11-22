@@ -25,7 +25,6 @@ public class CoordinatorSettingsDTO
     public string? MOTDText { get; set; }
 
     public List<string> AllowedIps { get; set; } = [];
-    public List<string> BannedIps { get; set; } = [];
 
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
@@ -102,9 +101,6 @@ public class CoordinatorSettingsUpdateDTO
 
     [Required, ItemCount(Limits.IpListMaxCount)]
     public List<string> AllowedIps { get; set; } = [];
-
-    [Required, ItemCount(Limits.IpListMaxCount)]
-    public List<string> BannedIps { get; set; } = [];
 
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
@@ -189,7 +185,7 @@ public class SFUNodeDTO
     /// <summary>Round trip of the server's last answered ping to the node; null while the node does not answer.</summary>
     public double? PingMs { get; set; }
 
-    public DateTimeOffset? LastPingAtUtc { get; set; }
+    public DateTimeOffset? LastPingAt { get; set; }
 
     /// <summary>Why the node is not connected, if known.</summary>
     public string? ConnectionError { get; set; }

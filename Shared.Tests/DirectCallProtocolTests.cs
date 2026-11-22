@@ -15,7 +15,7 @@ public sealed class DirectCallProtocolTests
     public void InvitationRoundTripsWithoutExposingDeviceIdentifiers()
     {
         var call = new DirectCallDTO(Guid.NewGuid(), 7, 1, 2, DirectCallState.Ringing, null,
-            DateTimeOffset.UtcNow, null, false, null);
+            DateTimeOffset.FromUnixTimeMilliseconds(1_795_000_000_123), null, false, null);
         BaseMessage notification = new DirectCallChangedNotification(call);
         var json = JsonSerializer.Serialize(notification, ProtocolJsonContext.Default.BaseMessage);
         var decoded = Assert.IsType<DirectCallChangedNotification>(JsonSerializer.Deserialize(json,

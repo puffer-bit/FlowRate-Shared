@@ -41,4 +41,4 @@ public sealed record PushMarkReadRequest(
     [property: EntityId] int ChatId,
     [property: EntityId] int MessageId);
 
-public sealed record PushDeclineCallRequest(Guid CallId);
+public sealed record PushDeclineCallRequest([property: NotEmptyGuid] Guid CallId);

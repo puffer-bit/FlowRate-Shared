@@ -21,8 +21,8 @@ public class UserDTO
     /// </summary>
     public UserStatus Status { get; set; }
 
-    public DateTime FirstConnectionTime { get; set; }
-    public DateTime LastConnectionTime { get; set; }
+    public DateTimeOffset FirstConnectedAt { get; set; }
+    public DateTimeOffset LastConnectedAt { get; set; }
 
     /// <summary>The coordinator roles of the user, without the everyone role.</summary>
     public List<int> RoleIds { get; set; } = [];

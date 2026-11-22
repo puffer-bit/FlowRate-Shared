@@ -8,10 +8,9 @@ namespace Shared.Models.Requests.SessionActions.Generic;
 public record RejectUserRequest(
     [property: EntityId] int SessionId,
     [property: EntityId] int TargetUserId,
-    [property: DefinedEnum] SessionType SessionType,
     [property: StringLength(Limits.ReasonMaxLength), NoControlCharacters] string? Reason
 ) : GenericSessionRequest
 {
     public RejectUserResponse ToResponse()
-        => new(RequestId, SessionId, TargetUserId, SessionType);
+        => new(RequestId, SessionId, TargetUserId);
 }

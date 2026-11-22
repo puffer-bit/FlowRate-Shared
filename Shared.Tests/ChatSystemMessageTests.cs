@@ -28,10 +28,10 @@ public sealed class ChatSystemMessageTests
         };
         BaseMessage notification = new ChatSessionMessageAddedNotification(10, new ChatMessageDTO
         {
-            Id = 20, ChatId = 10, SenderUserId = -1, SentTime = DateTime.UtcNow,
+            Id = 20, ChatId = 10, SenderUserId = -1, SentAt = DateTime.UtcNow,
             IsSystem = true, IsReadOnly = true, SystemContent = content,
             TextContent = new ChatTextContentDTO { Text = content.ToFallbackText() },
-            ReplyContent = null!, Images = [], Video = [], Files = [], Reactions = [], UsersIds = []
+            ReplyContent = null!, Files = [], Reactions = []
         });
         var json = JsonSerializer.Serialize(notification, ProtocolJsonContext.Default.BaseMessage);
         var loaded = Assert.IsType<ChatSessionMessageAddedNotification>(

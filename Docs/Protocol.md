@@ -28,7 +28,7 @@ rules they follow, and what to check when you change them.
 ```
 client                                          coordinator
   │  GET wss://host:port/                            │
-  │  FlowRate-Protocol: 1                            │
+  │  FlowRate-Protocol: 3                            │
   │ ───────────────────────────────────────────────► │
   │                                                  │  version served?
   │ ◄─── 101 Switching Protocols ─────────────────── │  yes
@@ -54,27 +54,28 @@ client                                          coordinator
   [Device sessions](#device-sessions)).
 - While connected, the client sends a `HeartbeatPingRequest` every 5 seconds
   (`Client.Api/Protocol/HeartbeatHandler.cs`). Before a planned shutdown the server sends
-  `HeartbeatServerClosingNotification` or `HeartbeatServerRestartingNotification`.
+  `ServerRestartNotification` with the reason, see [Server restarts](#server-restarts).
 
 ## Message format
 
 Each WebSocket text message is one JSON object, a `BaseMessage`:
 
 ```json
-{"$type":"KickFromSessionRequest","SessionId":1,"TargetUserId":2,"SessionType":2,"Reason":"spam","RequestId":"bc52bace-965d-4ee8-afa6-0b7164708bb6","SenderId":0}
+{"$type":"KickFromSessionRequest","SessionId":1,"TargetUserId":2,"Reason":"spam","RequestId":"bc52bace-965d-4ee8-afa6-0b7164708bb6"}
 ```
 
 | Rule | Detail |
 |------|--------|
-| `$type` comes first | It names the concrete record, exactly its C# type name. A reader rejects an object whose `$type` is not the first property |
-| Unknown `$type` | Deserialization fails with a `JsonException`. A new message type therefore needs a new version, see [Versioning](#versioning) |
+| `$type` comes first | It names the concrete record with a fixed string written in its `JsonDerivedType` registration (for now equal to the C# type name). Renaming the class does not change it; changing the string is a breaking change, and the schema snapshot catches it. A reader rejects an object whose `$type` is not the first property |
+| Unknown `$type` | Deserialization fails with a `JsonException`. The server answers such a message with `ErrorResponse` and `UnsupportedRequest` when it can read its `RequestId`, and a request it reads but does not serve the same way; a client drops a notification it cannot read. See [Versioning](#versioning) |
 | Property names | PascalCase, as in C#. Reading ignores case |
 | Unknown properties | Ignored when reading |
 | Enums | Written as numbers, not names. Renumbering a member is a breaking change |
+| Times | A moment is a whole number of milliseconds since the Unix epoch (UTC), `DateTimeOffset` in C# (`UnixMillisecondsConverter`); a length of time is whole milliseconds, `TimeSpan` in C# (`MillisecondsConverter`). Fields holding a moment are named `*At`. A string or fraction is refused |
 | Nesting | At most 16 levels (`MaxDepth` of the context) |
-| `SenderId` | On every message. The server gateway overwrites it on incoming messages with the authenticated user; whatever the client puts there is ignored |
+| `SenderId` | Not on the wire (`[JsonIgnore]`). The server gateway sets it on incoming messages to the authenticated user; a client never needs it |
 
-Why `SenderId` and not `UserId`: a derived record with a positional `UserId` parameter would bind
+Why the in-memory property is `SenderId` and not `UserId`: a derived record with a positional `UserId` parameter would bind
 to the base property instead of declaring its own, and its value would be lost without a warning.
 Do not add a property named like one of the base properties.
 
@@ -114,7 +115,7 @@ a code is about (`SessionNotFound` of a join is the session to join):
 
 | Codes | Group |
 |-------|-------|
-| 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled` |
+| 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled`, `UnsupportedRequest` (the server does not know the request: the client is newer) |
 | 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached` |
 | 200–299 | What the request is about does not exist: `UserNotFound`, `SessionNotFound`, `PeerNotFound`... |
 | 300–399 | The state of things does not allow it: `Conflict`, `NameTaken`, `SessionFull`, `NotAdmitted`, `CannotTargetSelf`, `HierarchyViolation`... |
@@ -164,6 +165,11 @@ accepted. Bitrate, frame rate and resolution are not session settings: the sende
 stream starts. The settings apply to tracks started after a change: the coordinator gives them
 to the SFU and puts them into each `Outbound` and `Inbound`, which the client follows. A client
 that receives a track does not read the session settings itself.
+
+Only a hybrid session has a capacity: `HybridSessionCreateData.Capacity` on creation, then
+`HybridSessionDTO.Capacity`, changed with `ChangeHybridSessionSettingsRequest` (from
+`Limits.SessionCapacityMin` to `Limits.SessionCapacityMax`). Chats of any kind have no capacity;
+the members of a group are limited by `ChatSessionCreateData.MemberIds` alone.
 
 ## Logging in and account security
 
@@ -277,9 +283,9 @@ an endpoint answers 401.
 | Path | Use |
 |------|-----|
 | `/media/uploads` | Uploads by the tus protocol 1.0.0. `Upload-Metadata` keys are in `MediaUploadMetadata` (`chatId`, `mimeType`, `kind`) |
-| `GET /media/images/{id}?variant=original\|preview` | An image of a chat message; byte ranges supported |
+| `GET /media/images/{id}?variant=original\|preview` | An image of a chat message (`ChatImageFileDTO`); byte ranges supported |
 | `GET /media/files/{id}` | A file of a chat message, to be saved; byte ranges supported, so a video plays while it downloads |
-| `GET /media/files/{id}?variant=preview` | The frame a video is shown with, when `ChatFileVideoDTO.HasPreview` says it has one. The sender uploads it as `imagePreview` and names it in `NewChatFileModel.PreviewUploadId` |
+| `GET /media/files/{id}?variant=preview` | The frame a video is shown with, when `ChatVideoFileDTO.HasPreview` says it has one. The sender uploads it as `imagePreview` and names it in `NewChatFileModel.PreviewUploadId` |
 | `GET /media/avatars/{id}` | A user avatar; a new avatar has a new id, so a fetched one never changes |
 | `GET /media/link-previews/{id}` | The image of a link preview; a preview never changes, so a fetched one stays valid |
 
@@ -300,8 +306,8 @@ answered on another device, and 404 for a call the server does not know.
 ## Versioning
 
 `ProtocolVersion.Current` must change whenever old clients or servers can no longer read the
-messages: a field removed or renamed, a type changed, an enum member renumbered, a request old
-servers do not know. `MinSupported` is the oldest client version the server still serves.
+messages: a field removed or renamed, a type changed, an enum member renumbered. A new request
+does not need it, since older servers answer it with `UnsupportedRequest`. `MinSupported` is the oldest client version the server still serves.
 
 The current protocol version and minimum supported version are both 3. Clients using earlier
 versions are rejected during the WebSocket upgrade with 426 Upgrade Required.
@@ -328,7 +334,11 @@ When the schema differs, the test fails and writes `protocol-schema.received.txt
 snapshot (git ignores it). Then:
 
 1. Decide whether the change is breaking. Adding an optional field that old readers can ignore
-   usually is not. Adding a message old servers cannot read is.
+   usually is not. Adding a request is not either: an older server answers it with
+   `UnsupportedRequest`, and the client tells the user the server is outdated. A field of an existing
+   request that changes what it does is, when ignoring it would be wrong (an older server would
+   silently do the old thing). Removing or renaming anything, changing a type or renumbering an enum
+   member always is.
 2. If it is, raise `Current`. Raise `MinSupported` too once the server stops serving the old
    version.
 3. Replace `protocol-schema.txt` with the received file and commit it with the change.
@@ -338,9 +348,9 @@ snapshot (git ignores it). Then:
 1. Write the record in the folder of its area. Derive from the area's base (`CoordinatorRequest`,
    `HybridSessionRequest`, ...). For a request, add a `ToResponse(...)` method.
 2. Register it in `BaseMessage.cs` with
-   `[JsonDerivedType(typeof(X), typeDiscriminator: nameof(X))]`. `BaseMessageRegistrationTests`
-   fails for an unregistered concrete type, a discriminator that is not the type name, or a
-   duplicate.
+   `[JsonDerivedType(typeof(X), typeDiscriminator: "X")]`. Write the discriminator as a string, not
+   `nameof(X)`: it is part of the protocol and must not follow a rename of the class.
+   `BaseMessageRegistrationTests` fails for an unregistered concrete type or a duplicate.
 3. Put limits on every string and collection of a request, including nested DTOs and every
    derived type a polymorphic property can hold. `EveryStringAndCollection_InARequest_HasASizeLimit`
    finds the ones you missed. Add `EntityId` to ids and `DefinedEnum` to enums.
@@ -408,7 +418,7 @@ a short timeout and limits on the size of the page and the image.
 `SetMessagePinnedRequest(ChatId, MessageId, IsPinned)` requires `ViewSessions` and
 `ManageMessages` in the chat. Repeating the current state is harmless; at most 100 messages
 may be pinned in a chat. Archived chats and system messages cannot be pinned. Read-only
-chats still allow moderators to manage pins. `PinnedAt` (UTC) and `PinnedByUserId` describe
+chats still allow moderators to manage pins. `PinnedAt` and `PinnedByUserId` describe
 the current pin; both are null after unpinning. Pin changes increment the chat revision and
 use the existing message-edited notification, without changing `EditTime` or sending a push.
 Deleting a message clears its pin.
@@ -455,8 +465,8 @@ Groups initially require at least two members and allow up to 100. Group names n
 Creation of personal conversations does not require `CreateSessions`.
 
 `ChangeGroupRequest` replaces the name, membership and owner, and requires the current group owner.
-The new owner must be a member. `Leave = true` instead removes the sender; an owner must transfer
-ownership or delete the group first. Added members see the existing history. Removing a member
+The new owner must be a member, and member ids must not repeat. `LeaveGroupRequest(SessionId)` removes
+the sender; an owner gets `Conflict` and must transfer ownership or delete the group first. Added members see the existing history. Removing a member
 immediately revokes access and removes the conversation from that member's live list.
 
 `ChatSessionDTO.LastMessage` contains the latest nondeleted message, or `null` for an empty chat.
@@ -493,12 +503,12 @@ transition and ensure each transition is recorded once; direct calls invoke this
 `DirectCallRequest(ChatId, CallId, Action)` supports Start, Accept, Decline and End. The caller generates
 one nonempty GUID and reuses it on retries. Calls are supported only in Direct chats, and require
 membership independently of server roles. The caller must be connected; the recipient may be offline. Both must be free of another call or
-voice session. A competing start returns Conflict. Invitations expire after 45 seconds.
+voice session. A competing start returns `CallBusy`; an action on a call the server does not know, `CallNotFound`. Invitations expire after 45 seconds.
 
 `DirectCallResponse.Call` and `DirectCallChangedNotification.Call` carry Ringing, Active or Ended,
 creation/start timestamps and the outcome (Completed, Declined, Cancelled, Missed or Disconnected).
 Only the callee can accept or decline; cancellation and hangup require the selected caller/callee
-device. Accepting on another device after an answer returns Conflict. Recent completed call IDs
+device. Accepting or declining on another device after an answer returns `CallAnsweredElsewhere`. Recent completed call IDs
 are retained for harmless retries. Notifications go only to the two members, with IsSelectedDevice
 computed separately per connection. Connection identifiers never cross the protocol boundary.
 
@@ -533,3 +543,42 @@ coordinator settings and is not accepted by `CoordinatorUpdateSettingsRequest`. 
 connection string, host, credentials or database path. The existing ViewCoordinatorSettings
 permission guards the response. Clients must handle null or missing values from earlier servers.
 This optional response field and the expanded reaction acceptance remain part of protocol 3.
+
+## Attachments
+
+A message carries one list, `ChatMessageDTO.Files`, of `ChatFileDTO`. The base type is a plain file, only downloaded
+from `/media/files/{id}`. A kind shown in the chat is a derived type with its own `$type`: `ChatImageFileDTO`
+("Image", served from `/media/images/{id}`, with its size, thumbnail and description) and `ChatVideoFileDTO`
+("Video", with its size, length and frame). The base type is concrete and the hierarchy ignores unknown discriminators
+(`IgnoreUnrecognizedTypeDiscriminators`): a reader that does not know a newer kind, such as a future audio file, reads it
+as a plain file, so the message survives and a new kind needs no protocol version. The ids of images and files come from
+separate stores, so the kind and the id together name an attachment. The server lists images first.
+
+A new message sends `NewChatMessageModel.Files` the same way: `NewChatFileModel`, and `NewChatImageModel` for an image
+with its reduced copy as `PreviewUploadId` (required for an image).
+
+## Sessions have no owners
+
+A voice session has no host: creating it gives no right in it. Managing, kicking and approving come only from roles
+(`ManageSessions`, `KickMembers`, `ApproveMembers`). In a session with `IsApprovalRequired`, users with `ApproveMembers`
+there come in at once and the rest wait. A group has an owner, `ChatSessionDTO.OwnerUserId` (`ChangeGroupRequest.OwnerUserId`
+passes it on), who alone changes its members and name; private chats do not depend on roles.
+
+## Media of a peer
+
+`HybridSessionPeerMediaChangedNotification` tells that a peer started or stopped its microphone, camera or screen
+(`Source`, `IsActive`). A started track goes to each listener with the `Inbound` to consume; a started screen share is
+first announced to everyone without one, with `HasAudio`. A stop goes to everyone, with `InitiatorUserId` when someone
+else stopped it.
+
+## Server restarts
+
+`ServerRestartNotification(Reason, At, Message)` warns that the server goes down: `Restart`, `Update` or `Shutdown`.
+With `At` it is a warning an administrator announced in the panel; it is also sent after `CoordinatorInfoRequest` to
+whoever connects while it stands, until its time has passed. `ServerRestartCancelledNotification` calls it off;
+an announcement that has run out is dropped without it. A restart at once comes with no warning before the notice
+that the server goes down. Without `At` the server is going
+down now and closes the connection. A plain stop of the process tells the announced reason, or `Restart` without one,
+since the server cannot know whether it comes back. Clients reconnect on their own for every reason but `Shutdown`, and
+compare `CoordinatorSessionDTO.ServerVersion` after a reconnect to tell that the server was updated.
+

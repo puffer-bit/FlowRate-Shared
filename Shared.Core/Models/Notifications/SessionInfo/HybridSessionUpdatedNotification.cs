@@ -54,24 +54,6 @@ public record HybridSessionPeerMovedInNotification(int SessionId, PeerDTO Peer, 
     : HybridSessionUpdatedNotification;
 
 
-public record HybridSessionPeerStartedScreenShareNotification(int SessionId, int UserId, Inbound? Inbound = null,
-    bool HasAudio = false)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUpdatedScreenShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerStoppedScreenShareNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerScreenShareSoundMuteChangedNotification(int SessionId, int UserId, bool IsMuted,
-    int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerScreenSharePauseChangedNotification(int SessionId, int UserId, bool IsPaused,
-    int? InitiatorUserId = null, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
 /// <summary>
 /// The peer <paramref name="UserId"/> started or stopped watching the screen share of <paramref name="SharerUserId"/>.
 /// It stops watching when it asks to, when the share stops or when the sharer loses its media; not sent for a peer
@@ -82,28 +64,6 @@ public record HybridSessionPeerScreenShareWatchChangedNotification(int SessionId
     : HybridSessionUpdatedNotification;
 
 
-public record HybridSessionPeerStartedVideoShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUpdatedVideoShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerStoppedVideoShareNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerVideoSharePauseChangedNotification(int SessionId, int UserId, bool IsPaused,
-    int? InitiatorUserId = null, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
-
-public record HybridSessionPeerStartedVoiceShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUpdatedVoiceShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerStoppedVoiceShareNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
 
 public record HybridSessionPeerMicrophoneMuteChangedNotification(int SessionId, int UserId, bool IsMuted,
     int? InitiatorUserId = null)
@@ -119,4 +79,13 @@ public record HybridSessionPeerAfkChangedNotification(int SessionId, int UserId,
     : HybridSessionUpdatedNotification;
 
 public record HybridSessionPeerPokedNotification(int SessionId, int UserId, int InitiatorUserId, string? Message = null)
+    : HybridSessionUpdatedNotification;
+
+/// <summary>
+/// A peer started or stopped sending one of its media. A started track goes to each listener with the
+/// <see cref="Inbound"/> to consume; a started screen share is announced to everyone first without one, with
+/// <see cref="HasAudio"/>. A stop goes to everyone, with who stopped it when it was not the peer itself.
+/// </summary>
+public record HybridSessionPeerMediaChangedNotification(int SessionId, int UserId, MediaSourceType Source, bool IsActive,
+    Inbound? Inbound = null, bool HasAudio = false, int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
