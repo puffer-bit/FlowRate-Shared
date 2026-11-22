@@ -72,7 +72,7 @@ public enum ErrorCode
 
     PasskeyNotFound = 210,
 
-    /// <summary>The direct call is not known, or ended long ago.</summary>
+    /// <summary>The call is not known, or ended long ago.</summary>
     CallNotFound = 211,
 
     /// <summary>The ban to lift is not known, or has expired.</summary>
@@ -127,10 +127,10 @@ public enum ErrorCode
     /// <summary>Only the author of the message may do this, e.g. see who has read it.</summary>
     NotMessageAuthor = 317,
 
-    /// <summary>The caller or the callee is already in another direct call.</summary>
+    /// <summary>Reserved: no longer returned, joining a call leaves the previous one.</summary>
     CallBusy = 318,
 
-    /// <summary>The call was accepted on another device of the callee.</summary>
+    /// <summary>The user already takes part in the call from another device.</summary>
     CallAnsweredElsewhere = 319,
 
     // Values the format allows but the server cannot use

@@ -296,7 +296,7 @@ token it got on registering. Bodies are serialized with the same context.
 |------|------|-----|
 | `POST /push/reply` | `PushReplyRequest` | Sends a text message to a chat |
 | `POST /push/read` | `PushMarkReadRequest` | Moves the read position, like "Mark as read" |
-| `POST /push/call/decline` | `PushDeclineCallRequest` | Declines a direct call ringing for the user, like "Decline" of an incoming call |
+| `POST /push/call/decline` | `PushDeclineCallRequest` | Declines a call ringing for the user, like "Decline" of an incoming call |
 
 All answer 204 on success, 400 for an invalid body, 401 for an unknown token, 403 when the user
 may not write there, 404 for a chat that does not exist and 429 for too many requests. Declining a
@@ -500,44 +500,61 @@ notifications. Read-only chat settings do not suppress server events.
 
 The server-only `IChatSessionManager.AddCallSystemMessageAsync` entry point records call start/end
 events using the same storage and delivery path. The call lifecycle must invoke it after a successful
-transition and ensure each transition is recorded once; direct calls invoke this entry point as described below.
+transition and ensure each transition is recorded once; calls invoke this entry point as described below.
 
-## Direct audio calls
+## Calls in direct chats and groups
 
-`DirectCallRequest(ChatId, CallId, Action)` supports Start, Accept, Decline and End. The caller generates
-one nonempty GUID and reuses it on retries. Calls are supported only in Direct chats, and require
-membership independently of server roles. The caller must be connected; the recipient may be offline. Both must be free of another call or
-voice session. A competing start returns `CallBusy`; an action on a call the server does not know, `CallNotFound`. Invitations expire after 45 seconds.
+`ChatCallRequest(ChatId, CallId, Action, TargetUserId?)` drives one call per Direct or Group chat. Calls
+require chat membership independently of server roles, and the sender must be connected.
 
-`DirectCallResponse.Call` and `DirectCallChangedNotification.Call` carry Ringing, Active or Ended,
-creation/start timestamps and the outcome (Completed, Declined, Cancelled, Missed or Disconnected).
-Only the callee can accept or decline; cancellation and hangup require the selected caller/callee
-device. Accepting or declining on another device after an answer returns `CallAnsweredElsewhere`. Recent completed call IDs
-are retained for harmless retries. Notifications go only to the two members, with IsSelectedDevice
-computed separately per connection. Connection identifiers never cross the protocol boundary.
+- **Start** opens a call and joins the sender to it at once; every other member is rung for 45 seconds. The
+  caller generates one nonempty GUID and reuses it on retries. Starting while the chat already has a running
+  call joins that call instead.
+- **Join** enters the running call; answering a ring is a join. Members join late at any time while the call
+  lives, including members added to the group after it started.
+- **Decline** turns down one's own ring; the call goes on.
+- **Leave** hangs up on the selected device.
+- **Ring** calls `TargetUserId` again, or without it every member not in the call; only a member in the call
+  may ring, and the target rings for another 45 seconds.
 
-Accepting creates a runtime hybrid media session under the chat ID. It is omitted from channel lists
-and uses the existing SFU/WebRTC transport. Only the two selected connections may join or send media
-requests. Video and screen sharing are refused. Leaving, disconnecting the selected device or a
-graceful server shutdown closes the call and releases the media session. Calls are transient and do
-not resume after a coordinator connection is lost. Losing an SFU node follows existing media recovery.
+Joining a call leaves any voice session or other call the user was in. A user takes part from one device;
+joining from another device returns `CallAnsweredElsewhere`. An action on a call the server does not know
+returns `CallNotFound`. The call lives while anyone is in it, a caller left alone stays, and it ends when the
+last member leaves. Members removed from a group leave its call.
 
-Clients show incoming calls in FlowRate's notification system with Accept and Decline actions.
-Answering, cancellation or timeout dismisses the invitation on all devices. Only the recipient hears
-the ringing signal, which respects notification muting and repeats until the invitation resolves. Android also receives encrypted high-priority
-FCM data pushes on every registered recipient device, including when disconnected. Call pushes carry
-callId, callState, recipientId and expiresAt, with a 45-second transport TTL. Android shows a system call
-notification with Accept and Decline actions while the app is in the background. An action opens the app,
+`ChatCallResponse.Call` and `ChatCallChangedNotification.Call` carry Active or Ended, the caller, creation
+time, `StartedAt` (when a second member first joined), the outcome and `Participants`: each member that was
+rung or joined, as Ringing, Joined, Declined, Missed or Left. Notifications go to every connection of every
+member, so clients show running calls and offer to join; `IsSelectedDevice` and `Session` are computed per
+connection, and only the connection taking part gets the session. A reconnecting member receives the running
+calls of their chats. Connection identifiers never cross the protocol boundary. Ended call IDs are retained
+for harmless retries.
+
+The call runs in a runtime hybrid media session under the chat ID, omitted from channel lists, on the existing
+SFU/WebRTC transport. Its capacity is the size of the chat. Only the selected connections of joined members may
+join it or send media requests. Members in the call may speak, send video and share their screen. The owner of
+a group may kick a member from its call; the member stays in the group and may join again. Disconnecting the
+selected device leaves the call; a graceful server shutdown ends it. Calls are transient and do not resume
+after a coordinator connection is lost. Losing an SFU node follows existing media recovery.
+
+Clients show rings in FlowRate's notification system with Join and Decline actions. Joining, declining or
+timeout dismisses the ring on all devices of that member. Only rung members hear the ringing signal, which
+respects notification muting and repeats until the ring resolves. Android also receives encrypted
+high-priority FCM data pushes on every registered device of a rung member, including when disconnected. Call
+pushes carry callId, callState (0 while that member rings, otherwise not ringing), recipientId, expiresAt and,
+for groups, the group name as the title, with a 45-second transport TTL. Android shows a system call
+notification with Join and Decline actions while the app is in the background. An action opens the app,
 reconnects the saved recipient account using its normal authentication/certificate flow, and submits the
-call action over the authenticated connection. Active/Ended pushes dismiss the invitation; expired or
-reordered invitations are ignored. Loading the session list also restores a pending invitation for the
-reconnected recipient. Push delivery requires configured FCM/relay and a registered device; offline
-calling otherwise times out as missed. Existing Android ongoing-call foreground notifications remain in use.
+call action over the authenticated connection. Non-ringing pushes dismiss the notification; expired or
+reordered rings are ignored. `POST /push/call/decline` declines one's own ring without starting the app.
+Push delivery requires configured FCM/relay and a registered device.
 
-Accepted calls append CallStarted once. Every finished call, including unanswered invitations, appends
-CallEnded with optional CallEndReason and CallDurationSeconds. Duration is present for accepted calls.
-The DirectCallOutcomes server migration adds nullable outcome and duration columns to ChatMessages;
-existing system messages remain readable. Revisions and privacy remain unchanged. Clients localize the stored outcome.
+Starting appends CallStarted with the caller as actor. The end appends CallEnded with CallEndReason:
+Completed when another member joined (with CallDurationSeconds from StartedAt), otherwise Declined when
+every rung member declined, Missed when the rings timed out, Cancelled when the caller left while members
+still rang, and Disconnected when the server ended it. The DirectCallOutcomes server migration adds nullable
+outcome and duration columns to ChatMessages; existing system messages remain readable. Clients localize the
+stored outcome.
 
 ## Server database information
 

@@ -25,6 +25,9 @@ BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettings
 BaseMessage <- "ChangeHybridSessionSettingsResponse": ChangeHybridSessionSettingsResponse
 BaseMessage <- "ChangeSessionPermissionsRequest": ChangeSessionPermissionsRequest
 BaseMessage <- "ChangeSessionPermissionsResponse": ChangeSessionPermissionsResponse
+BaseMessage <- "ChatCallChangedNotification": ChatCallChangedNotification
+BaseMessage <- "ChatCallRequest": ChatCallRequest
+BaseMessage <- "ChatCallResponse": ChatCallResponse
 BaseMessage <- "ChatHistoryWindowRequest": ChatHistoryWindowRequest
 BaseMessage <- "ChatHistoryWindowResponse": ChatHistoryWindowResponse
 BaseMessage <- "ChatLinkPreviewRequest": ChatLinkPreviewRequest
@@ -115,9 +118,6 @@ BaseMessage <- "DeleteMessageResponse": DeleteMessageResponse
 BaseMessage <- "DeleteSessionCategoryRequest": DeleteSessionCategoryRequest
 BaseMessage <- "DeleteSessionRequest": DeleteSessionRequest
 BaseMessage <- "DeleteSessionResponse": DeleteSessionResponse
-BaseMessage <- "DirectCallChangedNotification": DirectCallChangedNotification
-BaseMessage <- "DirectCallRequest": DirectCallRequest
-BaseMessage <- "DirectCallResponse": DirectCallResponse
 BaseMessage <- "EditMessageRequest": EditMessageRequest
 BaseMessage <- "EditMessageResponse": EditMessageResponse
 BaseMessage <- "ErrorResponse": ErrorResponse
@@ -253,6 +253,30 @@ ChangeSessionPermissionsRequest.RequestId: Guid
 ChangeSessionPermissionsRequest.SessionId: Int32
 ChangeSessionPermissionsResponse.RequestId: Guid
 ChangeSessionPermissionsResponse.SessionId: Int32
+ChatCallAction = enum Start=0, Join=1, Decline=2, Leave=3, Ring=4
+ChatCallChangedNotification.Call: ChatCallDTO
+ChatCallDTO.CallId: Guid
+ChatCallDTO.CallerId: Int32
+ChatCallDTO.ChatId: Int32
+ChatCallDTO.CreatedAt: DateTimeOffset
+ChatCallDTO.EndReason: ChatCallEndReason?
+ChatCallDTO.IsSelectedDevice: Boolean
+ChatCallDTO.Participants: IReadOnlyList<ChatCallParticipantDTO>
+ChatCallDTO.Session: HybridSessionDTO
+ChatCallDTO.StartedAt: DateTimeOffset?
+ChatCallDTO.State: ChatCallState
+ChatCallEndReason = enum Completed=0, Declined=1, Cancelled=2, Missed=3, Disconnected=4
+ChatCallParticipantDTO.State: ChatCallParticipantState
+ChatCallParticipantDTO.UserId: Int32
+ChatCallParticipantState = enum Ringing=0, Joined=1, Declined=2, Missed=3, Left=4
+ChatCallRequest.Action: ChatCallAction
+ChatCallRequest.CallId: Guid
+ChatCallRequest.ChatId: Int32
+ChatCallRequest.RequestId: Guid
+ChatCallRequest.TargetUserId: Int32?
+ChatCallResponse.Call: ChatCallDTO
+ChatCallResponse.RequestId: Guid
+ChatCallState = enum Active=0, Ended=1
 ChatCommandKind = enum Roll=1, Flip=2
 ChatCommandResult.Kind: ChatCommandKind
 ChatCommandResult.Maximum: Int32
@@ -426,7 +450,7 @@ ChatSessionUserTypingNotification.IsTyping: Boolean
 ChatSessionUserTypingNotification.UserId: Int32
 ChatSystemContent.ActorUserId: Int32?
 ChatSystemContent.CallDurationSeconds: Int32?
-ChatSystemContent.CallEndReason: DirectCallEndReason?
+ChatSystemContent.CallEndReason: ChatCallEndReason?
 ChatSystemContent.CallId: Guid?
 ChatSystemContent.Kind: ChatSystemEventKind
 ChatSystemContent.SubjectUserId: Int32?
@@ -678,26 +702,6 @@ DeleteSessionResponse.RequestId: Guid
 DeviceInfoDTO.AppVersion: String
 DeviceInfoDTO.Name: String
 DeviceInfoDTO.Platform: String
-DirectCallAction = enum Start=0, Accept=1, Decline=2, End=3
-DirectCallChangedNotification.Call: DirectCallDTO
-DirectCallDTO.CallId: Guid
-DirectCallDTO.CalleeId: Int32
-DirectCallDTO.CallerId: Int32
-DirectCallDTO.ChatId: Int32
-DirectCallDTO.CreatedAt: DateTimeOffset
-DirectCallDTO.EndReason: DirectCallEndReason?
-DirectCallDTO.IsSelectedDevice: Boolean
-DirectCallDTO.Session: HybridSessionDTO
-DirectCallDTO.StartedAt: DateTimeOffset?
-DirectCallDTO.State: DirectCallState
-DirectCallEndReason = enum Completed=0, Declined=1, Cancelled=2, Missed=3, Disconnected=4
-DirectCallRequest.Action: DirectCallAction
-DirectCallRequest.CallId: Guid
-DirectCallRequest.ChatId: Int32
-DirectCallRequest.RequestId: Guid
-DirectCallResponse.Call: DirectCallDTO
-DirectCallResponse.RequestId: Guid
-DirectCallState = enum Ringing=0, Active=1, Ended=2
 EditMessageRequest.ChatId: Int32
 EditMessageRequest.IsLinkPreviewDisabled: Boolean?
 EditMessageRequest.MessageId: Int32
