@@ -38,7 +38,7 @@ public static class ProtocolVersion
     //    ChatPinnedMessagesRequest, ChatHistoryWindowRequest, ChatTextContentDTO.CommandResult,
     //    ChatMessageDTO.SystemContent; read receipts: ChatReadStateDTO.PeerReadMessageId,
     //    ChatPeerReadNotification, ChatMessageReadersRequest, ChatReactionDTO.ReactedAt; personal chats: ChatSessionDTO.Kind, MemberIds and LastMessage,
-    //    ChangeGroupRequest; DirectCallRequest and DirectCallChangedNotification; global bans:
+    //    ChangeGroupRequest; ChatCallRequest and ChatCallChangedNotification; global bans:
     //    CoordinatorBansRequest, CoordinatorRevokeBanRequest and the ban fields of CoordinatorSetUserStateRequest
     //    (BanInSessionRequest and HybridSessionPeerBannedNotification removed); AV1 in hybrid media settings.
     //    CoordinatorSettingsResponse.DatabaseProvider (read-only, optional); reactions accept Unicode emoji
@@ -66,6 +66,9 @@ public static class ProtocolVersion
     //    HybridSessionPeerMediaChangedNotification instead of the Started/Stopped share notifications; the unused
     //    Updated/PauseChanged/ScreenShareSoundMuteChanged ones removed.
     //    ServerRestartNotification and ServerRestartCancelledNotification instead of HeartbeatServerClosing/Restarting.
+    //    Calls in direct chats and groups: ChatCallRequest/Response/ChangedNotification with per-member
+    //    ChatCallParticipantDTO instead of DirectCall*; actions Start, Join, Decline, Leave, Ring; the call lives
+    //    while anyone is in it; video and screen sharing allowed in calls.
     //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
     //    the next breaking change after the release of 3 is 4.
     //    ChangeChatSessionSettingsRequest/Response update server chat channel names and descriptions.

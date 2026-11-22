@@ -23,9 +23,9 @@ namespace Shared.Models;
 [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
 [JsonDerivedType(typeof(ChangeChatSessionSettingsRequest), typeDiscriminator: "ChangeChatSessionSettingsRequest")]
 [JsonDerivedType(typeof(ChangeChatSessionSettingsResponse), typeDiscriminator: "ChangeChatSessionSettingsResponse")]
-[JsonDerivedType(typeof(DirectCallRequest), typeDiscriminator: "DirectCallRequest")]
-[JsonDerivedType(typeof(DirectCallResponse), typeDiscriminator: "DirectCallResponse")]
-[JsonDerivedType(typeof(DirectCallChangedNotification), typeDiscriminator: "DirectCallChangedNotification")]
+[JsonDerivedType(typeof(ChatCallRequest), typeDiscriminator: "ChatCallRequest")]
+[JsonDerivedType(typeof(ChatCallResponse), typeDiscriminator: "ChatCallResponse")]
+[JsonDerivedType(typeof(ChatCallChangedNotification), typeDiscriminator: "ChatCallChangedNotification")]
 
 [JsonDerivedType(typeof(ChatViewersRequest), typeDiscriminator: "ChatViewersRequest")]
 [JsonDerivedType(typeof(ChatViewersResponse), typeDiscriminator: "ChatViewersResponse")]
