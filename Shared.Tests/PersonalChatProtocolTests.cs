@@ -17,7 +17,7 @@ public sealed class PersonalChatProtocolTests
     [Fact]
     public void PrivateCreation_CannotDisguiseAHybridSession()
     {
-        var request = new CreateSessionRequest(new CreateSessionModel("Private", -1,
+        var request = new CreateSessionRequest(new CreateSessionModel("Private",
             new ChatSessionCreateData(Kind: ChatKind.Direct, MemberIds: [2]) { SessionType = SessionType.Hybrid }));
         Assert.False(MessageValidator.TryValidate(request, out _));
     }
@@ -25,7 +25,7 @@ public sealed class PersonalChatProtocolTests
     [Fact]
     public void DirectCreation_RoundTripsThroughSourceGeneratedProtocol()
     {
-        BaseMessage request = new CreateSessionRequest(new CreateSessionModel("Private", -1,
+        BaseMessage request = new CreateSessionRequest(new CreateSessionModel("Private",
             new ChatSessionCreateData(Kind: ChatKind.Direct, MemberIds: [2])));
         var json = JsonSerializer.Serialize(request, ProtocolJsonContext.Default.BaseMessage);
         var decoded = Assert.IsType<CreateSessionRequest>(JsonSerializer.Deserialize(json, ProtocolJsonContext.Default.BaseMessage));

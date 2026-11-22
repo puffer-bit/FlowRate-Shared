@@ -30,5 +30,5 @@ public record ChatReadStateChangedNotification(ChatReadStateDTO State)
 /// read position up to <paramref name="LastReadMessageId"/> at <paramref name="ReadAt"/> (UTC). Never sent
 /// for server channels.
 /// </summary>
-public record ChatPeerReadNotification(int ChatId, int ReaderUserId, int LastReadMessageId, DateTime ReadAt)
+public record ChatPeerReadNotification(int ChatId, int ReaderUserId, int LastReadMessageId, DateTimeOffset ReadAt)
     : ChatSessionUpdatedNotification;

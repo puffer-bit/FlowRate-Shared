@@ -9,6 +9,6 @@ namespace Shared.Models.Requests.Coordinator;
 /// </summary>
 public record MediaTokenRequest : CoordinatorRequest
 {
-    public MediaTokenResponse ToResponse(string token, DateTime expiresAt)
+    public MediaTokenResponse ToResponse(string token, DateTimeOffset expiresAt)
         => new(RequestId, token, expiresAt);
 }

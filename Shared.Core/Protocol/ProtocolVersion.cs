@@ -50,6 +50,22 @@ public static class ProtocolVersion
     //    CallAnsweredElsewhere for direct calls (TargetIsHost removed); empty GUIDs refused.
     //    Bans: CoordinatorBanRequest instead of the ban fields of CoordinatorSetUserStateRequest, which only
     //    freezes and reinstates; BanNotFound; the BannedIps settings field removed (IP bans are bans).
+    //    SenderId is no longer written: the server stamps it on what it receives.
+    //    Message discriminators are fixed strings instead of nameof (same values), so a class rename keeps them.
+    //    Times are Unix milliseconds (DateTimeOffset in C#) and durations milliseconds instead of ISO strings;
+    //    moments are named *At: SentAt, ScheduledAt, ExpiresAt, EditedAt, CreatedAt, FirstLaunchedAt,
+    //    LaunchedAt, FirstConnectedAt, LastConnectedAt, LastUsedAt, LastPingAt (no Utc suffixes).
+    //    Sessions have no host: HybridSessionDTO.HostId removed, IsHostMustApprove -> IsApprovalRequired;
+    //    ChatSessionDTO.AdminUserId and ChangeGroupRequest.OwnerId -> OwnerUserId.
+    //    Attachments are one list of ChatFileDTO with derived ChatImageFileDTO/ChatVideoFileDTO (unknown kinds read as
+    //    plain files), NewChatFileModel/NewChatImageModel likewise; ChatMessageDTO.Images/Video, ChatContentType and
+    //    the legacy video content removed. Removed as unused or duplicated: UsersIds, IsReposted, IsDelivered,
+    //    IsDelayed, IsEdited, IsDisposable (the times say it), ChatSessionCreateData.IsEncrypted,
+    //    PeerDTO/HybridSessionDTO.IsAudioRequested, PeerDTO.IsNegotiated, ChatSessionHistoryRequest, JoinSessionRequest,
+    //    HybridSessionLeaveRequest and SessionType of Leave/Kick/Approve/Reject.
+    //    HybridSessionPeerMediaChangedNotification instead of the Started/Stopped share notifications; the unused
+    //    Updated/PauseChanged/ScreenShareSoundMuteChanged ones removed.
+    //    ServerRestartNotification and ServerRestartCancelledNotification instead of HeartbeatServerClosing/Restarting.
     //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
     //    the next breaking change after the release of 3 is 4.
     public const int Current = 3;

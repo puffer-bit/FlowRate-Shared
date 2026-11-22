@@ -22,7 +22,7 @@ public record CoordinatorBanRequest(
     [property: EntityId] int TargetUserId,
     [property: DefinedEnum] BanKind Kind,
     [property: StringLength(Limits.BanReasonMaxLength), NoControlCharacters(allowLineBreaks: true)] string? Reason = null,
-    DateTime? ExpiresAt = null,
+    DateTimeOffset? ExpiresAt = null,
     [property: StringLength(Limits.IpAddressMaxLength)] string? Address = null) : CoordinatorRequest
 {
     public CoordinatorBanResponse ToResponse(BanDTO ban, UserDTO user) => new(RequestId, ban, user);

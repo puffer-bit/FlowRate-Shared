@@ -9,6 +9,4 @@ public class ChatTextContentDTO
     public required string Text { get; init; }
 
     public ChatCommandResult? CommandResult { get; init; }
-
-    public ChatContentType Type => ChatContentType.Text;
 }

@@ -9,7 +9,7 @@ public record ChangeGroupRequest(
     [property: EntityId] int SessionId,
     [property: Required, NotBlank, StringLength(Limits.SessionNameMaxLength), NoControlCharacters] string Name,
     [property: Required, ItemCount(0, Limits.GroupMembersMaxCount)] int[] MemberIds,
-    [property: EntityId] int OwnerId
+    [property: EntityId] int OwnerUserId
 ) : GenericSessionRequest, IValidatableObject
 {
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)

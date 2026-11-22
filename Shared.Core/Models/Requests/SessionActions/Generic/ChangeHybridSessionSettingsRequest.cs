@@ -14,7 +14,7 @@ public record ChangeHybridSessionSettingsRequest(
     [property: EntityId] int SessionId,
     [property: Required, NotBlank, StringLength(Limits.SessionNameMaxLength), NoControlCharacters] string Name,
     [property: Range(Limits.SessionCapacityMin, Limits.SessionCapacityMax)] int Capacity,
-    bool IsHostMustApprove,
+    bool IsApprovalRequired,
     [property: Required] HybridMediaSettingsDTO Media
 ) : GenericSessionRequest
 {

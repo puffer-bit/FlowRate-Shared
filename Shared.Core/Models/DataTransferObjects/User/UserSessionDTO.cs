@@ -12,16 +12,16 @@ public record DeviceInfoDTO(
     [property: StringLength(Limits.AppVersionMaxLength), NoControlCharacters] string AppVersion);
 
 /// <summary>A device the user is logged in from.</summary>
-/// <param name="LastUsedAtUtc">The last login of the device; the session ends after a while without one.</param>
+/// <param name="LastUsedAt">The last login of the device; the session ends after a while without one.</param>
 /// <param name="LastAddress">The IP address of the last login.</param>
 /// <param name="IsCurrent">The session of the connection that asked.</param>
 /// <param name="IsOnline">The device is connected now.</param>
 public record UserSessionDTO(
     Guid Id,
     DeviceInfoDTO Device,
-    DateTime CreatedAtUtc,
-    DateTime LastUsedAtUtc,
-    DateTime ExpiresAtUtc,
+    DateTimeOffset CreatedAt,
+    DateTimeOffset LastUsedAt,
+    DateTimeOffset ExpiresAt,
     string? LastAddress,
     bool IsCurrent,
     bool IsOnline);

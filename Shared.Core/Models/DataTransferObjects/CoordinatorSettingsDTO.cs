@@ -185,7 +185,7 @@ public class SFUNodeDTO
     /// <summary>Round trip of the server's last answered ping to the node; null while the node does not answer.</summary>
     public double? PingMs { get; set; }
 
-    public DateTimeOffset? LastPingAtUtc { get; set; }
+    public DateTimeOffset? LastPingAt { get; set; }
 
     /// <summary>Why the node is not connected, if known.</summary>
     public string? ConnectionError { get; set; }

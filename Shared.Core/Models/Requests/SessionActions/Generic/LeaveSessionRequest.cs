@@ -6,10 +6,9 @@ using Shared.Validation;
 namespace Shared.Models.Requests.SessionActions.Generic;
 
 public record LeaveSessionRequest(
-    [property: EntityId] int SessionId,
-    [property: DefinedEnum] SessionType SessionType
+    [property: EntityId] int SessionId
 ) : GenericSessionRequest
 {
     public LeaveSessionResponse ToResponse()
-        => new(RequestId, SessionId, SessionType);
+        => new(RequestId, SessionId);
 }

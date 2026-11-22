@@ -7,4 +7,4 @@ namespace Shared.Models.DataTransferObjects;
 /// address list of older servers.
 /// </param>
 public record BanDTO(Guid Id, BanKind Kind, int? UserId, string? Address, string Reason,
-    int CreatedBy, DateTime CreatedAt, DateTime? ExpiresAt);
+    int CreatedBy, DateTimeOffset CreatedAt, DateTimeOffset? ExpiresAt);
