@@ -464,6 +464,10 @@ creation for an existing unordered pair returns that conversation, including for
 Groups initially require at least two members and allow up to 100. Group names need not be unique.
 Creation of personal conversations does not require `CreateSessions`.
 
+`ChangeChatSessionSettingsRequest` updates the name and description of a server chat channel and requires `ManageSessions`.
+The server broadcasts `ChatSessionReconfiguredNotification` after saving the name. Private groups
+continue to use `ChangeGroupRequest`; direct chats cannot be renamed.
+
 `ChangeGroupRequest` replaces the name, membership and owner, and requires the current group owner.
 The new owner must be a member, and member ids must not repeat. `LeaveGroupRequest(SessionId)` removes
 the sender; an owner gets `Conflict` and must transfer ownership or delete the group first. Added members see the existing history. Removing a member

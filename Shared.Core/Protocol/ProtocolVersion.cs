@@ -68,6 +68,7 @@ public static class ProtocolVersion
     //    ServerRestartNotification and ServerRestartCancelledNotification instead of HeartbeatServerClosing/Restarting.
     //    Pre-releases that announce 3 with an earlier schema, or 4-6, are not supported and will be withdrawn;
     //    the next breaking change after the release of 3 is 4.
+    //    ChangeChatSessionSettingsRequest/Response update server chat channel names and descriptions.
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

@@ -17,6 +17,8 @@ BanDTO.UserId: Int32?
 BanKind = enum Account=0, Ip=1, Hardware=2
 BaseMessage <- "ApproveUserRequest": ApproveUserRequest
 BaseMessage <- "ApproveUserResponse": ApproveUserResponse
+BaseMessage <- "ChangeChatSessionSettingsRequest": ChangeChatSessionSettingsRequest
+BaseMessage <- "ChangeChatSessionSettingsResponse": ChangeChatSessionSettingsResponse
 BaseMessage <- "ChangeGroupRequest": ChangeGroupRequest
 BaseMessage <- "ChangeGroupResponse": ChangeGroupResponse
 BaseMessage <- "ChangeHybridSessionSettingsRequest": ChangeHybridSessionSettingsRequest
@@ -225,6 +227,12 @@ BaseMessage <- "UserTwoFactorDisableRequest": UserTwoFactorDisableRequest
 BaseMessage <- "UserTwoFactorEnableRequest": UserTwoFactorEnableRequest
 BaseMessage <- "UserTwoFactorSetupRequest": UserTwoFactorSetupRequest
 BaseMessage <- "UserTwoFactorSetupResponse": UserTwoFactorSetupResponse
+ChangeChatSessionSettingsRequest.Description: String
+ChangeChatSessionSettingsRequest.Name: String
+ChangeChatSessionSettingsRequest.RequestId: Guid
+ChangeChatSessionSettingsRequest.SessionId: Int32
+ChangeChatSessionSettingsResponse.RequestId: Guid
+ChangeChatSessionSettingsResponse.SessionId: Int32
 ChangeGroupRequest.MemberIds: Int32[]
 ChangeGroupRequest.Name: String
 ChangeGroupRequest.OwnerUserId: Int32
