@@ -12,7 +12,11 @@ public class ChatSessionDTO : SessionDTO
     /// <summary>The owner of a group, who alone changes its members and name; 0 for other chats.</summary>
     public int OwnerUserId { get; set; }
     public string? Description { get; set; }
-    public string? IconPath { get; set; }
+    /// <summary>
+    /// The picture of a group, a path under <see cref="Shared.Models.Media.MediaEndpoints.Avatars"/>;
+    /// null shows the first letter of its name. Set with <c>SetGroupAvatarRequest</c>.
+    /// </summary>
+    public string? AvatarUrl { get; set; }
 
     public required Dictionary<int, TextChatUserDTO> Users { get; set; }
 
