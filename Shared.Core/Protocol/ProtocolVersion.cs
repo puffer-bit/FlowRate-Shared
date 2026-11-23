@@ -73,6 +73,8 @@ public static class ProtocolVersion
     //    the next breaking change after the release of 3 is 4.
     //    ChangeChatSessionSettingsRequest/Response update server chat channel names and descriptions.
     //    DeviceInfoDTO.OsVersion and Architecture (optional); UserDTO.Device (UserDeviceDTO), null for older servers.
+    //    Group pictures: SetGroupAvatarRequest/Response and ChatSessionDTO.AvatarUrl instead of the unused
+    //    IconPath (also removed from ChatSessionCreateData).
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

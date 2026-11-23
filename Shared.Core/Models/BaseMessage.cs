@@ -45,6 +45,8 @@ namespace Shared.Models;
 
 [JsonDerivedType(typeof(ChangeGroupRequest), typeDiscriminator: "ChangeGroupRequest")]
 [JsonDerivedType(typeof(ChangeGroupResponse), typeDiscriminator: "ChangeGroupResponse")]
+[JsonDerivedType(typeof(SetGroupAvatarRequest), typeDiscriminator: "SetGroupAvatarRequest")]
+[JsonDerivedType(typeof(SetGroupAvatarResponse), typeDiscriminator: "SetGroupAvatarResponse")]
 [JsonDerivedType(typeof(LeaveGroupRequest), typeDiscriminator: "LeaveGroupRequest")]
 [JsonDerivedType(typeof(LeaveGroupResponse), typeDiscriminator: "LeaveGroupResponse")]
 
