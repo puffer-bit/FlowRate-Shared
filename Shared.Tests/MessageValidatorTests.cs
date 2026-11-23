@@ -14,6 +14,7 @@ using Shared.Models.Media.Transport;
 using Shared.Models.Requests;
 using Shared.Models.Requests.Auth;
 using Shared.Models.Requests.Coordinator;
+using Shared.Models.Requests.Coordinator.Devices;
 using Shared.Models.Requests.Coordinator.Security;
 using Shared.Models.Requests.SessionActions.ChatSession;
 using Shared.Models.Requests.SessionActions.ChatSession.Models;
@@ -82,11 +83,23 @@ public class MessageValidatorTests
     {
         object[] requests =
         [
-            new UserAuthRequest("secret", "alice"),
-            new UserAuthRequest(null, "alice", SessionToken: new string('t', 43), Device: new DeviceInfoDTO("desk", "Linux", "0.8.0")),
-            new UserSessionsRequest(),
-            new UserSessionRevokeRequest(null),
-            new UserIdentityResetRequest(new UserSecurityProofDTO("secret", null)),
+            new LoginChallengeRequest(),
+            new LoginRequest("secret", new DeviceLoginDTO(Guid.NewGuid(), new string('s', 86))),
+            new LoginRequest(null, new RegisterLoginDTO(new NewDeviceDTO(Key), new RecoveryKeysDTO(Key, Key)),
+                new DeviceInfoDTO("desk", "Linux", "0.8.0")),
+            new LoginRequest(null, new RecoveryLoginDTO(new NewDeviceDTO(Key, IsTemporary: true), Key, new string('s', 86))),
+            new LoginRequest(null, new UsernameLoginDTO(new NewDeviceDTO(Key), "alice")),
+            new LoginRequest(null, new LoginCodeLoginDTO(new NewDeviceDTO(Key), "ABCD-EFGH-JKMN")),
+            new LoginRequest(null, new LegacyLoginDTO(new NewDeviceDTO(Key), "#" + Guid.NewGuid(), new string('t', 43),
+                new RecoveryKeysDTO(Key, Key))),
+            new LoginProofRequest("secret", "123456"),
+            new DeviceLinkStartRequest(null, new NewDeviceDTO(Key)),
+            new AccountDevicesRequest(),
+            new AccountDeviceRevokeRequest(null),
+            new LogoutRequest(),
+            new DeviceLinkInfoRequest("ABCD-EFGH"),
+            new DeviceLinkApproveRequest("ABCD-EFGH", true),
+            new UserRecoveryKeyResetRequest(new UserSecurityProofDTO("secret", null), new RecoveryKeysDTO(Key, Key)),
             new UserSecurityInfoRequest(),
             new UserSetPasswordRequest(new UserSecurityProofDTO("old secret", "123456"), "new secret"),
             new UserSetPasswordRequest(null, null),
@@ -154,14 +167,24 @@ public class MessageValidatorTests
         FileName = fileName
     };
 
+    // Stands for a public key: only its length and characters are checked here
+    private const string Key = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE";
+
     public static TheoryData<object, string> InvalidRequests() => new()
     {
-        { new UserAuthRequest("secret", new string('a', Limits.UserIdentityMaxLength + 1)), "UserIdentity" },
-        { new UserAuthRequest(null, "alice", SessionToken: new string('t', Limits.SessionTokenMaxLength + 1)), "SessionToken" },
-        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO(new string('d', Limits.DeviceNameMaxLength + 1), "Linux", "0.8.0")), "Name" },
-        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "bad\u0007version")), "AppVersion" },
-        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "0.8.0", new string('o', Limits.OsVersionMaxLength + 1))), "OsVersion" },
-        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "0.8.0", "Ubuntu", "x6\u00074")), "Architecture" },
+        { new LoginRequest(null, new LegacyLoginDTO(new NewDeviceDTO(Key), new string('a', Limits.UserIdentityMaxLength + 1), null, new RecoveryKeysDTO(Key, Key))), "UserIdentity" },
+        { new LoginRequest(null, new LegacyLoginDTO(new NewDeviceDTO(Key), "alice", new string('t', Limits.SessionTokenMaxLength + 1), new RecoveryKeysDTO(Key, Key))), "SessionToken" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.Empty, "sig")), "DeviceId" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), new string('s', Limits.SignatureMaxLength + 1))), "Signature" },
+        { new LoginRequest(null, new UsernameLoginDTO(new NewDeviceDTO(new string('k', Limits.PublicKeyMaxLength + 1)), "alice")), "PublicKey" },
+        { new LoginRequest(null, new UsernameLoginDTO(new NewDeviceDTO(Key), new string('u', Limits.UsernameMaxLength + 1))), "Username" },
+        { new LoginRequest(null, new LoginCodeLoginDTO(new NewDeviceDTO(Key), new string('c', Limits.LoginCodeMaxLength + 1))), "Code" },
+        { new LoginRequest(null, new RegisterLoginDTO(new NewDeviceDTO(Key), new RecoveryKeysDTO(Key, "bad\u0007key"))), "AccountPublicKey" },
+        { new DeviceLinkInfoRequest(new string('c', Limits.LinkCodeMaxLength + 1)), "Code" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO(new string('d', Limits.DeviceNameMaxLength + 1), "Linux", "0.8.0")), "Name" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO("desk", "Linux", "bad\u0007version")), "AppVersion" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO("desk", "Linux", "0.8.0", new string('o', Limits.OsVersionMaxLength + 1))), "OsVersion" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO("desk", "Linux", "0.8.0", "Ubuntu", "x6\u00074")), "Architecture" },
         { new UserSetPasswordRequest(null, new string('p', Limits.PasswordMaxLength + 1)), "NewPassword" },
         { new UserTwoFactorSetupRequest(new UserSecurityProofDTO(null, "1234567")), "TwoFactorCode" },
         { new UserTwoFactorEnableRequest("12\u00073"), "Code" },

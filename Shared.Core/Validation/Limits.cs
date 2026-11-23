@@ -6,10 +6,19 @@ namespace Shared.Validation;
 /// </summary>
 public static class Limits
 {
+    /// <summary>The identity of protocol 3 before devices, taken once to move an account over.</summary>
     public const int UserIdentityMaxLength = 37;
     public const int PasswordMaxLength = 128;
-    /// <summary>A session token: 32 random bytes, base64url.</summary>
+    /// <summary>The session token of protocol 3 before devices: 32 random bytes, base64url.</summary>
     public const int SessionTokenMaxLength = 64;
+    /// <summary>A P-256 SubjectPublicKeyInfo (91 bytes), base64url, with room to spare.</summary>
+    public const int PublicKeyMaxLength = 256;
+    /// <summary>A P-256 signature, r‖s (64 bytes), base64url.</summary>
+    public const int SignatureMaxLength = 128;
+    /// <summary>A one-time login code from the control panel, dashes included.</summary>
+    public const int LoginCodeMaxLength = 32;
+    /// <summary>The code a new device shows to be added to an account, dashes included.</summary>
+    public const int LinkCodeMaxLength = 16;
     public const int DeviceNameMaxLength = 64;
     public const int DevicePlatformMaxLength = 32;
     public const int AppVersionMaxLength = 32;
