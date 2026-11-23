@@ -4,6 +4,7 @@ using Shared.Models.Notifications.Heartbeat;
 using Shared.Models.Notifications.SessionInfo;
 using Shared.Models.Requests.Auth;
 using Shared.Models.Requests.Coordinator;
+using Shared.Models.Requests.Coordinator.Devices;
 using Shared.Models.Requests.Coordinator.Security;
 using Shared.Models.Requests.Heartbeat;
 using Shared.Models.Requests.SessionActions.ChatSession;
@@ -12,6 +13,7 @@ using Shared.Models.Requests.SessionActions.HybridSession;
 using Shared.Models.Responses;
 using Shared.Models.Responses.Auth;
 using Shared.Models.Responses.Coordinator;
+using Shared.Models.Responses.Coordinator.Devices;
 using Shared.Models.Responses.Coordinator.Security;
 using Shared.Models.Responses.Heartbeat;
 using Shared.Models.Responses.SessionActions.ChatSession;
@@ -58,7 +60,10 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorUserDisconnectedNotification), typeDiscriminator: "CoordinatorUserDisconnectedNotification")]
 [JsonDerivedType(typeof(CoordinatorUserKickedNotification), typeDiscriminator: "CoordinatorUserKickedNotification")]
 [JsonDerivedType(typeof(CoordinatorUserBannedNotification), typeDiscriminator: "CoordinatorUserBannedNotification")]
-[JsonDerivedType(typeof(CoordinatorUserSessionEndedNotification), typeDiscriminator: "CoordinatorUserSessionEndedNotification")]
+[JsonDerivedType(typeof(AccountDeviceEndedNotification), typeDiscriminator: "AccountDeviceEndedNotification")]
+[JsonDerivedType(typeof(AccountDeviceAddedNotification), typeDiscriminator: "AccountDeviceAddedNotification")]
+[JsonDerivedType(typeof(DeviceLinkCompletedNotification), typeDiscriminator: "DeviceLinkCompletedNotification")]
+[JsonDerivedType(typeof(DeviceLinkDeclinedNotification), typeDiscriminator: "DeviceLinkDeclinedNotification")]
 [JsonDerivedType(typeof(CoordinatorUserDeletedNotification), typeDiscriminator: "CoordinatorUserDeletedNotification")]
 [JsonDerivedType(typeof(CoordinatorOnlineUsersChangedNotification), typeDiscriminator: "CoordinatorOnlineUsersChangedNotification")]
 [JsonDerivedType(typeof(CoordinatorReconfiguredNotification), typeDiscriminator: "CoordinatorReconfiguredNotification")]
@@ -104,9 +109,11 @@ namespace Shared.Models;
 
 // Requests
 
-[JsonDerivedType(typeof(UserAuthRequest), typeDiscriminator: "UserAuthRequest")]
-[JsonDerivedType(typeof(TwoFactorUserAuthRequest), typeDiscriminator: "TwoFactorUserAuthRequest")]
-[JsonDerivedType(typeof(FIDO2UserAuthRequest), typeDiscriminator: "FIDO2UserAuthRequest")]
+[JsonDerivedType(typeof(LoginChallengeRequest), typeDiscriminator: "LoginChallengeRequest")]
+[JsonDerivedType(typeof(LoginRequest), typeDiscriminator: "LoginRequest")]
+[JsonDerivedType(typeof(LoginProofRequest), typeDiscriminator: "LoginProofRequest")]
+[JsonDerivedType(typeof(LoginPasskeyRequest), typeDiscriminator: "LoginPasskeyRequest")]
+[JsonDerivedType(typeof(DeviceLinkStartRequest), typeDiscriminator: "DeviceLinkStartRequest")]
 
 [JsonDerivedType(typeof(CoordinatorInfoRequest), typeDiscriminator: "CoordinatorInfoRequest")]
 [JsonDerivedType(typeof(CoordinatorUserInfoRequest), typeDiscriminator: "CoordinatorUserInfoRequest")]
@@ -134,9 +141,12 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorUnassignRoleRequest), typeDiscriminator: "CoordinatorUnassignRoleRequest")]
 [JsonDerivedType(typeof(UserSecurityInfoRequest), typeDiscriminator: "UserSecurityInfoRequest")]
 [JsonDerivedType(typeof(UserSetPasswordRequest), typeDiscriminator: "UserSetPasswordRequest")]
-[JsonDerivedType(typeof(UserSessionsRequest), typeDiscriminator: "UserSessionsRequest")]
-[JsonDerivedType(typeof(UserSessionRevokeRequest), typeDiscriminator: "UserSessionRevokeRequest")]
-[JsonDerivedType(typeof(UserIdentityResetRequest), typeDiscriminator: "UserIdentityResetRequest")]
+[JsonDerivedType(typeof(AccountDevicesRequest), typeDiscriminator: "AccountDevicesRequest")]
+[JsonDerivedType(typeof(AccountDeviceRevokeRequest), typeDiscriminator: "AccountDeviceRevokeRequest")]
+[JsonDerivedType(typeof(LogoutRequest), typeDiscriminator: "LogoutRequest")]
+[JsonDerivedType(typeof(DeviceLinkInfoRequest), typeDiscriminator: "DeviceLinkInfoRequest")]
+[JsonDerivedType(typeof(DeviceLinkApproveRequest), typeDiscriminator: "DeviceLinkApproveRequest")]
+[JsonDerivedType(typeof(UserRecoveryKeyResetRequest), typeDiscriminator: "UserRecoveryKeyResetRequest")]
 [JsonDerivedType(typeof(UserTwoFactorSetupRequest), typeDiscriminator: "UserTwoFactorSetupRequest")]
 [JsonDerivedType(typeof(UserTwoFactorEnableRequest), typeDiscriminator: "UserTwoFactorEnableRequest")]
 [JsonDerivedType(typeof(UserTwoFactorDisableRequest), typeDiscriminator: "UserTwoFactorDisableRequest")]
@@ -197,9 +207,9 @@ namespace Shared.Models;
 
 // Responses
 
-[JsonDerivedType(typeof(UserAuthResponse), typeDiscriminator: "UserAuthResponse")]
-[JsonDerivedType(typeof(TwoFactorUserAuthResponse), typeDiscriminator: "TwoFactorUserAuthResponse")]
-[JsonDerivedType(typeof(FIDO2UserAuthResponse), typeDiscriminator: "FIDO2UserAuthResponse")]
+[JsonDerivedType(typeof(LoginChallengeResponse), typeDiscriminator: "LoginChallengeResponse")]
+[JsonDerivedType(typeof(LoginResponse), typeDiscriminator: "LoginResponse")]
+[JsonDerivedType(typeof(DeviceLinkStartResponse), typeDiscriminator: "DeviceLinkStartResponse")]
 
 [JsonDerivedType(typeof(CoordinatorInfoResponse), typeDiscriminator: "CoordinatorInfoResponse")]
 [JsonDerivedType(typeof(CoordinatorUserInfoResponse), typeDiscriminator: "CoordinatorUserInfoResponse")]
@@ -216,8 +226,11 @@ namespace Shared.Models;
 [JsonDerivedType(typeof(CoordinatorRoleResponse), typeDiscriminator: "CoordinatorRoleResponse")]
 [JsonDerivedType(typeof(CoordinatorUserRolesResponse), typeDiscriminator: "CoordinatorUserRolesResponse")]
 [JsonDerivedType(typeof(UserSecurityResponse), typeDiscriminator: "UserSecurityResponse")]
-[JsonDerivedType(typeof(UserSessionsResponse), typeDiscriminator: "UserSessionsResponse")]
-[JsonDerivedType(typeof(UserIdentityResetResponse), typeDiscriminator: "UserIdentityResetResponse")]
+[JsonDerivedType(typeof(AccountDevicesResponse), typeDiscriminator: "AccountDevicesResponse")]
+[JsonDerivedType(typeof(LogoutResponse), typeDiscriminator: "LogoutResponse")]
+[JsonDerivedType(typeof(DeviceLinkInfoResponse), typeDiscriminator: "DeviceLinkInfoResponse")]
+[JsonDerivedType(typeof(DeviceLinkApproveResponse), typeDiscriminator: "DeviceLinkApproveResponse")]
+[JsonDerivedType(typeof(UserRecoveryKeyResetResponse), typeDiscriminator: "UserRecoveryKeyResetResponse")]
 [JsonDerivedType(typeof(UserTwoFactorSetupResponse), typeDiscriminator: "UserTwoFactorSetupResponse")]
 [JsonDerivedType(typeof(UserPasskeyOptionsResponse), typeDiscriminator: "UserPasskeyOptionsResponse")]
 [JsonDerivedType(typeof(RegisterPushTokenResponse), typeDiscriminator: "RegisterPushTokenResponse")]

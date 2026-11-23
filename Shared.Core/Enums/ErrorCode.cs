@@ -41,7 +41,7 @@ public enum ErrorCode
 
     // Logging in
 
-    /// <summary>The identity, password, one-time code or passkey does not hold.</summary>
+    /// <summary>The signature, recovery key, password, one-time code, passkey or login code does not hold.</summary>
     AuthFailed = 100,
 
     Banned = 101,
@@ -51,6 +51,18 @@ public enum ErrorCode
 
     /// <summary>The coordinator cannot register another user.</summary>
     UserLimitReached = 103,
+
+    /// <summary>
+    /// The device is not one of the account any more: it was removed, or went unused until it expired. The client
+    /// drops its key and logs in another way.
+    /// </summary>
+    DeviceNotFound = 104,
+
+    /// <summary>
+    /// The account has no password, one-time codes or passkeys, so it cannot be logged in to by username: the recovery
+    /// phrase, another device or a login code from the control panel adds the device.
+    /// </summary>
+    LoginFactorsMissing = 105,
 
     // What the request is about does not exist
 
@@ -77,6 +89,9 @@ public enum ErrorCode
 
     /// <summary>The ban to lift is not known, or has expired.</summary>
     BanNotFound = 212,
+
+    /// <summary>No new device waits with this code, or its code has expired.</summary>
+    DeviceLinkNotFound = 213,
 
     // The state of things does not allow the request
 

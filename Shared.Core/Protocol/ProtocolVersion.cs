@@ -75,6 +75,15 @@ public static class ProtocolVersion
     //    DeviceInfoDTO.OsVersion and Architecture (optional); UserDTO.Device (UserDeviceDTO), null for older servers.
     //    Group pictures: SetGroupAvatarRequest/Response and ChatSessionDTO.AvatarUrl instead of the unused
     //    IconPath (also removed from ChatSessionCreateData).
+    //    Logging in by device keys: LoginChallengeRequest, LoginRequest with LoginMethodDTO (Device, Register,
+    //    Recovery, Username, LoginCode, Legacy), LoginProofRequest, LoginPasskeyRequest and LoginResponse instead of
+    //    UserAuthRequest, TwoFactorUserAuthRequest, FIDO2UserAuthRequest and their responses; SecondStageAuthType is
+    //    LoginFactor. DeviceLinkStartRequest, DeviceLinkInfoRequest, DeviceLinkApproveRequest and the
+    //    DeviceLinkCompleted/Declined notifications; AccountDevicesRequest, AccountDeviceRevokeRequest,
+    //    LogoutRequest, AccountDeviceDTO and AccountDeviceEnded/AddedNotification instead of UserSessionsRequest,
+    //    UserSessionRevokeRequest, UserSessionDTO and CoordinatorUserSessionEndedNotification;
+    //    UserRecoveryKeyResetRequest instead of UserIdentityResetRequest; ErrorCode.DeviceNotFound,
+    //    LoginFactorsMissing and DeviceLinkNotFound.
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>

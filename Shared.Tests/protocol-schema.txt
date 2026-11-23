@@ -1,4 +1,21 @@
 version 3
+AccountDeviceAddedNotification.Device: AccountDeviceDTO
+AccountDeviceDTO.AddedBy: DeviceLoginMethod
+AccountDeviceDTO.CreatedAt: DateTimeOffset
+AccountDeviceDTO.Device: DeviceInfoDTO
+AccountDeviceDTO.ExpiresAt: DateTimeOffset
+AccountDeviceDTO.Id: Guid
+AccountDeviceDTO.IsCurrent: Boolean
+AccountDeviceDTO.IsOnline: Boolean
+AccountDeviceDTO.IsTemporary: Boolean
+AccountDeviceDTO.LastAddress: String
+AccountDeviceDTO.LastUsedAt: DateTimeOffset
+AccountDeviceEndedNotification.Reason: DeviceEndReason
+AccountDeviceRevokeRequest.DeviceId: Guid?
+AccountDeviceRevokeRequest.RequestId: Guid
+AccountDevicesRequest.RequestId: Guid
+AccountDevicesResponse.Devices: List<AccountDeviceDTO>
+AccountDevicesResponse.RequestId: Guid
 ApproveUserRequest.RequestId: Guid
 ApproveUserRequest.SessionId: Int32
 ApproveUserRequest.TargetUserId: Int32
@@ -15,6 +32,11 @@ BanDTO.Kind: BanKind
 BanDTO.Reason: String
 BanDTO.UserId: Int32?
 BanKind = enum Account=0, Ip=1, Hardware=2
+BaseMessage <- "AccountDeviceAddedNotification": AccountDeviceAddedNotification
+BaseMessage <- "AccountDeviceEndedNotification": AccountDeviceEndedNotification
+BaseMessage <- "AccountDeviceRevokeRequest": AccountDeviceRevokeRequest
+BaseMessage <- "AccountDevicesRequest": AccountDevicesRequest
+BaseMessage <- "AccountDevicesResponse": AccountDevicesResponse
 BaseMessage <- "ApproveUserRequest": ApproveUserRequest
 BaseMessage <- "ApproveUserResponse": ApproveUserResponse
 BaseMessage <- "ChangeChatSessionSettingsRequest": ChangeChatSessionSettingsRequest
@@ -108,7 +130,6 @@ BaseMessage <- "CoordinatorUserListUpdatedNotification": CoordinatorUserListUpda
 BaseMessage <- "CoordinatorUserRolesResponse": CoordinatorUserRolesResponse
 BaseMessage <- "CoordinatorUserSearchRequest": CoordinatorUserSearchRequest
 BaseMessage <- "CoordinatorUserSearchResponse": CoordinatorUserSearchResponse
-BaseMessage <- "CoordinatorUserSessionEndedNotification": CoordinatorUserSessionEndedNotification
 BaseMessage <- "CoordinatorUserUpdatedNotification": CoordinatorUserUpdatedNotification
 BaseMessage <- "CreateSessionCategoryRequest": CreateSessionCategoryRequest
 BaseMessage <- "CreateSessionRequest": CreateSessionRequest
@@ -118,11 +139,17 @@ BaseMessage <- "DeleteMessageResponse": DeleteMessageResponse
 BaseMessage <- "DeleteSessionCategoryRequest": DeleteSessionCategoryRequest
 BaseMessage <- "DeleteSessionRequest": DeleteSessionRequest
 BaseMessage <- "DeleteSessionResponse": DeleteSessionResponse
+BaseMessage <- "DeviceLinkApproveRequest": DeviceLinkApproveRequest
+BaseMessage <- "DeviceLinkApproveResponse": DeviceLinkApproveResponse
+BaseMessage <- "DeviceLinkCompletedNotification": DeviceLinkCompletedNotification
+BaseMessage <- "DeviceLinkDeclinedNotification": DeviceLinkDeclinedNotification
+BaseMessage <- "DeviceLinkInfoRequest": DeviceLinkInfoRequest
+BaseMessage <- "DeviceLinkInfoResponse": DeviceLinkInfoResponse
+BaseMessage <- "DeviceLinkStartRequest": DeviceLinkStartRequest
+BaseMessage <- "DeviceLinkStartResponse": DeviceLinkStartResponse
 BaseMessage <- "EditMessageRequest": EditMessageRequest
 BaseMessage <- "EditMessageResponse": EditMessageResponse
 BaseMessage <- "ErrorResponse": ErrorResponse
-BaseMessage <- "FIDO2UserAuthRequest": FIDO2UserAuthRequest
-BaseMessage <- "FIDO2UserAuthResponse": FIDO2UserAuthResponse
 BaseMessage <- "HeartbeatPingRequest": HeartbeatPingRequest
 BaseMessage <- "HeartbeatPingResponse": HeartbeatPingResponse
 BaseMessage <- "HybridSessionConnectTransportRequest": HybridSessionConnectTransportRequest
@@ -184,6 +211,14 @@ BaseMessage <- "LeaveGroupRequest": LeaveGroupRequest
 BaseMessage <- "LeaveGroupResponse": LeaveGroupResponse
 BaseMessage <- "LeaveSessionRequest": LeaveSessionRequest
 BaseMessage <- "LeaveSessionResponse": LeaveSessionResponse
+BaseMessage <- "LoginChallengeRequest": LoginChallengeRequest
+BaseMessage <- "LoginChallengeResponse": LoginChallengeResponse
+BaseMessage <- "LoginPasskeyRequest": LoginPasskeyRequest
+BaseMessage <- "LoginProofRequest": LoginProofRequest
+BaseMessage <- "LoginRequest": LoginRequest
+BaseMessage <- "LoginResponse": LoginResponse
+BaseMessage <- "LogoutRequest": LogoutRequest
+BaseMessage <- "LogoutResponse": LogoutResponse
 BaseMessage <- "MediaTokenRequest": MediaTokenRequest
 BaseMessage <- "MediaTokenResponse": MediaTokenResponse
 BaseMessage <- "MoveSessionCategoryRequest": MoveSessionCategoryRequest
@@ -207,23 +242,16 @@ BaseMessage <- "SetMessagePinnedRequest": SetMessagePinnedRequest
 BaseMessage <- "SetMessagePinnedResponse": SetMessagePinnedResponse
 BaseMessage <- "SetMessageReactionRequest": SetMessageReactionRequest
 BaseMessage <- "SetMessageReactionResponse": SetMessageReactionResponse
-BaseMessage <- "TwoFactorUserAuthRequest": TwoFactorUserAuthRequest
-BaseMessage <- "TwoFactorUserAuthResponse": TwoFactorUserAuthResponse
 BaseMessage <- "UnregisterPushTokenRequest": UnregisterPushTokenRequest
 BaseMessage <- "UnregisterPushTokenResponse": UnregisterPushTokenResponse
-BaseMessage <- "UserAuthRequest": UserAuthRequest
-BaseMessage <- "UserAuthResponse": UserAuthResponse
-BaseMessage <- "UserIdentityResetRequest": UserIdentityResetRequest
-BaseMessage <- "UserIdentityResetResponse": UserIdentityResetResponse
 BaseMessage <- "UserPasskeyDeleteRequest": UserPasskeyDeleteRequest
 BaseMessage <- "UserPasskeyOptionsRequest": UserPasskeyOptionsRequest
 BaseMessage <- "UserPasskeyOptionsResponse": UserPasskeyOptionsResponse
 BaseMessage <- "UserPasskeyRegisterRequest": UserPasskeyRegisterRequest
+BaseMessage <- "UserRecoveryKeyResetRequest": UserRecoveryKeyResetRequest
+BaseMessage <- "UserRecoveryKeyResetResponse": UserRecoveryKeyResetResponse
 BaseMessage <- "UserSecurityInfoRequest": UserSecurityInfoRequest
 BaseMessage <- "UserSecurityResponse": UserSecurityResponse
-BaseMessage <- "UserSessionRevokeRequest": UserSessionRevokeRequest
-BaseMessage <- "UserSessionsRequest": UserSessionsRequest
-BaseMessage <- "UserSessionsResponse": UserSessionsResponse
 BaseMessage <- "UserSetPasswordRequest": UserSetPasswordRequest
 BaseMessage <- "UserTwoFactorDisableRequest": UserTwoFactorDisableRequest
 BaseMessage <- "UserTwoFactorEnableRequest": UserTwoFactorEnableRequest
@@ -672,7 +700,6 @@ CoordinatorUserSearchRequest.Query: String
 CoordinatorUserSearchRequest.RequestId: Guid
 CoordinatorUserSearchResponse.RequestId: Guid
 CoordinatorUserSearchResponse.Users: List<UserDTO>
-CoordinatorUserSessionEndedNotification.Reason: UserSessionEndReason
 CoordinatorUserUpdatedNotification.User: UserDTO
 CreateSessionCategoryRequest.Name: String
 CreateSessionCategoryRequest.RequestId: Guid
@@ -700,18 +727,40 @@ DeleteSessionCategoryRequest.RequestId: Guid
 DeleteSessionRequest.RequestId: Guid
 DeleteSessionRequest.SessionId: Int32
 DeleteSessionResponse.RequestId: Guid
+DeviceEndReason = enum Revoked=0, LoggedOut=1
 DeviceInfoDTO.AppVersion: String
 DeviceInfoDTO.Architecture: String
 DeviceInfoDTO.Name: String
 DeviceInfoDTO.OsVersion: String
 DeviceInfoDTO.Platform: String
+DeviceLinkApproveRequest.Approve: Boolean
+DeviceLinkApproveRequest.Code: String
+DeviceLinkApproveRequest.RequestId: Guid
+DeviceLinkApproveResponse.RequestId: Guid
+DeviceLinkCompletedNotification.DeviceId: Guid
+DeviceLinkCompletedNotification.User: UserDTO
+DeviceLinkInfoRequest.Code: String
+DeviceLinkInfoRequest.RequestId: Guid
+DeviceLinkInfoResponse.Address: String
+DeviceLinkInfoResponse.Device: DeviceInfoDTO
+DeviceLinkInfoResponse.RequestId: Guid
+DeviceLinkStartRequest.Device: DeviceInfoDTO
+DeviceLinkStartRequest.NewDevice: NewDeviceDTO
+DeviceLinkStartRequest.RequestId: Guid
+DeviceLinkStartRequest.ServerPassword: String
+DeviceLinkStartResponse.Code: String
+DeviceLinkStartResponse.ExpiresAt: DateTimeOffset
+DeviceLinkStartResponse.RequestId: Guid
+DeviceLoginDTO.DeviceId: Guid
+DeviceLoginDTO.Signature: String
+DeviceLoginMethod = enum Registration=0, Recovery=1, Factors=2, LoginCode=3, DeviceLink=4, Legacy=5
 EditMessageRequest.ChatId: Int32
 EditMessageRequest.IsLinkPreviewDisabled: Boolean?
 EditMessageRequest.MessageId: Int32
 EditMessageRequest.RequestId: Guid
 EditMessageRequest.Text: String
 EditMessageResponse.RequestId: Guid
-ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, UnsupportedRequest=9, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, CallNotFound=211, BanNotFound=212, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, HierarchyViolation=316, NotMessageAuthor=317, CallBusy=318, CallAnsweredElsewhere=319, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ImageNotCompressed=405, VideoNotCompressed=406, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
+ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, UnsupportedRequest=9, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, DeviceNotFound=104, LoginFactorsMissing=105, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, CallNotFound=211, BanNotFound=212, DeviceLinkNotFound=213, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, HierarchyViolation=316, NotMessageAuthor=317, CallBusy=318, CallAnsweredElsewhere=319, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ImageNotCompressed=405, VideoNotCompressed=406, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
 ErrorResponse.Code: ErrorCode
 ErrorResponse.Details: String
 ErrorResponse.Fields: IDictionary<String, String[]>
@@ -728,11 +777,6 @@ FIDO2LoginOptionsDTO.Challenge: String
 FIDO2LoginOptionsDTO.RpId: String
 FIDO2LoginOptionsDTO.Timeout: Int64
 FIDO2LoginOptionsDTO.UserVerification: String
-FIDO2UserAuthRequest.AssertionResponse: FIDO2AssertionDTO
-FIDO2UserAuthRequest.RequestId: Guid
-FIDO2UserAuthResponse.RequestId: Guid
-FIDO2UserAuthResponse.SessionToken: String
-FIDO2UserAuthResponse.User: UserDTO
 HeartbeatPingRequest.RequestId: Guid
 HeartbeatPingResponse.RequestId: Guid
 HeartbeatPingResponse.Timestamp: Int64
@@ -939,6 +983,40 @@ LeaveSessionRequest.RequestId: Guid
 LeaveSessionRequest.SessionId: Int32
 LeaveSessionResponse.RequestId: Guid
 LeaveSessionResponse.SessionId: Int32
+LegacyLoginDTO.Keys: RecoveryKeysDTO
+LegacyLoginDTO.NewDevice: NewDeviceDTO
+LegacyLoginDTO.SessionToken: String
+LegacyLoginDTO.UserIdentity: String
+LoginChallengeRequest.RequestId: Guid
+LoginChallengeResponse.CoordinatorId: String
+LoginChallengeResponse.Nonce: String
+LoginChallengeResponse.RequestId: Guid
+LoginCodeLoginDTO.Code: String
+LoginCodeLoginDTO.NewDevice: NewDeviceDTO
+LoginFactor = enum Passkey=0, TwoFactor=1, Password=2
+LoginMethodDTO <- "Device": DeviceLoginDTO
+LoginMethodDTO <- "Legacy": LegacyLoginDTO
+LoginMethodDTO <- "LoginCode": LoginCodeLoginDTO
+LoginMethodDTO <- "Recovery": RecoveryLoginDTO
+LoginMethodDTO <- "Register": RegisterLoginDTO
+LoginMethodDTO <- "Username": UsernameLoginDTO
+LoginPasskeyRequest.Assertion: FIDO2AssertionDTO
+LoginPasskeyRequest.RequestId: Guid
+LoginProofRequest.Password: String
+LoginProofRequest.RequestId: Guid
+LoginProofRequest.TwoFactorCode: String
+LoginRequest.Device: DeviceInfoDTO
+LoginRequest.Method: LoginMethodDTO
+LoginRequest.RequestId: Guid
+LoginRequest.ServerPassword: String
+LoginResponse.AuthResult: AuthResult
+LoginResponse.DeviceId: Guid?
+LoginResponse.Factors: List<LoginFactor>
+LoginResponse.PasskeyOptions: FIDO2LoginOptionsDTO
+LoginResponse.RequestId: Guid
+LoginResponse.User: UserDTO
+LogoutRequest.RequestId: Guid
+LogoutResponse.RequestId: Guid
 MediaSourceType = enum Microphone=0, Camera=1, Screen=2
 MediaTokenRequest.RequestId: Guid
 MediaTokenResponse.ExpiresAt: DateTimeOffset
@@ -970,6 +1048,8 @@ NewChatMessageModel.IsLinkPreviewDisabled: Boolean
 NewChatMessageModel.ReplyToMessageId: Int32?
 NewChatMessageModel.ScheduledAt: DateTimeOffset?
 NewChatMessageModel.TextContent: ChatTextContentDTO
+NewDeviceDTO.IsTemporary: Boolean
+NewDeviceDTO.PublicKey: String
 Outbound.Channels: Int32
 Outbound.ClockRate: Int32
 Outbound.FecLossPercent: Int32
@@ -1007,6 +1087,13 @@ PushMarkReadRequest.MessageId: Int32
 PushPlatform = enum Android=0, Ios=1
 PushReplyRequest.ChatId: Int32
 PushReplyRequest.Text: String
+RecoveryKeysDTO.AccountPublicKey: String
+RecoveryKeysDTO.RecoveryPublicKey: String
+RecoveryLoginDTO.NewDevice: NewDeviceDTO
+RecoveryLoginDTO.RecoveryPublicKey: String
+RecoveryLoginDTO.Signature: String
+RegisterLoginDTO.Keys: RecoveryKeysDTO
+RegisterLoginDTO.NewDevice: NewDeviceDTO
 RegisterPushTokenRequest.Key: String
 RegisterPushTokenRequest.KeyId: String
 RegisterPushTokenRequest.Platform: PushPlatform
@@ -1046,7 +1133,6 @@ SFUNodeDTO.LastPingAt: DateTimeOffset?
 SFUNodeDTO.Name: String
 SFUNodeDTO.PingMs: Double?
 SFUNodeDTO.Port: Int32
-SecondStageAuthType = enum FIDO2=0, TwoFactor=1, Password=2
 SendMessageRequest.ChatId: Int32
 SendMessageRequest.Message: NewChatMessageModel
 SendMessageRequest.RequestId: Guid
@@ -1104,27 +1190,9 @@ TransportData.DTLSParameters: DTLSParameters
 TransportData.Host: String
 TransportData.ICEParameters: ICEParameters
 TransportData.Port: UInt16
-TwoFactorUserAuthRequest.Password: String
-TwoFactorUserAuthRequest.RequestId: Guid
-TwoFactorUserAuthRequest.TwoFactorCode: String
-TwoFactorUserAuthResponse.RequestId: Guid
-TwoFactorUserAuthResponse.SessionToken: String
-TwoFactorUserAuthResponse.User: UserDTO
 UnregisterPushTokenRequest.RequestId: Guid
 UnregisterPushTokenRequest.Token: String
 UnregisterPushTokenResponse.RequestId: Guid
-UserAuthRequest.Device: DeviceInfoDTO
-UserAuthRequest.RequestId: Guid
-UserAuthRequest.ServerPassword: String
-UserAuthRequest.SessionToken: String
-UserAuthRequest.UserIdentity: String
-UserAuthResponse.AuthResult: AuthResult
-UserAuthResponse.FIDO2LoginOptions: FIDO2LoginOptionsDTO
-UserAuthResponse.RequestId: Guid
-UserAuthResponse.SecondStages: List<SecondStageAuthType>
-UserAuthResponse.SessionToken: String
-UserAuthResponse.User: UserDTO
-UserAuthResponse.UserIdentity: String
 UserDTO.AvatarUrl: String
 UserDTO.CoordinatorInstanceId: String
 UserDTO.Device: UserDeviceDTO
@@ -1144,10 +1212,6 @@ UserDeviceDTO.AppVersion: String
 UserDeviceDTO.Architecture: String
 UserDeviceDTO.OsVersion: String
 UserDeviceDTO.Platform: String
-UserIdentityResetRequest.Proof: UserSecurityProofDTO
-UserIdentityResetRequest.RequestId: Guid
-UserIdentityResetResponse.RequestId: Guid
-UserIdentityResetResponse.UserIdentity: String
 UserPasskeyDTO.CreatedAt: DateTimeOffset
 UserPasskeyDTO.Id: Int32
 UserPasskeyDTO.Label: String
@@ -1162,6 +1226,10 @@ UserPasskeyOptionsResponse.RequestId: Guid
 UserPasskeyRegisterRequest.CredentialJson: String
 UserPasskeyRegisterRequest.Label: String
 UserPasskeyRegisterRequest.RequestId: Guid
+UserRecoveryKeyResetRequest.Keys: RecoveryKeysDTO
+UserRecoveryKeyResetRequest.Proof: UserSecurityProofDTO
+UserRecoveryKeyResetRequest.RequestId: Guid
+UserRecoveryKeyResetResponse.RequestId: Guid
 UserSecurityDTO.HasPassword: Boolean
 UserSecurityDTO.IsTwoFactorEnabled: Boolean
 UserSecurityDTO.IsTwoFactorPending: Boolean
@@ -1172,20 +1240,6 @@ UserSecurityProofDTO.Password: String
 UserSecurityProofDTO.TwoFactorCode: String
 UserSecurityResponse.RequestId: Guid
 UserSecurityResponse.Security: UserSecurityDTO
-UserSessionDTO.CreatedAt: DateTimeOffset
-UserSessionDTO.Device: DeviceInfoDTO
-UserSessionDTO.ExpiresAt: DateTimeOffset
-UserSessionDTO.Id: Guid
-UserSessionDTO.IsCurrent: Boolean
-UserSessionDTO.IsOnline: Boolean
-UserSessionDTO.LastAddress: String
-UserSessionDTO.LastUsedAt: DateTimeOffset
-UserSessionEndReason = enum Revoked=0, IdentityReset=1
-UserSessionRevokeRequest.RequestId: Guid
-UserSessionRevokeRequest.SessionId: Guid?
-UserSessionsRequest.RequestId: Guid
-UserSessionsResponse.RequestId: Guid
-UserSessionsResponse.Sessions: List<UserSessionDTO>
 UserSetPasswordRequest.NewPassword: String
 UserSetPasswordRequest.Proof: UserSecurityProofDTO
 UserSetPasswordRequest.RequestId: Guid
@@ -1200,6 +1254,8 @@ UserTwoFactorSetupRequest.RequestId: Guid
 UserTwoFactorSetupResponse.RequestId: Guid
 UserTwoFactorSetupResponse.Secret: String
 UserTwoFactorSetupResponse.Uri: String
+UsernameLoginDTO.NewDevice: NewDeviceDTO
+UsernameLoginDTO.Username: String
 WebRTCAudioCodecs = enum Undefined=0, Opus=1, G711=2, PCM=3
 WebRTCEngine = enum Undefined=0, SIPSorcery=1, GStreamer=2, Mediasoup=3
 WebRTCVideoCodecs = enum Undefined=0, H264=1, H265=2, VP8=3, VP9=4, AV1=5

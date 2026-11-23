@@ -36,8 +36,10 @@ client                                          coordinator
   │        FlowRate-Protocol: <server Current>       │    both headers, no socket
   │        FlowRate-Protocol-Min: <server MinSupported>
   │                                                  │
-  │  UserAuthRequest ──────────────────────────────► │
-  │ ◄──────────────────────────── UserAuthResponse   │
+  │  LoginChallengeRequest ────────────────────────► │
+  │ ◄─────────────────────── LoginChallengeResponse  │
+  │  LoginRequest ─────────────────────────────────► │
+  │ ◄─────────────────────────────── LoginResponse   │
   │  ... requests, responses, notifications ...      │
 ```
 
@@ -48,10 +50,10 @@ client                                          coordinator
 - With a 426 the client can tell who is outdated: if its `Current` is below the server's
   `MinSupported`, the client needs an update; otherwise the server does
   (`Client.Application/Ports/ProtocolMismatch.cs`).
-- Authentication is the first exchange on the socket: `UserAuthRequest`, then
-  `TwoFactorUserAuthRequest` or `FIDO2UserAuthRequest` when the response says
-  `SecondStageRequired`. A device with a live session token skips the second stage (see
-  [Device sessions](#device-sessions)).
+- Authentication is the first exchange on the socket: `LoginChallengeRequest` and `LoginRequest`,
+  then `LoginProofRequest` or `LoginPasskeyRequest` when a login by username is answered
+  `SecondStageRequired`, or `DeviceLinkStartRequest` for a new device another device approves (see
+  [Logging in and devices](#logging-in-and-devices)).
 - While connected, the client sends a `HeartbeatPingRequest` every 5 seconds
   (`Client.Api/Protocol/HeartbeatHandler.cs`). Before a planned shutdown the server sends
   `ServerRestartNotification` with the reason, see [Server restarts](#server-restarts).
@@ -98,8 +100,8 @@ Each request has exactly one response type. In most cases it is named the same w
 instead of `Request`, and the request has a `ToResponse(...)` method that builds it. The server
 uses that method, and `ToError(...)` for a failure, so the `RequestId` is always copied. Exceptions
 to the naming: requests that change one role are answered with `CoordinatorRoleResponse`, assigning
-and unassigning a role with `CoordinatorUserRolesResponse`, and `UserAuthRequest` also with
-`ToSecondStageResponse(...)`.
+and unassigning a role with `CoordinatorUserRolesResponse`, the second stage of a login with
+`LoginResponse`, and `LoginRequest` also with `ToSecondStageResponse(...)`.
 
 A response is sent on success only and carries what the request asked for, without a result
 code. A request that fails is answered with an `ErrorResponse` instead, with the same `RequestId`:
@@ -116,7 +118,7 @@ a code is about (`SessionNotFound` of a join is the session to join):
 | Codes | Group |
 |-------|-------|
 | 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled`, `UnsupportedRequest` (the server does not know the request: the client is newer) |
-| 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached` |
+| 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached`, `DeviceNotFound`, `LoginFactorsMissing` |
 | 200–299 | What the request is about does not exist: `UserNotFound`, `SessionNotFound`, `PeerNotFound`... |
 | 300–399 | The state of things does not allow it: `Conflict`, `NameTaken`, `SessionFull`, `NotAdmitted`, `CannotTargetSelf`, `HierarchyViolation`... |
 | 400–499 | A value the format allows but the server cannot use: `InvalidValue`, the attachment codes, `UnsupportedMedia` |
@@ -135,7 +137,8 @@ response. Giving up is the client's own matter and is not an `ErrorCode`.
 
 | Area | Namespace (`Shared.Models.…`) | Content |
 |------|-------------------------------|---------|
-| Auth | `Requests.Auth`, `Responses.Auth` | Login, second stage by 2FA code or FIDO2 |
+| Auth | `Requests.Auth`, `Responses.Auth` | Login by device, registration, recovery phrase, username and factors, login code, device link |
+| Devices | `Requests.Coordinator.Devices`, `Responses.Coordinator.Devices` | The devices of the account, logout, approving a new device |
 | Coordinator | `Requests.Coordinator`, `Notifications.CoordinatorInfo` | Server info, users, profile, settings, roles, push tokens, media token |
 | Account security | `Requests.Coordinator.Security`, `Responses.Coordinator.Security` | The sender's password, one-time codes and passkeys |
 | Heartbeat | `Requests.Heartbeat`, `Notifications.Heartbeat` | Ping, server closing or restarting |
@@ -171,22 +174,77 @@ Only a hybrid session has a capacity: `HybridSessionCreateData.Capacity` on crea
 `Limits.SessionCapacityMin` to `Limits.SessionCapacityMax`). Chats of any kind have no capacity;
 the members of a group are limited by `ChatSessionCreateData.MemberIds` alone.
 
-## Logging in and account security
+## Logging in and devices
 
-A user who has a password, one-time codes (TOTP) or passkeys is answered `SecondStageRequired` to
-`UserAuthRequest`. `SecondStages` then lists what the user can prove (`SecondStageAuthType`), and
-`FIDO2LoginOptions` is set when the user has passkeys. The client finishes with either
+An account is a set of devices. Each device has its own P-256 key: the client keeps the private part
+(in the system keyring or a hardware key store), the server only the public one. Nothing a device sends
+to log in is a secret the server could leak or replay.
 
-- `TwoFactorUserAuthRequest`: the password and the code, each when the user has it, or
-- `FIDO2UserAuthRequest`: a passkey assertion. A passkey alone is enough.
+Public keys travel as SubjectPublicKeyInfo DER, signatures as r‖s (IEEE P1363, 64 bytes), both
+base64url. What is signed is `LoginSignature.Payload` (`Shared.Auth`): the purpose (`device` or
+`recovery`), the coordinator id and the nonce of `LoginChallengeResponse`, and for the recovery key the
+public key of the device being added. A nonce is good for one login of its connection and two minutes.
 
-Binary values of the passkey messages (challenge, credential ids, the parts of the assertion) are
-base64url. The user handle of a passkey is the user id as UTF-8 text. User verification is always
-required. The server gives three tries and two minutes for the second stage; a code is good for one
-login.
+`LoginRequest` carries the server password, asked of every login while the coordinator has one, the
+`DeviceInfoDTO` of the device, and one method (`LoginMethodDTO`, polymorphic by `$type`):
 
-A login that fails is answered with an `ErrorResponse`: `AuthFailed`, `Banned`, `OnlineLimitReached`
-or `UserLimitReached`.
+| Method | `$type` | What it proves | Second stage |
+|--------|---------|----------------|--------------|
+| `DeviceLoginDTO` | `Device` | The device id and a signature of the challenge with the device key | no |
+| `RegisterLoginDTO` | `Register` | Nothing: a new account with a generated name | no |
+| `RecoveryLoginDTO` | `Recovery` | A signature with the recovery key; its public part finds the account | no |
+| `UsernameLoginDTO` | `Username` | The username | `LoginProofRequest` or `LoginPasskeyRequest` |
+| `LoginCodeLoginDTO` | `LoginCode` | A one-time login code the control panel gave out for the user | no |
+| `LegacyLoginDTO` | `Legacy` | The identity of the earlier protocol 3, with its session token when it had one | without a live token, when the user has factors |
+
+Every method but `Device` adds a device: it brings `NewDeviceDTO` (the public key and `IsTemporary`),
+and `LoginResponse` answers with `DeviceId`, the id to log in with from then on. A device ends after
+90 days without a login, a temporary one after a day, or when it is removed; a login with it is then
+answered `DeviceNotFound`. The other connected devices of the user are told with
+`AccountDeviceAddedNotification`, so a login that was not theirs is noticed.
+
+- Registration and the legacy method bring `RecoveryKeysDTO`: the public keys the recovery phrase of the
+  account derives (`RecoveryPublicKey` to log in with the phrase, `AccountPublicKey` kept for
+  end-to-end encryption). The server never sees the phrase. Recovery keys are unique among accounts.
+- A login by username is answered `SecondStageRequired` with `Factors` (`LoginFactor`) and, when the user
+  has passkeys, `PasskeyOptions`. An account with no factor is answered `LoginFactorsMissing`. Usernames
+  are compared ignoring case. Three tries within two minutes; a one-time code is good for one login.
+- The recovery phrase alone is enough, one-time codes or not: it is what restores an account whose
+  devices and factors are all gone.
+- A login code is good once and for 15 minutes; codes are kept hashed.
+- The legacy identity works once: the account gets the device and the recovery keys, and the identity and
+  the earlier sessions are removed.
+
+### Adding a device from another one
+
+```
+new device                       coordinator                         device of the account
+  │ DeviceLinkStartRequest ────────► │                                      │
+  │ ◄──── DeviceLinkStartResponse    │                                      │
+  │   (Code shown as text and QR)    │ ◄──────────── DeviceLinkInfoRequest  │
+  │                                  │ DeviceLinkInfoResponse ────────────► │
+  │                                  │ ◄────────── DeviceLinkApproveRequest │
+  │ ◄─ DeviceLinkCompletedNotification (user, device id) or                 │
+  │    DeviceLinkDeclinedNotification                                       │
+```
+
+The code is eight characters (two groups of four), good for five minutes; the waiting connection stays
+open, logged out, until then. The QR code holds `flowrate-link:<code>`. A completed link logs the new
+device in at once.
+
+### Devices of the account
+
+| Request | Does |
+|---------|------|
+| `AccountDevicesRequest` | The devices of the account, the latest used first; `IsCurrent` marks the asking one |
+| `AccountDeviceRevokeRequest` | Removes one device (not the current one), or every other one with `DeviceId` null; no proof asked |
+| `LogoutRequest` | Removes the current device; the server answers and closes the connection |
+| `DeviceLinkInfoRequest`, `DeviceLinkApproveRequest` | See above |
+
+A removed device that is connected gets `AccountDeviceEndedNotification` (`Revoked` or `LoggedOut`) and
+is closed. The client drops its key and does not reconnect on its own.
+
+### Account security
 
 Once logged in, the client sets up the sender's own login with the `User*` requests of
 `Requests.Coordinator.Security`. Each answers with `UserSecurityDTO`, what the user has now.
@@ -201,41 +259,17 @@ Once logged in, the client sets up the sender's own login with the `User*` reque
 | `UserPasskeyOptionsRequest` | WebAuthn creation options (`PublicKeyCredentialCreationOptionsJSON`) |
 | `UserPasskeyRegisterRequest` | Registers the passkey made for those options (`RegistrationResponseJSON`) |
 | `UserPasskeyDeleteRequest` | Removes a passkey |
+| `UserRecoveryKeyResetRequest` | Replaces the recovery keys with those of a new phrase (answered `UserRecoveryKeyResetResponse`); the devices stay |
 
 Every request that changes something or starts a setup carries `UserSecurityProofDTO`: the current
 password and one-time code, each when the user has it. A missing or wrong proof is answered
 `ProofRequired`, so an open session alone cannot change how the account logs in. The control panel can
-set up and take away all of it too, for a user who lost a device.
+set up and take away all of it too, for a user who lost a device, remove devices and give out login
+codes.
 
-## Device sessions
-
-The identity (`#` and a GUID, given by the server to a new user) stays the key of the account: the
-client keeps it, and it logs in from any device. The server keeps only its SHA-256.
-
-- Every successful login, by identity or by token, answers with `SessionToken` (in `UserAuthResponse`,
-  `TwoFactorUserAuthResponse` or `FIDO2UserAuthResponse`): 32 random bytes, base64url. The client
-  keeps it with the identity and sends it with the next `UserAuthRequest`, along with `UserIdentity`
-  and `Device` (`DeviceInfoDTO`: name, platform, client version, and optionally the system with its
-  version and the processor architecture).
-- A token the server knows logs the device in at once, without the second stage, and is answered with
-  the next token. The token before stays valid until the next one is used, for a device that lost
-  the answer. `UserIdentity` is null in that response: the client keeps its own.
-- An unknown or expired token is not refused: the server goes on with `UserIdentity`, second stage
-  included, and starts a new session.
-- A session ends after 90 days without a login, or when it is ended. The server keeps only the
-  hashes of the tokens.
-
-Requests of the sender (`Requests.Coordinator.Security`, answered with `UserSessionsResponse` or
-`UserIdentityResetResponse`):
-
-| Request | Does |
-|---------|------|
-| `UserSessionsRequest` | The sessions of the user, the latest used first; `IsCurrent` marks the asking one |
-| `UserSessionRevokeRequest` | Ends one session (not the current one), or every other one with `SessionId` null; no proof asked |
-| `UserIdentityResetRequest` | Gives a new identity (with `UserSecurityProofDTO`) and ends every other session |
-
-The connections of an ended session get `CoordinatorUserSessionEndedNotification` (`Revoked` or
-`IdentityReset`) and are closed. The client drops its token and does not reconnect on its own.
+Binary values of the passkey messages (challenge, credential ids, the parts of the assertion) are
+base64url. The user handle of a passkey is the user id as UTF-8 text. User verification is always
+required.
 
 ### The device others see
 
