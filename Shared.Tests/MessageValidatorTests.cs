@@ -160,6 +160,8 @@ public class MessageValidatorTests
         { new UserAuthRequest(null, "alice", SessionToken: new string('t', Limits.SessionTokenMaxLength + 1)), "SessionToken" },
         { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO(new string('d', Limits.DeviceNameMaxLength + 1), "Linux", "0.8.0")), "Name" },
         { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "bad\u0007version")), "AppVersion" },
+        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "0.8.0", new string('o', Limits.OsVersionMaxLength + 1))), "OsVersion" },
+        { new UserAuthRequest(null, "alice", Device: new DeviceInfoDTO("desk", "Linux", "0.8.0", "Ubuntu", "x6\u00074")), "Architecture" },
         { new UserSetPasswordRequest(null, new string('p', Limits.PasswordMaxLength + 1)), "NewPassword" },
         { new UserTwoFactorSetupRequest(new UserSecurityProofDTO(null, "1234567")), "TwoFactorCode" },
         { new UserTwoFactorEnableRequest("12\u00073"), "Code" },

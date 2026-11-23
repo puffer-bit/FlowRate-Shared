@@ -21,6 +21,12 @@ public class UserDTO
     /// </summary>
     public UserStatus Status { get; set; }
 
+    /// <summary>
+    /// The device the user is connected from: a phone when one is connected, otherwise the device connected last.
+    /// Null while others see the user offline; a user always gets their own.
+    /// </summary>
+    public UserDeviceDTO? Device { get; set; }
+
     public DateTimeOffset FirstConnectedAt { get; set; }
     public DateTimeOffset LastConnectedAt { get; set; }
 

@@ -13,6 +13,8 @@ public static class Limits
     public const int DeviceNameMaxLength = 64;
     public const int DevicePlatformMaxLength = 32;
     public const int AppVersionMaxLength = 32;
+    public const int OsVersionMaxLength = 64;
+    public const int ArchitectureMaxLength = 16;
     public const int TwoFactorMaxLength = 6;
     public const int FIDO2FieldMaxLength = 4096;
     public const int FIDO2UserHandleMaxLength = 128;
