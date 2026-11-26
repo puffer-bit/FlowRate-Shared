@@ -84,6 +84,8 @@ public static class ProtocolVersion
     //    UserSessionRevokeRequest, UserSessionDTO and CoordinatorUserSessionEndedNotification;
     //    UserRecoveryKeyResetRequest instead of UserIdentityResetRequest; ErrorCode.DeviceNotFound,
     //    LoginFactorsMissing and DeviceLinkNotFound.
+    //    Idle presence: UserStatus.Idle and Sleeping (shown only, refused by CoordinatorSetUserStatusRequest),
+    //    IdleLevel and CoordinatorSetIdleRequest/Response.
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>
