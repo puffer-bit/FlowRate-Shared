@@ -281,6 +281,18 @@ shown to others. Like the status, it is null while others see the user offline o
 always gets their own. A change of the device shown is announced with `CoordinatorUserUpdatedNotification`.
 Clients draw a phone instead of the dot of the online status for a user on a phone.
 
+### Idle presence
+
+`CoordinatorSetIdleRequest(Level)` tells how long the sending device has gone without input (`IdleLevel`:
+`Active`, `Idle`, `Sleeping`) and is acknowledged by `CoordinatorSetIdleResponse`. The server keeps the level of
+every open connection in memory only; a new connection starts `Active`, and the level ends with the connection.
+While the user picked `Online`, others see `UserStatus.Idle` or `UserStatus.Sleeping` when every connected device
+is at least that idle: one active device keeps the user online. The other picked statuses are shown as they are.
+The user always gets the status they picked, never the idle one. `CoordinatorSetUserStatusRequest` refuses
+`Idle` and `Sleeping`. A change of what others see is announced with `CoordinatorUserUpdatedNotification`.
+Clients send only changes of the level; desktop clients measure input in the whole system, and stay `Active`
+during a call when their user asks for it. Mobile clients do not send the request.
+
 ## Validation
 
 Every request field that comes from the user has a limit, and the client and the server check
