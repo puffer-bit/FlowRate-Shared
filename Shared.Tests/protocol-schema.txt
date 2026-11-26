@@ -87,9 +87,17 @@ BaseMessage <- "CoordinatorBanRequest": CoordinatorBanRequest
 BaseMessage <- "CoordinatorBanResponse": CoordinatorBanResponse
 BaseMessage <- "CoordinatorBansRequest": CoordinatorBansRequest
 BaseMessage <- "CoordinatorBansResponse": CoordinatorBansResponse
+BaseMessage <- "CoordinatorBotLoginCodeRequest": CoordinatorBotLoginCodeRequest
+BaseMessage <- "CoordinatorBotLoginCodeResponse": CoordinatorBotLoginCodeResponse
+BaseMessage <- "CoordinatorBotsRequest": CoordinatorBotsRequest
+BaseMessage <- "CoordinatorBotsResponse": CoordinatorBotsResponse
 BaseMessage <- "CoordinatorChangeUsernameRequest": CoordinatorChangeUsernameRequest
 BaseMessage <- "CoordinatorChangeUsernameResponse": CoordinatorChangeUsernameResponse
+BaseMessage <- "CoordinatorCreateBotRequest": CoordinatorCreateBotRequest
+BaseMessage <- "CoordinatorCreateBotResponse": CoordinatorCreateBotResponse
 BaseMessage <- "CoordinatorCreateRoleRequest": CoordinatorCreateRoleRequest
+BaseMessage <- "CoordinatorDeleteBotRequest": CoordinatorDeleteBotRequest
+BaseMessage <- "CoordinatorDeleteBotResponse": CoordinatorDeleteBotResponse
 BaseMessage <- "CoordinatorDeleteRoleRequest": CoordinatorDeleteRoleRequest
 BaseMessage <- "CoordinatorDeleteUserRequest": CoordinatorDeleteUserRequest
 BaseMessage <- "CoordinatorDeleteUserResponse": CoordinatorDeleteUserResponse
@@ -259,6 +267,8 @@ BaseMessage <- "UserTwoFactorDisableRequest": UserTwoFactorDisableRequest
 BaseMessage <- "UserTwoFactorEnableRequest": UserTwoFactorEnableRequest
 BaseMessage <- "UserTwoFactorSetupRequest": UserTwoFactorSetupRequest
 BaseMessage <- "UserTwoFactorSetupResponse": UserTwoFactorSetupResponse
+BotLoginCodeDTO.Code: String
+BotLoginCodeDTO.ExpiresAt: DateTimeOffset
 ChangeChatSessionSettingsRequest.Description: String
 ChangeChatSessionSettingsRequest.Name: String
 ChangeChatSessionSettingsRequest.RequestId: Guid
@@ -525,13 +535,32 @@ CoordinatorBanResponse.User: UserDTO
 CoordinatorBansRequest.RequestId: Guid
 CoordinatorBansResponse.Bans: List<BanDTO>
 CoordinatorBansResponse.RequestId: Guid
+CoordinatorBotLoginCodeRequest.EndDevices: Boolean
+CoordinatorBotLoginCodeRequest.RequestId: Guid
+CoordinatorBotLoginCodeRequest.TargetUserId: Int32
+CoordinatorBotLoginCodeResponse.LoginCode: BotLoginCodeDTO
+CoordinatorBotLoginCodeResponse.RequestId: Guid
+CoordinatorBotLoginCodeResponse.TargetUserId: Int32
+CoordinatorBotsRequest.RequestId: Guid
+CoordinatorBotsResponse.Bots: List<UserDTO>
+CoordinatorBotsResponse.RequestId: Guid
 CoordinatorChangeUsernameRequest.RequestId: Guid
 CoordinatorChangeUsernameRequest.TargetUserId: Int32?
 CoordinatorChangeUsernameRequest.Username: String
 CoordinatorChangeUsernameResponse.RequestId: Guid
 CoordinatorChangeUsernameResponse.User: UserDTO
+CoordinatorCreateBotRequest.IsDebug: Boolean
+CoordinatorCreateBotRequest.RequestId: Guid
+CoordinatorCreateBotRequest.Username: String
+CoordinatorCreateBotResponse.Bot: UserDTO
+CoordinatorCreateBotResponse.LoginCode: BotLoginCodeDTO
+CoordinatorCreateBotResponse.RequestId: Guid
 CoordinatorCreateRoleRequest.RequestId: Guid
 CoordinatorCreateRoleRequest.Role: RoleUpdateDTO
+CoordinatorDeleteBotRequest.RequestId: Guid
+CoordinatorDeleteBotRequest.TargetUserId: Int32
+CoordinatorDeleteBotResponse.RequestId: Guid
+CoordinatorDeleteBotResponse.TargetUserId: Int32
 CoordinatorDeleteRoleRequest.RequestId: Guid
 CoordinatorDeleteRoleRequest.RoleId: Int32
 CoordinatorDeleteUserRequest.RequestId: Guid
@@ -628,6 +657,7 @@ CoordinatorSettingsDTO.Ip: String
 CoordinatorSettingsDTO.IsMOTDEnabled: Boolean
 CoordinatorSettingsDTO.IsPasswordProtected: Boolean
 CoordinatorSettingsDTO.MOTDText: String
+CoordinatorSettingsDTO.MaxBots: Int32
 CoordinatorSettingsDTO.MaxFileSizeBytes: Int64
 CoordinatorSettingsDTO.MaxOnlineUsers: Int32
 CoordinatorSettingsDTO.MaxUnattachedUploadsPerUser: Int32
@@ -656,6 +686,7 @@ CoordinatorSettingsUpdateDTO.ImageQuality: Int32
 CoordinatorSettingsUpdateDTO.Ip: String
 CoordinatorSettingsUpdateDTO.IsMOTDEnabled: Boolean
 CoordinatorSettingsUpdateDTO.MOTDText: String
+CoordinatorSettingsUpdateDTO.MaxBots: Int32?
 CoordinatorSettingsUpdateDTO.MaxFileSizeBytes: Int64
 CoordinatorSettingsUpdateDTO.MaxOnlineUsers: Int32
 CoordinatorSettingsUpdateDTO.MaxUnattachedUploadsPerUser: Int32
@@ -766,7 +797,7 @@ EditMessageRequest.MessageId: Int32
 EditMessageRequest.RequestId: Guid
 EditMessageRequest.Text: String
 EditMessageResponse.RequestId: Guid
-ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, UnsupportedRequest=9, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, DeviceNotFound=104, LoginFactorsMissing=105, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, CallNotFound=211, BanNotFound=212, DeviceLinkNotFound=213, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, HierarchyViolation=316, NotMessageAuthor=317, CallBusy=318, CallAnsweredElsewhere=319, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ImageNotCompressed=405, VideoNotCompressed=406, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
+ErrorCode = enum Internal=1, TimedOut=2, RateLimited=3, InvalidRequest=4, InsufficientPermissions=5, UserFrozen=6, NotConnected=7, FeatureDisabled=8, UnsupportedRequest=9, AuthFailed=100, Banned=101, OnlineLimitReached=102, UserLimitReached=103, DeviceNotFound=104, LoginFactorsMissing=105, BotLimitReached=106, UserNotFound=200, SessionNotFound=201, PeerNotFound=202, ChatNotFound=203, MessageNotFound=204, ReplyTargetNotFound=205, RoleNotFound=206, CategoryNotFound=207, TransportNotFound=208, UploadNotFound=209, PasskeyNotFound=210, CallNotFound=211, BanNotFound=212, DeviceLinkNotFound=213, Conflict=300, NameTaken=301, DuplicateMessage=302, SessionFull=303, SessionNotEmpty=304, TooManyRoles=305, TooManyCategories=306, WrongSessionType=307, NotMember=308, NotAdmitted=309, AlreadyApproved=310, AlreadyRejected=311, MediaNotActive=312, ChatReadOnly=313, CannotTargetSelf=314, HierarchyViolation=316, NotMessageAuthor=317, CallBusy=318, CallAnsweredElsewhere=319, InvalidValue=400, AttachmentsNotAllowed=401, AttachmentNotReady=402, AttachmentInvalid=403, UnsupportedMedia=404, ImageNotCompressed=405, VideoNotCompressed=406, ProofRequired=500, VerificationFailed=501, SFUError=600, SFUUnavailable=601
 ErrorResponse.Code: ErrorCode
 ErrorResponse.Details: String
 ErrorResponse.Fields: IDictionary<String, String[]>
@@ -1087,7 +1118,7 @@ PeerDTO.Outbounds: Dictionary<String, Outbound>
 PeerDTO.State: HybridSessionPeerState
 PeerDTO.UserId: Int32
 PeerDTO.WatchedScreenShares: List<Int32>
-Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, MoveMembers=262144, All=524287
+Permission = enum None=0, Administrator=1, ViewCoordinatorSettings=2, ManageCoordinatorSettings=4, ManageRoles=8, CreateSessions=16, ManageSessions=32, KickMembers=64, BanMembers=128, ApproveMembers=256, ManageMessages=512, ManageUsers=1024, ViewSessions=2048, SendMessages=4096, AttachFiles=8192, JoinSessions=16384, Speak=32768, ShareVideo=65536, PokeMembers=131072, Default=260096, SessionScoped=260608, MoveMembers=262144, ManageBots=524288, All=1048575
 PushDeclineCallRequest.CallId: Guid
 PushMarkReadRequest.ChatId: Int32
 PushMarkReadRequest.MessageId: Int32
@@ -1207,7 +1238,9 @@ UserDTO.DisplayName: String
 UserDTO.FirstConnectedAt: DateTimeOffset
 UserDTO.Id: Int32
 UserDTO.Ip: String
+UserDTO.Kind: UserKind
 UserDTO.LastConnectedAt: DateTimeOffset
+UserDTO.OwnerUserId: Int32?
 UserDTO.Prefix: String
 UserDTO.RegionCode: String
 UserDTO.RegionName: String
@@ -1219,6 +1252,7 @@ UserDeviceDTO.AppVersion: String
 UserDeviceDTO.Architecture: String
 UserDeviceDTO.OsVersion: String
 UserDeviceDTO.Platform: String
+UserKind = enum User=0, Bot=1, DebugBot=2
 UserPasskeyDTO.CreatedAt: DateTimeOffset
 UserPasskeyDTO.Id: Int32
 UserPasskeyDTO.Label: String

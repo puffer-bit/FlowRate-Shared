@@ -7,6 +7,13 @@ public class UserDTO
     public int Id { get; set; }
     public string CoordinatorInstanceId { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
+
+    /// <summary>A person or a bot; <see cref="UserKind.User"/> from servers that know no bots.</summary>
+    public UserKind Kind { get; set; }
+
+    /// <summary>The user who made the bot; null for people, and for a bot whose maker was deleted.</summary>
+    public int? OwnerUserId { get; set; }
+
     public string? Ip { get; set; }
     public string? RegionName { get; set; }
     public string? RegionCode { get; set; }

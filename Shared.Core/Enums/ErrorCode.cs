@@ -64,6 +64,9 @@ public enum ErrorCode
     /// </summary>
     LoginFactorsMissing = 105,
 
+    /// <summary>The coordinator cannot make another bot.</summary>
+    BotLimitReached = 106,
+
     // What the request is about does not exist
 
     UserNotFound = 200,

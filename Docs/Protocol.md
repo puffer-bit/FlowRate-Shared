@@ -294,6 +294,36 @@ client tells the status picked from it (idle and sleeping are picked online). `C
 Clients send only changes of the level; desktop clients measure input in the whole system, and stay `Active`
 during a call when their user asks for it. Mobile clients do not send the request.
 
+### Bots
+
+A bot is an account with `UserDTO.Kind = UserKind.Bot`, run by a program on the client libraries instead of a
+person. `UserKind.DebugBot` is a bot for testing and debugging (the test bot of the client): it behaves as a bot,
+is made with `CoordinatorCreateBotRequest.IsDebug`, takes no place under `MaxBots`, and clients mark it apart.
+Everything below about bots holds for both kinds. `UserDTO.OwnerUserId` names the user who made it (null once that
+user is deleted). Bots came without a new protocol version: an older client sees a bot as a user, an older server
+answers the bot requests with `UnsupportedRequest`.
+
+- **Managing bots** needs `Permission.ManageBots`: `CoordinatorBotsRequest` lists them,
+  `CoordinatorCreateBotRequest(Username, IsDebug)` makes one owned by the sender, with the everyone role only, and answers
+  the bot and a `BotLoginCodeDTO`; `CoordinatorBotLoginCodeRequest(TargetUserId, EndDevices)` gives a new code,
+  the earlier ones stop working, and with `EndDevices` the devices of the bot end and it is disconnected;
+  `CoordinatorDeleteBotRequest` deletes a bot as `CoordinatorDeleteUserRequest` deletes a user. Deleting one keeps
+  to the role hierarchy. A bot cannot manage bots, whatever its roles. A taken username is refused with
+  `NameTaken`, a bot past `CoordinatorSettingsDTO.MaxBots` with `BotLimitReached`. The control panel can give a
+  bot a login code as well, as for any user.
+- **Logging in:** the bot logs in once with the code (`LoginCodeLoginDTO`), which adds its device key, and with
+  `DeviceLoginDTO` from then on, sending the server password like any client. A bot has no recovery phrase,
+  passwords, one-time codes or passkeys, so it cannot log in another way, and the requests of account security,
+  device links and push tokens are refused with `InsufficientPermissions`.
+- **Limits:** bots take no place among `MaxOnlineUsers` or `MaxUsers`; `MaxBots` limits them instead.
+  `CoordinatorSettingsUpdateDTO.MaxBots` null keeps the limit, so clients that do not know it change nothing.
+- **What a bot may do** comes from its roles and the overrides of the sessions, as for anyone: give it a role to
+  let it into a channel or a voice session.
+- **Presence:** a bot is never idle (`CoordinatorSetIdleRequest` is acknowledged and changes nothing). Its read
+  position is kept as anyone's, so its own unread counts work, but clients leave bots out of the readers of a
+  message.
+- Clients mark bots with an icon next to the name, debug bots with an icon of their own.
+
 ## Validation
 
 Every request field that comes from the user has a limit, and the client and the server check
