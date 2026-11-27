@@ -118,7 +118,7 @@ a code is about (`SessionNotFound` of a join is the session to join):
 | Codes | Group |
 |-------|-------|
 | 1–99 | The request as a whole: `Internal`, `TimedOut` (the server did not get the work done in time), `RateLimited`, `InvalidRequest` (fails `MessageValidator`), `InsufficientPermissions` (see `Enums/Permission.cs`), `UserFrozen`, `NotConnected`, `FeatureDisabled`, `UnsupportedRequest` (the server does not know the request: the client is newer) |
-| 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached`, `DeviceNotFound`, `LoginFactorsMissing` |
+| 100–199 | Logging in: `AuthFailed`, `Banned`, `OnlineLimitReached`, `UserLimitReached`, `DeviceNotFound`, `LoginFactorsMissing`, `BotLimitReached` (making a bot past the limit) |
 | 200–299 | What the request is about does not exist: `UserNotFound`, `SessionNotFound`, `PeerNotFound`... |
 | 300–399 | The state of things does not allow it: `Conflict`, `NameTaken`, `SessionFull`, `NotAdmitted`, `CannotTargetSelf`, `HierarchyViolation`... |
 | 400–499 | A value the format allows but the server cannot use: `InvalidValue`, the attachment codes, `UnsupportedMedia` |
@@ -229,7 +229,8 @@ new device                       coordinator                         device of t
 ```
 
 The code is eight characters (two groups of four), good for five minutes; the waiting connection stays
-open, logged out, until then. The QR code holds `flowrate-link:<code>`. A completed link logs the new
+open, logged out, until then. The QR code holds the app link `flowrate://link?code=<code>&host=<host>&port=<port>`; clients still read the
+`flowrate-link:<code>` of earlier builds. A completed link logs the new
 device in at once.
 
 ### Devices of the account
@@ -406,8 +407,8 @@ those pre-releases are not supported and will be withdrawn. Once a release ships
 the next breaking change raises the version to 4.
 
 So that no such change goes unnoticed, `ProtocolSchemaTests` describes the whole schema as text.
-The description contains every type reachable from `BaseMessage`, `PushReplyRequest` and
-`PushMarkReadRequest`, with property types, `$type` discriminators and enum numbers. The test
+The description contains every type reachable from `BaseMessage`, `PushReplyRequest`,
+`PushMarkReadRequest` and `PushDeclineCallRequest`, with property types, `$type` discriminators and enum numbers. The test
 compares it with `Shared.Tests/protocol-schema.txt`:
 
 ```
