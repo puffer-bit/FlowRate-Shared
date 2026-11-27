@@ -21,6 +21,9 @@ public class CoordinatorSettingsDTO
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
 
+    /// <summary>How many bots the coordinator takes; they count neither as users nor as online users.</summary>
+    public int MaxBots { get; set; }
+
     public bool IsMOTDEnabled { get; set; }
     public string? MOTDText { get; set; }
 
@@ -93,6 +96,9 @@ public class CoordinatorSettingsUpdateDTO
 
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
+
+    /// <summary>How many bots the coordinator takes; null keeps the current limit.</summary>
+    public int? MaxBots { get; set; }
 
     public bool IsMOTDEnabled { get; set; }
 

@@ -63,9 +63,16 @@ public enum Permission : ulong
     /// </summary>
     MoveMembers = 1UL << 18,
 
+    /// <summary>
+    /// Make, list and delete bots, and give them new login codes. What a bot may do comes from its roles, as for
+    /// anyone; the role hierarchy holds for deleting one.
+    /// </summary>
+    ManageBots = 1UL << 19,
+
     All = Administrator | ViewCoordinatorSettings | ManageCoordinatorSettings | ManageRoles | CreateSessions
           | ManageSessions | KickMembers | BanMembers | ApproveMembers | ManageMessages | ManageUsers
-          | ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers | MoveMembers,
+          | ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers | MoveMembers
+          | ManageBots,
 
     /// <summary>What the everyone role has on a new coordinator, and what it gains on an older one.</summary>
     Default = ViewSessions | SendMessages | AttachFiles | JoinSessions | Speak | ShareVideo | PokeMembers,

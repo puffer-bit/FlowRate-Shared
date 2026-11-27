@@ -86,6 +86,11 @@ public static class ProtocolVersion
     //    LoginFactorsMissing and DeviceLinkNotFound.
     //    Idle presence: UserStatus.Idle and Sleeping (shown only, refused by CoordinatorSetUserStatusRequest),
     //    IdleLevel and CoordinatorSetIdleRequest/Response.
+    //    Bot accounts, added without a new version (older clients see a bot as a user, older servers answer the
+    //    requests with UnsupportedRequest): UserKind (User, Bot, DebugBot), UserDTO.Kind and OwnerUserId,
+    //    Permission.ManageBots, ErrorCode.BotLimitReached, CoordinatorSettingsDTO.MaxBots
+    //    (CoordinatorSettingsUpdateDTO.MaxBots, null keeps it), BotLoginCodeDTO and
+    //    CoordinatorBots/CreateBot/BotLoginCode/DeleteBotRequest with their responses.
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>
