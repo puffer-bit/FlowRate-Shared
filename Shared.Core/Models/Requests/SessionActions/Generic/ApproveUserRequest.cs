@@ -7,10 +7,9 @@ namespace Shared.Models.Requests.SessionActions.Generic;
 
 public record ApproveUserRequest(
     [property: EntityId] int SessionId,
-    [property: EntityId] int UserTargetId,
-    [property: DefinedEnum] SessionType SessionType
+    [property: EntityId] int TargetUserId
 ) : GenericSessionRequest
 {
-    public ApproveUserResponse ToResponse(ApproveUserSessionResult result)
-        => new(RequestId, SessionId, UserTargetId, SessionType, result);
+    public ApproveUserResponse ToResponse()
+        => new(RequestId, SessionId, TargetUserId);
 }

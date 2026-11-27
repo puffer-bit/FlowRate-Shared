@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator;
 
@@ -9,6 +8,6 @@ namespace Shared.Models.Requests.Coordinator;
 /// </summary>
 public record CoordinatorUserListRequest() : CoordinatorRequest
 {
-    public CoordinatorUserListResponse ToResponse(List<UserDTO> users, UsersRequestResult result)
-        => new(RequestId, users, result);
+    public CoordinatorUserListResponse ToResponse(List<UserDTO> users)
+        => new(RequestId, users);
 }

@@ -80,7 +80,8 @@ public class ProtocolSchemaTests
     {
         var lines = new SortedSet<string>(StringComparer.Ordinal);
         var seen = new HashSet<Type>();
-        var pending = new Queue<Type>([typeof(BaseMessage), typeof(PushReplyRequest), typeof(PushMarkReadRequest)]);
+        var pending = new Queue<Type>([typeof(BaseMessage), typeof(PushReplyRequest), typeof(PushMarkReadRequest),
+            typeof(PushDeclineCallRequest)]);
 
         while (pending.TryDequeue(out var type))
         {
@@ -100,10 +101,15 @@ public class ProtocolSchemaTests
             var info = ProtocolJsonContext.Default.GetTypeInfo(type)
                        ?? throw new InvalidOperationException($"{name} is not in ProtocolJsonContext");
 
+            // A converter decides the wire format of a value, so its name is part of the schema
+            if (info.Kind == JsonTypeInfoKind.None && info.Converter.GetType().Namespace == typeof(ProtocolJsonContext).Namespace)
+                lines.Add($"{name} = {info.Converter.GetType().Name}");
+
             switch (info.Kind)
             {
                 case JsonTypeInfoKind.Object:
-                    foreach (var property in info.Properties)
+                    // An ignored property stays in the metadata without an accessor
+                    foreach (var property in info.Properties.Where(p => p.Get != null || p.Set != null))
                     {
                         lines.Add($"{name}.{property.Name}: {NameOf(property.PropertyType)}");
                         pending.Enqueue(property.PropertyType);

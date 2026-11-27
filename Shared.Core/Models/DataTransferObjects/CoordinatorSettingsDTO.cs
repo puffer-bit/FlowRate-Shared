@@ -21,11 +21,13 @@ public class CoordinatorSettingsDTO
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
 
-    public bool IsMotdEnabled { get; set; }
-    public string? MotdText { get; set; }
+    /// <summary>How many bots the coordinator takes; they count neither as users nor as online users.</summary>
+    public int MaxBots { get; set; }
+
+    public bool IsMOTDEnabled { get; set; }
+    public string? MOTDText { get; set; }
 
     public List<string> AllowedIps { get; set; } = [];
-    public List<string> BannedIps { get; set; } = [];
 
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
@@ -34,6 +36,28 @@ public class CoordinatorSettingsDTO
 
     /// <summary>0 when the media storage is not limited.</summary>
     public long StorageQuotaBytes { get; set; }
+
+    /// <summary>The longest side images are reduced to when compressed before sending.</summary>
+    public int ImageMaxSide { get; set; }
+
+    /// <summary>The JPEG or WebP quality of compressed images, from 30 to 100.</summary>
+    public int ImageQuality { get; set; }
+
+    /// <summary>
+    /// Images may be sent as they are. Otherwise the server refuses any larger than <see cref="ImageMaxSide"/>.
+    /// </summary>
+    public bool AllowOriginalImages { get; set; }
+
+    /// <summary>
+    /// The shorter side videos are reduced to when compressed before sending, like 720 for 720p.
+    /// </summary>
+    public int VideoMaxSide { get; set; }
+
+    /// <summary>
+    /// Videos may be sent as they are. Otherwise the server refuses one that is not an MP4 within
+    /// <see cref="VideoMaxSide"/> and its bitrate.
+    /// </summary>
+    public bool AllowOriginalVideos { get; set; }
 
     /// <summary>How many uploads one user may keep before attaching them to a message.</summary>
     public int MaxUnattachedUploadsPerUser { get; set; }
@@ -46,7 +70,7 @@ public class CoordinatorSettingsDTO
 
     public CoordinatorRateLimitsDTO RateLimits { get; set; } = new();
 
-    public List<int> SfuNodeIds { get; set; } = [];
+    public List<int> SFUNodeIds { get; set; } = [];
 }
 
 /// <summary>
@@ -73,22 +97,28 @@ public class CoordinatorSettingsUpdateDTO
     public int MaxOnlineUsers { get; set; }
     public int MaxUsers { get; set; }
 
-    public bool IsMotdEnabled { get; set; }
+    /// <summary>How many bots the coordinator takes; null keeps the current limit.</summary>
+    public int? MaxBots { get; set; }
 
-    [StringLength(Limits.MotdTextMaxLength)]
-    public string? MotdText { get; set; }
+    public bool IsMOTDEnabled { get; set; }
+
+    [StringLength(Limits.MOTDTextMaxLength)]
+    public string? MOTDText { get; set; }
 
     [Required, ItemCount(Limits.IpListMaxCount)]
     public List<string> AllowedIps { get; set; } = [];
-
-    [Required, ItemCount(Limits.IpListMaxCount)]
-    public List<string> BannedIps { get; set; } = [];
 
     public int HeartbeatIntervalSeconds { get; set; }
     public int HeartbeatTimeoutSeconds { get; set; }
 
     public long MaxFileSizeBytes { get; set; }
     public long StorageQuotaBytes { get; set; }
+
+    public int ImageMaxSide { get; set; }
+    public int ImageQuality { get; set; }
+    public bool AllowOriginalImages { get; set; }
+    public int VideoMaxSide { get; set; }
+    public bool AllowOriginalVideos { get; set; }
 
     public int MaxUnattachedUploadsPerUser { get; set; }
     public int UnattachedUploadLifetimeHours { get; set; }
@@ -97,8 +127,8 @@ public class CoordinatorSettingsUpdateDTO
     [Required]
     public CoordinatorRateLimitsDTO RateLimits { get; set; } = new();
 
-    [Required, ItemCount(Limits.SfuNodesMaxCount)]
-    public List<int> SfuNodeIds { get; set; } = [];
+    [Required, ItemCount(Limits.SFUNodesMaxCount)]
+    public List<int> SFUNodeIds { get; set; } = [];
 }
 
 /// <summary>At most <see cref="Count"/> requests per <see cref="PeriodSeconds"/>.</summary>
@@ -148,7 +178,7 @@ public class CoordinatorRateLimitsDTO
 /// A node of the SFU pool of the server that a coordinator can be given. Credentials are left out.
 /// The connection fields are what the server knew when it answered; null for a disabled node.
 /// </summary>
-public class SfuNodeDTO
+public class SFUNodeDTO
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
@@ -156,12 +186,12 @@ public class SfuNodeDTO
     public int Port { get; set; }
     public bool IsEnabled { get; set; }
 
-    public SfuNodeConnectionState? ConnectionState { get; set; }
+    public SFUNodeConnectionState? ConnectionState { get; set; }
 
     /// <summary>Round trip of the server's last answered ping to the node; null while the node does not answer.</summary>
     public double? PingMs { get; set; }
 
-    public DateTimeOffset? LastPingAtUtc { get; set; }
+    public DateTimeOffset? LastPingAt { get; set; }
 
     /// <summary>Why the node is not connected, if known.</summary>
     public string? ConnectionError { get; set; }

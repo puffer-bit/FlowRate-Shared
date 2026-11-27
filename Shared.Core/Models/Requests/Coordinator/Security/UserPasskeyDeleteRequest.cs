@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Shared.Enums.User;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator.Security;
 using Shared.Validation;
@@ -10,6 +9,6 @@ public record UserPasskeyDeleteRequest(
     UserSecurityProofDTO? Proof,
     [property: EntityId] int PasskeyId) : CoordinatorRequest
 {
-    public UserSecurityResponse ToResponse(UserSecurityResult result, UserSecurityDTO? security = null)
-        => new(RequestId, result, security);
+    public UserSecurityResponse ToResponse(UserSecurityDTO security)
+        => new(RequestId, security);
 }

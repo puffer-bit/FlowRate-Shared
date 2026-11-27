@@ -12,57 +12,43 @@ public class NewChatMessageModel : IValidatableObject
 {
     [EntityId]
     public required int ChatId { get; init; }
-    public DateTime? DelayedSentTime { get; set; }
-    public DateTime? DisposeTime { get; set; }
+    public DateTimeOffset? ScheduledAt { get; set; }
+    public DateTimeOffset? ExpiresAt { get; set; }
 
     public ChatTextContentDTO? TextContent { get; set; }
     [EntityId]
     public int? ReplyToMessageId { get; init; }
 
-    [Required, ItemCount(Limits.ChatAttachmentsMaxCount)]
-    public List<NewChatImageModel> Images { get; init; } = new();
-    [Required, ItemCount(Limits.ChatAttachmentsMaxCount)]
-    public List<ChatVideoContentDTO> Video { get; init; } = new();
+    /// <summary>Every attachment, images as <see cref="NewChatImageModel"/>.</summary>
     [Required, ItemCount(Limits.ChatAttachmentsMaxCount)]
     public List<NewChatFileModel> Files { get; init; } = new();
 
-    public bool IsDelayed { get; set; }
-    public bool IsDisposable { get; set; }
+    /// <summary>The message goes without a preview of its link, as the author closed it in the composer.</summary>
+    public bool IsLinkPreviewDisabled { get; set; }
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        var attachments = Images.Count + Video.Count + Files.Count;
-
-        if (TextContent == null && attachments == 0)
+        if (TextContent == null && Files.Count == 0)
             yield return new ValidationResult("A message needs text or an attachment.");
 
-        if (attachments > Limits.ChatAttachmentsMaxCount)
-            yield return new ValidationResult($"A message carries at most {Limits.ChatAttachmentsMaxCount} attachments.");
+        if (Files.Any(file => file is NewChatImageModel { PreviewUploadId: null }))
+            yield return new ValidationResult("An image is sent with its reduced copy.", [nameof(Files)]);
 
-        // A video goes as a file so far
-        if (Video.Count > 0)
-            yield return new ValidationResult("Video attachments are not supported.");
-
-        var uploads = Images.SelectMany(image => new[] { image.UploadId, image.PreviewUploadId })
-            .Concat(Files.Select(file => file.UploadId))
+        var uploads = Files.SelectMany(file => file.PreviewUploadId is { } preview ? new[] { file.UploadId, preview } : [file.UploadId])
             .ToList();
         if (uploads.Distinct(StringComparer.OrdinalIgnoreCase).Count() != uploads.Count)
-            yield return new ValidationResult("An upload is attached once.", [nameof(Images), nameof(Files)]);
+            yield return new ValidationResult("An upload is attached once.", [nameof(Files)]);
 
         // Clock skew between client and server is tolerated for a few minutes
-        var now = DateTime.UtcNow;
+        var now = DateTimeOffset.UtcNow;
         var skew = TimeSpan.FromMinutes(5);
 
-        if (IsDelayed != DelayedSentTime.HasValue)
-            yield return new ValidationResult("IsDelayed and DelayedSentTime must be set together.", [nameof(DelayedSentTime)]);
-        else if (DelayedSentTime is { } delayed
+        if (ScheduledAt is { } delayed
                  && (delayed.ToUniversalTime() < now - skew || delayed.ToUniversalTime() > now + Limits.ChatMessageMaxDelay))
-            yield return new ValidationResult("DelayedSentTime is outside the allowed range.", [nameof(DelayedSentTime)]);
+            yield return new ValidationResult("ScheduledAt is outside the allowed range.", [nameof(ScheduledAt)]);
 
-        if (IsDisposable != DisposeTime.HasValue)
-            yield return new ValidationResult("IsDisposable and DisposeTime must be set together.", [nameof(DisposeTime)]);
-        else if (DisposeTime is { } dispose
+        if (ExpiresAt is { } dispose
                  && (dispose.ToUniversalTime() < now - skew || dispose.ToUniversalTime() > now + Limits.ChatMessageMaxLifetime))
-            yield return new ValidationResult("DisposeTime is outside the allowed range.", [nameof(DisposeTime)]);
+            yield return new ValidationResult("ExpiresAt is outside the allowed range.", [nameof(ExpiresAt)]);
     }
 }

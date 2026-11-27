@@ -64,6 +64,15 @@ public sealed class HttpsUrlAttribute : ValidationAttribute
     public override string FormatErrorMessage(string name) => $"{name} must be an absolute https URL.";
 }
 
+/// <summary>A GUID that names something, so never <see cref="Guid.Empty"/>.</summary>
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
+public sealed class NotEmptyGuidAttribute : ValidationAttribute
+{
+    public override bool IsValid(object? value) => value is not Guid guid || guid != Guid.Empty;
+
+    public override string FormatErrorMessage(string name) => $"{name} must not be empty.";
+}
+
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
 public sealed class GuidStringAttribute : ValidationAttribute
 {
@@ -74,7 +83,7 @@ public sealed class GuidStringAttribute : ValidationAttribute
 
 /// <summary>A DTLS certificate fingerprint: colon-separated pairs of hex digits.</summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter)]
-public sealed partial class DtlsFingerprintAttribute : ValidationAttribute
+public sealed partial class DTLSFingerprintAttribute : ValidationAttribute
 {
     [GeneratedRegex("^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2})*$")]
     private static partial Regex Pattern();

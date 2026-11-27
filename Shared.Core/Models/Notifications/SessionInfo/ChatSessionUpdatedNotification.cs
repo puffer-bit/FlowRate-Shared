@@ -15,7 +15,7 @@ public record ChatSessionMessageEditedNotification(int ChatId, ChatMessageDTO Me
 public record ChatSessionMessageDeletedNotification(int ChatId, int MessageId, long Revision)
     : ChatSessionUpdatedNotification;
 
-public record ChatSessionUserTypingNotification(int ChatId, int UserId)
+public record ChatSessionUserTypingNotification(int ChatId, int UserId, bool IsTyping = true)
     : ChatSessionUpdatedNotification;
 
 /// <summary>
@@ -23,4 +23,12 @@ public record ChatSessionUserTypingNotification(int ChatId, int UserId)
 /// unread counts.
 /// </summary>
 public record ChatReadStateChangedNotification(ChatReadStateDTO State)
+    : ChatSessionUpdatedNotification;
+
+/// <summary>
+/// Sent to the other members of a direct chat or a group when <paramref name="ReaderUserId"/> moved their
+/// read position up to <paramref name="LastReadMessageId"/> at <paramref name="ReadAt"/> (UTC). Never sent
+/// for server channels.
+/// </summary>
+public record ChatPeerReadNotification(int ChatId, int ReaderUserId, int LastReadMessageId, DateTimeOffset ReadAt)
     : ChatSessionUpdatedNotification;

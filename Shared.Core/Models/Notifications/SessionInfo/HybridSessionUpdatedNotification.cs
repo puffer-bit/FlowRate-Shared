@@ -12,10 +12,7 @@ public record HybridSessionStateChangedNotification(int SessionId, HybridSession
 public record HybridSessionSFUNodeChangedNotification(int SessionId)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionSFUNodeDisconnectedNotification(int SessionId)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionSFUNodeConnectedNotification(int SessionId)
+public record HybridSessionSFUNodeConnectionChangedNotification(int SessionId, bool IsConnected)
     : HybridSessionUpdatedNotification;
 
 public record HybridSessionPeerStateChangedNotification(int SessionId, int UserId, HybridSessionPeerState State)
@@ -33,99 +30,62 @@ public record HybridSessionPeerKickedNotification(int SessionId, int UserId, int
 public record HybridSessionPeerIdleKickedNotification(int SessionId, int UserId)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionPeerBannedNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
 public record HybridSessionPeerApprovedNotification(int SessionId, int UserId, int InitiatorUserId)
     : HybridSessionUpdatedNotification;
 
 public record HybridSessionPeerRejectedNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionPeerMovedOutNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerMovedInNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-
-public record HybridSessionPeerStartedScreenShareNotification(int SessionId, int UserId, Inbound? Inbound = null,
-    bool HasAudio = false)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUpdatedScreenShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerStoppedScreenShareNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerMutedScreenShareSoundNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerPausedScreenShareNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUnmutedScreenShareSoundNotification(int SessionId, int UserId)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerResumedScreenShareNotification(int SessionId, int UserId)
-    : HybridSessionUpdatedNotification;
-
-/// <summary>The peer <paramref name="UserId"/> started watching the screen share of <paramref name="SharerUserId"/>.</summary>
-public record HybridSessionPeerStartedWatchingScreenShareNotification(int SessionId, int UserId, int SharerUserId)
+/// <summary>
+/// The peer <paramref name="UserId"/> was moved out of <paramref name="SessionId"/> to
+/// <paramref name="TargetSessionId"/>. Its media in <paramref name="SessionId"/> is gone; the client of the moved
+/// user joins <paramref name="TargetSessionId"/>, where a place is kept for it for a while.
+/// </summary>
+public record HybridSessionPeerMovedOutNotification(int SessionId, int UserId, int TargetSessionId,
+    int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
 
 /// <summary>
-/// The peer <paramref name="UserId"/> no longer watches the screen share of <paramref name="SharerUserId"/>: it stopped
-/// watching, the share stopped or the sharer lost its media. Not sent for a peer that left the session.
+/// The peer was moved into <paramref name="SessionId"/> from <paramref name="SourceSessionId"/>. It waits for its
+/// client to join (<see cref="Enums.HybridSessionPeerState.WaitingForServer"/>) and leaves if it does not in time.
 /// </summary>
-public record HybridSessionPeerStoppedWatchingScreenShareNotification(int SessionId, int UserId, int SharerUserId)
+public record HybridSessionPeerMovedInNotification(int SessionId, PeerDTO Peer, int SourceSessionId,
+    int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
 
 
-public record HybridSessionPeerStartedVideoShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUpdatedVideoShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerStoppedVideoShareNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerPausedVideoShareNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerResumedVideoShareNotification(int SessionId, int UserId, int? InitiatorUserId = null, string? Reason = null)
+/// <summary>
+/// The peer <paramref name="UserId"/> started or stopped watching the screen share of <paramref name="SharerUserId"/>.
+/// It stops watching when it asks to, when the share stops or when the sharer loses its media; not sent for a peer
+/// that left the session.
+/// </summary>
+public record HybridSessionPeerScreenShareWatchChangedNotification(int SessionId, int UserId, int SharerUserId,
+    bool IsWatching)
     : HybridSessionUpdatedNotification;
 
 
-public record HybridSessionPeerStartedVoiceShareNotification(int SessionId, int UserId, Inbound Inbound)
+
+public record HybridSessionPeerMicrophoneMuteChangedNotification(int SessionId, int UserId, bool IsMuted,
+    int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
 
-public record HybridSessionPeerUpdatedVoiceShareNotification(int SessionId, int UserId, Inbound Inbound)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerStoppedVoiceShareNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerMuteMicrophoneNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUnmuteMicrophoneNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerMuteSoundNotification(int SessionId, int UserId, int? InitiatorUserId = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerUnmuteSoundNotification(int SessionId, int UserId, int? InitiatorUserId = null)
+public record HybridSessionPeerSoundMuteChangedNotification(int SessionId, int UserId, bool IsMuted,
+    int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;
 
 
-public record HybridSessionPeerAfkNotification(int SessionId, int UserId, string? Reason = null)
-    : HybridSessionUpdatedNotification;
-
-public record HybridSessionPeerNotAfkNotification(int SessionId, int UserId)
+/// <param name="Reason">Why the peer went away; only with <paramref name="IsAfk"/>.</param>
+public record HybridSessionPeerAfkChangedNotification(int SessionId, int UserId, bool IsAfk, string? Reason = null)
     : HybridSessionUpdatedNotification;
 
 public record HybridSessionPeerPokedNotification(int SessionId, int UserId, int InitiatorUserId, string? Message = null)
+    : HybridSessionUpdatedNotification;
+
+/// <summary>
+/// A peer started or stopped sending one of its media. A started track goes to each listener with the
+/// <see cref="Inbound"/> to consume; a started screen share is announced to everyone first without one, with
+/// <see cref="HasAudio"/>. A stop goes to everyone, with who stopped it when it was not the peer itself.
+/// </summary>
+public record HybridSessionPeerMediaChangedNotification(int SessionId, int UserId, MediaSourceType Source, bool IsActive,
+    Inbound? Inbound = null, bool HasAudio = false, int? InitiatorUserId = null)
     : HybridSessionUpdatedNotification;

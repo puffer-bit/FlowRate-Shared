@@ -6,11 +6,12 @@ using Shared.Validation;
 namespace Shared.Models.Requests.Coordinator;
 
 /// <summary>
-/// Sets the status of the sender; kept for the next logins. <see cref="UserStatus.Offline"/> is refused.
+/// Sets the status of the sender; kept for the next logins. <see cref="UserStatus.Offline"/>,
+/// <see cref="UserStatus.Idle"/> and <see cref="UserStatus.Sleeping"/> are refused: they are only shown.
 /// </summary>
 public record CoordinatorSetUserStatusRequest(
     [property: DefinedEnum] UserStatus Status) : CoordinatorRequest
 {
-    public CoordinatorSetUserStatusResponse ToResponse(SetUserStatusResult result, UserDTO? user = null)
-        => new(RequestId, result, user);
+    public CoordinatorSetUserStatusResponse ToResponse(UserDTO user)
+        => new(RequestId, user);
 }

@@ -1,7 +1,3 @@
-using Shared.Enums;
-
 namespace Shared.Models.Responses.Coordinator;
 
-public record UnregisterPushTokenResponse(
-    Guid RequestId,
-    PushTokenResult Result) : CoordinatorResponse(RequestId);
+public record UnregisterPushTokenResponse(Guid RequestId) : CoordinatorResponse(RequestId);

@@ -6,8 +6,6 @@ namespace Shared.Models.DataTransferObjects;
 public class PeerDTO
 {
     public int UserId { get; init; }
-    public bool IsAudioRequested { get; set; }
-    public bool IsNegotiated { get; set; }
     public bool IsConnected { get; set; }
     public bool IsApproved { get; set; }
     public bool IsRejected { get; set; }

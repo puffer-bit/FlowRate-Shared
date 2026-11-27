@@ -7,6 +7,13 @@ public class UserDTO
     public int Id { get; set; }
     public string CoordinatorInstanceId { get; set; } = string.Empty;
     public string Username { get; set; } = string.Empty;
+
+    /// <summary>A person or a bot; <see cref="UserKind.User"/> from servers that know no bots.</summary>
+    public UserKind Kind { get; set; }
+
+    /// <summary>The user who made the bot; null for people, and for a bot whose maker was deleted.</summary>
+    public int? OwnerUserId { get; set; }
+
     public string? Ip { get; set; }
     public string? RegionName { get; set; }
     public string? RegionCode { get; set; }
@@ -21,8 +28,14 @@ public class UserDTO
     /// </summary>
     public UserStatus Status { get; set; }
 
-    public DateTime FirstConnectionTime { get; set; }
-    public DateTime LastConnectionTime { get; set; }
+    /// <summary>
+    /// The device the user is connected from: a phone when one is connected, otherwise the device connected last.
+    /// Null while others see the user offline; a user always gets their own.
+    /// </summary>
+    public UserDeviceDTO? Device { get; set; }
+
+    public DateTimeOffset FirstConnectedAt { get; set; }
+    public DateTimeOffset LastConnectedAt { get; set; }
 
     /// <summary>The coordinator roles of the user, without the everyone role.</summary>
     public List<int> RoleIds { get; set; } = [];

@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using Shared.Enums;
-using Shared.Enums.Coordinator;
 using Shared.Models.DataTransferObjects;
 using Shared.Models.Responses.Coordinator;
 using Shared.Validation;
@@ -14,6 +13,6 @@ namespace Shared.Models.Requests.Coordinator;
 public record CoordinatorReorderRolesRequest(
     [property: Required, ItemCount(Limits.RolesMaxCount)] IList<int> RoleIds) : CoordinatorRequest
 {
-    public CoordinatorRolesResponse ToResponse(CoordinatorRoleResult result, IList<RoleDTO>? roles = null)
-        => new(RequestId, result, roles, Permission.None);
+    public CoordinatorRolesResponse ToResponse(IList<RoleDTO> roles)
+        => new(RequestId, roles, Permission.None);
 }

@@ -10,8 +10,10 @@ namespace Shared.Serialization;
 /// reflection at run time and it works under NativeAOT.
 /// </summary>
 // Messages nest a few levels at most; deeper input is malformed or hostile
-[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true, MaxDepth = 16)]
+[JsonSourceGenerationOptions(PropertyNameCaseInsensitive = true, MaxDepth = 16,
+    Converters = [typeof(UnixMillisecondsConverter), typeof(MillisecondsConverter)])]
 [JsonSerializable(typeof(BaseMessage))]
 [JsonSerializable(typeof(PushReplyRequest))]
 [JsonSerializable(typeof(PushMarkReadRequest))]
+[JsonSerializable(typeof(PushDeclineCallRequest))]
 public sealed partial class ProtocolJsonContext : JsonSerializerContext;

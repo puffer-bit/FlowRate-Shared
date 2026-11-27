@@ -6,16 +6,11 @@ using Shared.Validation;
 
 namespace Shared.Models.Requests.SessionActions.Generic.Models.SessionData;
 
+/// <param name="Capacity">How many peers the session holds at most.</param>
 /// <param name="Media">Null leaves the defaults of <see cref="HybridMediaSettingsDTO"/>.</param>
 public record HybridSessionCreateData(
     [property: DefinedEnum] WebRTCEngine EngineType,
-    [property: DefinedEnum] VideoResolutions Resolution = VideoResolutions.FHD,
-    [property: Range(Limits.VideoBitrateMinKbps, Limits.VideoBitrateMaxKbps)] int? VideoBitrate = 2500,
-    bool IsAudioTransferEnabled = false,
-    bool IsDataChannelEnabled = false,
-    bool IsSimulcastEnabled = false,
-    bool IsTunnelingEnabled = false,
-    bool IsProxyActive = false,
+    [property: Range(Limits.SessionCapacityMin, Limits.SessionCapacityMax)] int Capacity,
     HybridMediaSettingsDTO? Media = null
 ) : CreateSessionData
 {

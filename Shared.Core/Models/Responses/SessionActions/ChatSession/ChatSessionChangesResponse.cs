@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.DataTransferObjects.ChatSession.Messages;
 
 namespace Shared.Models.Responses.SessionActions.ChatSession;
@@ -10,8 +9,7 @@ namespace Shared.Models.Responses.SessionActions.ChatSession;
 /// </summary>
 public record ChatSessionChangesResponse(
     Guid RequestId,
-    FetchMessagesResult Result,
-    List<ChatMessageDTO>? Messages,
+    List<ChatMessageDTO> Messages,
     long CurrentRevision,
     bool HasMore,
     bool Reset) : ChatSessionResponse(RequestId);

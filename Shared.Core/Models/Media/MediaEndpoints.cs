@@ -16,6 +16,8 @@ public static class MediaEndpoints
 
     /// <summary>
     /// <c>GET {Files}/{id}</c> returns a file of a message, to be saved and not shown; byte ranges are supported.
+    /// <c>GET {Files}/{id}?variant=preview</c> returns the frame a video is shown with, when
+    /// <see cref="DataTransferObjects.ChatSession.Messages.Content.ChatVideoFileDTO.HasPreview"/> says it has one.
     /// </summary>
     public const string Files = "/media/files";
 
@@ -24,6 +26,13 @@ public static class MediaEndpoints
     /// holds this path. A new avatar has another id, so what was fetched once never changes.
     /// </summary>
     public const string Avatars = "/media/avatars";
+
+    /// <summary>
+    /// <c>GET {LinkPreviewImages}/{id}</c> returns the image of a link preview, by
+    /// <see cref="DataTransferObjects.ChatSession.Messages.Content.ChatLinkPreviewDTO.Id"/>. A preview never
+    /// changes, so what was fetched once stays valid.
+    /// </summary>
+    public const string LinkPreviewImages = "/media/link-previews";
 
     public const string VariantParameter = "variant";
     public const string VariantOriginal = "original";

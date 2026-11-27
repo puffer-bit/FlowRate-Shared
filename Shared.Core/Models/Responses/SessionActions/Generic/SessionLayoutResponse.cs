@@ -1,5 +1,3 @@
-using Shared.Enums;
-
 namespace Shared.Models.Responses.SessionActions.Generic;
 
 /// <summary>
@@ -9,5 +7,4 @@ namespace Shared.Models.Responses.SessionActions.Generic;
 /// <param name="CategoryId">The category a create request added.</param>
 public record SessionLayoutResponse(
     Guid RequestId,
-    SessionLayoutResult Result,
     int? CategoryId = null) : GenericSessionResponse(RequestId);

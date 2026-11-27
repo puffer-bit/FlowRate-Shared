@@ -7,11 +7,10 @@ namespace Shared.Models.Requests.SessionActions.Generic;
 
 public record KickFromSessionRequest(
     [property: EntityId] int SessionId,
-    [property: EntityId] int UserTargetId,
-    [property: DefinedEnum] SessionType SessionType,
+    [property: EntityId] int TargetUserId,
     [property: StringLength(Limits.ReasonMaxLength), NoControlCharacters] string? Reason
 ) : GenericSessionRequest
 {
-    public KickFromSessionResponse ToResponse(LeaveSessionResult result)
-        => new(RequestId, SessionId, UserTargetId, SessionType, result);
+    public KickFromSessionResponse ToResponse()
+        => new(RequestId, SessionId, TargetUserId);
 }

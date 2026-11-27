@@ -8,4 +8,9 @@
     <IsAotCompatible>true</IsAotCompatible>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Models/DataTransferObjects/ChatSession/Messages/Reactions/EmojiData/emoji.txt"
+                      LogicalName="Shared.ReactionEmoji.txt" />
+  </ItemGroup>
+
 </Project>

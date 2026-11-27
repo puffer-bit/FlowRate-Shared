@@ -4,5 +4,5 @@ public record ICEParameters
 {
     public required string UsernameFragment { get; init; }
     public required string Password { get; init; }
-    public required List<ICECandidate> ICECandidates { get; init; }
+    public required List<ICECandidate> Candidates { get; init; }
 }

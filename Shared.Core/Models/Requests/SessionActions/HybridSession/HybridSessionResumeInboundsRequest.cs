@@ -1,4 +1,3 @@
-using Shared.Enums;
 using Shared.Models.Responses.SessionActions.HybridSession;
 using Shared.Validation;
 
@@ -8,6 +7,6 @@ public record HybridSessionResumeInboundsRequest(
     [property: EntityId] int SessionId,
     [property: ItemCount(1, Limits.ResumedInboundsMaxCount)] List<string> InboundIds) : HybridSessionRequest
 {
-    public HybridSessionResumeInboundsResponse ToResponse(ResumeInboundsResult result)
-        => new (RequestId, result);
+    public HybridSessionResumeInboundsResponse ToResponse()
+        => new (RequestId);
 }

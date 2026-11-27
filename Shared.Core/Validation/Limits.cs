@@ -6,13 +6,29 @@ namespace Shared.Validation;
 /// </summary>
 public static class Limits
 {
+    /// <summary>The identity of protocol 3 before devices, taken once to move an account over.</summary>
     public const int UserIdentityMaxLength = 37;
     public const int PasswordMaxLength = 128;
+    /// <summary>The session token of protocol 3 before devices: 32 random bytes, base64url.</summary>
+    public const int SessionTokenMaxLength = 64;
+    /// <summary>A P-256 SubjectPublicKeyInfo (91 bytes), base64url, with room to spare.</summary>
+    public const int PublicKeyMaxLength = 256;
+    /// <summary>A P-256 signature, r‖s (64 bytes), base64url.</summary>
+    public const int SignatureMaxLength = 128;
+    /// <summary>A one-time login code from the control panel, dashes included.</summary>
+    public const int LoginCodeMaxLength = 32;
+    /// <summary>The code a new device shows to be added to an account, dashes included.</summary>
+    public const int LinkCodeMaxLength = 16;
+    public const int DeviceNameMaxLength = 64;
+    public const int DevicePlatformMaxLength = 32;
+    public const int AppVersionMaxLength = 32;
+    public const int OsVersionMaxLength = 64;
+    public const int ArchitectureMaxLength = 16;
     public const int TwoFactorMaxLength = 6;
-    public const int Fido2FieldMaxLength = 4096;
-    public const int Fido2UserHandleMaxLength = 128;
+    public const int FIDO2FieldMaxLength = 4096;
+    public const int FIDO2UserHandleMaxLength = 128;
     /// <summary>The JSON of a new passkey (attestation object and client data, base64url).</summary>
-    public const int Fido2CredentialJsonMaxLength = 16384;
+    public const int FIDO2CredentialJsonMaxLength = 16384;
     public const int PasskeyLabelMaxLength = 64;
     public const int UserIdsMaxCount = 100;
     public const int UsernameMaxLength = 32;
@@ -30,14 +46,14 @@ public static class Limits
     public const int SessionCategoriesMaxCount = 50;
     public const int SessionLayoutIndexMax = 1000;
     public const int UrlMaxLength = 2048;
-    public const int VideoBitrateMinKbps = 100;
-    public const int VideoBitrateMaxKbps = 20_000;
     public const int KeyFrameRequestDelayMinMs = 0;
     public const int KeyFrameRequestDelayMaxMs = 10_000;
     public const int JitterBufferMinMs = 20;
     public const int JitterBufferMaxMs = 2000;
 
     public const int ReasonMaxLength = 200;
+    public const int BanReasonMaxLength = 1000;
+    public const int GroupMembersMaxCount = 100;
     public const int PokeMessageMaxLength = 200;
 
     public const int ChatTextMaxLength = 4000;
@@ -46,9 +62,37 @@ public static class Limits
     public const int ChatAttachmentDescriptionMaxLength = 500;
     public const int ChatImageMaxSide = 16384;
     public const int ChatImagePreviewMaxSize = 1024 * 1024;
+
+    // What a coordinator may ask images to be compressed to
+    public const int ChatImageCompressedSideMin = 320;
+    public const int ChatImageQualityMin = 30;
+    public const int ChatImageQualityMax = 100;
+
+    // What a coordinator may ask videos to be compressed to: the shorter side, like 720 for 720p
+    public const int ChatVideoCompressedSideMin = 240;
+    public const int ChatVideoCompressedSideMax = 2160;
+    public const int ChatVideoAudioKbps = 128;
+
+    /// <summary>
+    /// The video bitrate, in kbit/s, a video of <paramref name="shortSide"/> is compressed to at up to
+    /// 30 frames per second: about 2.5 Mbit/s for 720p.
+    /// </summary>
+    public static int ChatVideoKbps(int shortSide) => (int)((long)shortSide * shortSide * 16 / 9 * 27 / 10_000);
+
+    /// <summary>
+    /// The highest average bitrate, sound included, the server takes of a video of <paramref name="shortSide"/>
+    /// when it accepts only compressed ones: three times the compressed one, for 60 frames per second and
+    /// encoders that overshoot.
+    /// </summary>
+    public static int ChatVideoMaxKbps(int shortSide) => ChatVideoKbps(shortSide) * 3 + ChatVideoAudioKbps * 2;
     public const int AvatarMaxSize = 1024 * 1024;
     public const int FileNameMaxLength = 255;
     public const int MimeTypeMaxLength = 100;
+
+    // Longer texts of a page are cut by the server
+    public const int LinkPreviewSiteNameMaxLength = 100;
+    public const int LinkPreviewTitleMaxLength = 300;
+    public const int LinkPreviewDescriptionMaxLength = 1000;
 
     // Bytes of the random id an upload is known by, written in hex
     public const int MediaUploadIdLength = 16;
@@ -61,11 +105,11 @@ public static class Limits
 
     public const int ClientEpochMaxLength = 36;
     public const int ResumedInboundsMaxCount = 256;
-    public const int DtlsFingerprintsMaxCount = 5;
-    public const int DtlsAlgorithmMaxLength = 16;
+    public const int DTLSFingerprintsMaxCount = 5;
+    public const int DTLSAlgorithmMaxLength = 16;
 
     // sha-512 is 64 bytes written as colon-separated hex pairs
-    public const int DtlsFingerprintMaxLength = 64 * 3 - 1;
+    public const int DTLSFingerprintMaxLength = 64 * 3 - 1;
 
     public const int SdpMaxLength = 64 * 1024;
 
@@ -80,11 +124,11 @@ public static class Limits
     public const int PushReplyTokenLength = 32;
 
     public const int CoordinatorNameMaxLength = 100;
-    public const int MotdTextMaxLength = 2000;
+    public const int MOTDTextMaxLength = 2000;
     // The longest IPv6 address written out, with an IPv4 tail
     public const int IpAddressMaxLength = 45;
     public const int IpListMaxCount = 1000;
-    public const int SfuNodesMaxCount = 100;
+    public const int SFUNodesMaxCount = 100;
 
     public const int UnattachedUploadsMaxCount = 1000;
     public const int UnattachedUploadLifetimeMaxHours = 24 * 30;

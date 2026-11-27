@@ -14,6 +14,7 @@ using Shared.Models.Media.Transport;
 using Shared.Models.Requests;
 using Shared.Models.Requests.Auth;
 using Shared.Models.Requests.Coordinator;
+using Shared.Models.Requests.Coordinator.Devices;
 using Shared.Models.Requests.Coordinator.Security;
 using Shared.Models.Requests.SessionActions.ChatSession;
 using Shared.Models.Requests.SessionActions.ChatSession.Models;
@@ -28,12 +29,22 @@ namespace Shared.Tests;
 
 public class MessageValidatorTests
 {
-    // A video cannot be attached so far, and a request with one is rejected as a whole, so its
-    // fields get limits once it can be uploaded
-    private static readonly HashSet<Type> PendingMediaTypes =
-    [
-        typeof(ChatVideoContentDTO)
-    ];
+    [Fact]
+    public void Av1SessionCanBeCreatedAndUpdated()
+    {
+        var media = new HybridMediaSettingsDTO
+        {
+            CameraCodec = WebRTCVideoCodecs.AV1,
+            ScreenCodec = WebRTCVideoCodecs.AV1
+        };
+        Assert.True(MessageValidator.TryValidate(new CreateSessionRequest(new CreateSessionModel("Room",
+            new HybridSessionCreateData(WebRTCEngine.Mediasoup, 10, Media: media))), out _));
+        Assert.True(MessageValidator.TryValidate(
+            new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, media), out _));
+    }
+
+    // Types whose fields get limits once they can be sent; none now
+    private static readonly HashSet<Type> PendingMediaTypes = [];
 
     private static readonly Assembly SharedAssembly = typeof(BaseMessage).Assembly;
 
@@ -72,7 +83,23 @@ public class MessageValidatorTests
     {
         object[] requests =
         [
-            new UserAuthRequest("secret", "alice"),
+            new LoginChallengeRequest(),
+            new LoginRequest("secret", new DeviceLoginDTO(Guid.NewGuid(), new string('s', 86))),
+            new LoginRequest(null, new RegisterLoginDTO(new NewDeviceDTO(Key), new RecoveryKeysDTO(Key, Key)),
+                new DeviceInfoDTO("desk", "Linux", "0.8.0")),
+            new LoginRequest(null, new RecoveryLoginDTO(new NewDeviceDTO(Key, IsTemporary: true), Key, new string('s', 86))),
+            new LoginRequest(null, new UsernameLoginDTO(new NewDeviceDTO(Key), "alice")),
+            new LoginRequest(null, new LoginCodeLoginDTO(new NewDeviceDTO(Key), "ABCD-EFGH-JKMN")),
+            new LoginRequest(null, new LegacyLoginDTO(new NewDeviceDTO(Key), "#" + Guid.NewGuid(), new string('t', 43),
+                new RecoveryKeysDTO(Key, Key))),
+            new LoginProofRequest("secret", "123456"),
+            new DeviceLinkStartRequest(null, new NewDeviceDTO(Key)),
+            new AccountDevicesRequest(),
+            new AccountDeviceRevokeRequest(null),
+            new LogoutRequest(),
+            new DeviceLinkInfoRequest("ABCD-EFGH"),
+            new DeviceLinkApproveRequest("ABCD-EFGH", true),
+            new UserRecoveryKeyResetRequest(new UserSecurityProofDTO("secret", null), new RecoveryKeysDTO(Key, Key)),
             new UserSecurityInfoRequest(),
             new UserSetPasswordRequest(new UserSecurityProofDTO("old secret", "123456"), "new secret"),
             new UserSetPasswordRequest(null, null),
@@ -86,31 +113,34 @@ public class MessageValidatorTests
             new RegisterPushTokenRequest("token", PushPlatform.Android, new string('a', Limits.PushKeyIdLength * 2),
                 Convert.ToBase64String(new byte[Limits.PushKeyLength])),
             new UnregisterPushTokenRequest("token"),
-            new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup))),
-            new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup,
+            new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, 10))),
+            new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, 10,
                 Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.H264, IsAudioNackEnabled = true }))),
             new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO()),
-            new CreateSessionRequest(new CreateSessionModel("Chat", 50, new ChatSessionCreateData("About\nus", "https://example.com/icon.png"))),
-            new KickFromSessionRequest(1, 2, SessionType.Hybrid, "spam"),
+            new CreateSessionRequest(new CreateSessionModel("Chat", new ChatSessionCreateData("About\nus"))),
+            new CreateSessionRequest(new CreateSessionModel("Chat", new ChatSessionCreateData())),
+            new KickFromSessionRequest(1, 2, "spam"),
             new SessionInfoRequest(null),
-            new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(), CategoryId: 3)),
+            new CreateSessionRequest(new CreateSessionModel("Room", new ChatSessionCreateData(), CategoryId: 3)),
             new CreateSessionCategoryRequest("Voice rooms"),
             new RenameSessionCategoryRequest(1, "Games"),
             new DeleteSessionCategoryRequest(1),
             new MoveSessionRequest(1, null, 0),
             new MoveSessionRequest(1, 2, 5),
             new MoveSessionCategoryRequest(1, 0),
-            new ChatSessionHistoryRequest(1, 50, 0),
             new ChatSessionHistoryPageRequest(1, null, 50),
             new ChatSessionHistoryPageRequest(1, 7, 50),
             new ChatSessionChangesRequest(1, 0, 50),
             new ChatReadStatesRequest(),
             new ChatMarkReadRequest(1, 2),
-            new EditTextMessageRequest(1, 2, "fixed\ttypo"),
-            new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "hi" }, ReplyToMessageId = 5 }),
-            new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")] }),
-            new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("c", "notes.txt")] }),
-            new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")], Files = [File("c")] }),
+            new ChatMessageReadersRequest(1, 2),
+            new ChatTypingRequest(1, true),
+            new ChatTypingRequest(1, false),
+            new EditMessageRequest(1, 2, "fixed\ttypo"),
+            new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "hi" }, ReplyToMessageId = 5 }),
+            new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b")] }),
+            new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("c", "notes.txt")] }),
+            new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b"), File("c")] }),
             new MediaTokenRequest(),
             new HybridSessionJoinRequest(1) { ClientEpoch = Guid.NewGuid().ToString("N") },
             ConnectTransport(new DTLSFingerprint { Algorithm = "sha-256", Fingerprint = "AB:CD:EF:01" })
@@ -137,14 +167,29 @@ public class MessageValidatorTests
         FileName = fileName
     };
 
+    // Stands for a public key: only its length and characters are checked here
+    private const string Key = "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE";
+
     public static TheoryData<object, string> InvalidRequests() => new()
     {
-        { new UserAuthRequest("secret", new string('a', Limits.UserIdentityMaxLength + 1)), "UserIdentity" },
+        { new LoginRequest(null, new LegacyLoginDTO(new NewDeviceDTO(Key), new string('a', Limits.UserIdentityMaxLength + 1), null, new RecoveryKeysDTO(Key, Key))), "UserIdentity" },
+        { new LoginRequest(null, new LegacyLoginDTO(new NewDeviceDTO(Key), "alice", new string('t', Limits.SessionTokenMaxLength + 1), new RecoveryKeysDTO(Key, Key))), "SessionToken" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.Empty, "sig")), "DeviceId" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), new string('s', Limits.SignatureMaxLength + 1))), "Signature" },
+        { new LoginRequest(null, new UsernameLoginDTO(new NewDeviceDTO(new string('k', Limits.PublicKeyMaxLength + 1)), "alice")), "PublicKey" },
+        { new LoginRequest(null, new UsernameLoginDTO(new NewDeviceDTO(Key), new string('u', Limits.UsernameMaxLength + 1))), "Username" },
+        { new LoginRequest(null, new LoginCodeLoginDTO(new NewDeviceDTO(Key), new string('c', Limits.LoginCodeMaxLength + 1))), "Code" },
+        { new LoginRequest(null, new RegisterLoginDTO(new NewDeviceDTO(Key), new RecoveryKeysDTO(Key, "bad\u0007key"))), "AccountPublicKey" },
+        { new DeviceLinkInfoRequest(new string('c', Limits.LinkCodeMaxLength + 1)), "Code" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO(new string('d', Limits.DeviceNameMaxLength + 1), "Linux", "0.8.0")), "Name" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO("desk", "Linux", "bad\u0007version")), "AppVersion" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO("desk", "Linux", "0.8.0", new string('o', Limits.OsVersionMaxLength + 1))), "OsVersion" },
+        { new LoginRequest(null, new DeviceLoginDTO(Guid.NewGuid(), "sig"), new DeviceInfoDTO("desk", "Linux", "0.8.0", "Ubuntu", "x6\u00074")), "Architecture" },
         { new UserSetPasswordRequest(null, new string('p', Limits.PasswordMaxLength + 1)), "NewPassword" },
         { new UserTwoFactorSetupRequest(new UserSecurityProofDTO(null, "1234567")), "TwoFactorCode" },
         { new UserTwoFactorEnableRequest("12\u00073"), "Code" },
         { new UserPasskeyRegisterRequest("bad\u0007name", "{}"), "Label" },
-        { new UserPasskeyRegisterRequest(null, new string('j', Limits.Fido2CredentialJsonMaxLength + 1)), "CredentialJson" },
+        { new UserPasskeyRegisterRequest(null, new string('j', Limits.FIDO2CredentialJsonMaxLength + 1)), "CredentialJson" },
         { new UserPasskeyDeleteRequest(null, 0), "PasskeyId" },
         { new CoordinatorUserInfoRequest(Enumerable.Range(1, Limits.UserIdsMaxCount + 1).ToList()), "UserIds" },
         { new CoordinatorUserInfoRequest([]), "UserIds" },
@@ -159,21 +204,21 @@ public class MessageValidatorTests
         { new RegisterPushTokenRequest("token", PushPlatform.Android, new string('a', Limits.PushKeyIdLength * 2), Convert.ToBase64String(new byte[Limits.PushKeyLength - 1])), "Key" },
         { new RegisterPushTokenRequest("token", PushPlatform.Android, new string('a', Limits.PushKeyIdLength * 2), "not base64!"), "Key" },
         { new UnregisterPushTokenRequest("  "), "Token" },
-        { new CreateSessionRequest(new CreateSessionModel(new string('n', Limits.SessionNameMaxLength + 1), 10, new ChatSessionCreateData())), "Name" },
-        { new CreateSessionRequest(new CreateSessionModel("   ", 10, new ChatSessionCreateData())), "Name" },
-        { new CreateSessionRequest(new CreateSessionModel("bad\u0007name", 10, new ChatSessionCreateData())), "Name" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 0, new ChatSessionCreateData())), "Capacity" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(IconPath: "file:///etc/passwd"))), "IconPath" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData((WebRTCEngine)99))), "EngineType" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, VideoBitrate: 1_000_000))), "VideoBitrate" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.AV1 }))), "CameraCodec" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new HybridSessionCreateData(WebRTCEngine.Mediasoup, Media: new HybridMediaSettingsDTO { AudioCodec = WebRTCAudioCodecs.G711 }))), "AudioCodec" },
+        { new CreateSessionRequest(new CreateSessionModel(new string('n', Limits.SessionNameMaxLength + 1), new ChatSessionCreateData())), "Name" },
+        { new CreateSessionRequest(new CreateSessionModel("   ", new ChatSessionCreateData())), "Name" },
+        { new CreateSessionRequest(new CreateSessionModel("bad\u0007name", new ChatSessionCreateData())), "Name" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, 0))), "Capacity" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, -1))), "Capacity" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, Limits.SessionCapacityMax + 1))), "Capacity" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData((WebRTCEngine)99, 10))), "EngineType" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, 10, Media: new HybridMediaSettingsDTO { CameraCodec = WebRTCVideoCodecs.H265 }))), "CameraCodec" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new HybridSessionCreateData(WebRTCEngine.Mediasoup, 10, Media: new HybridMediaSettingsDTO { AudioCodec = WebRTCAudioCodecs.G711 }))), "AudioCodec" },
         { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { OpusPacketLossPercent = 101 }), "OpusPacketLossPercent" },
         { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, new HybridMediaSettingsDTO { VoiceJitterBufferMs = 5 }), "VoiceJitterBufferMs" },
         { new ChangeHybridSessionSettingsRequest(1, "Room", 10, false, null!), "Media" },
-        { new KickFromSessionRequest(1, 2, SessionType.Hybrid, new string('r', Limits.ReasonMaxLength + 1)), "Reason" },
+        { new KickFromSessionRequest(1, 2, new string('r', Limits.ReasonMaxLength + 1)), "Reason" },
         { new DeleteSessionRequest(0), "SessionId" },
-        { new CreateSessionRequest(new CreateSessionModel("Room", 10, new ChatSessionCreateData(), CategoryId: 0)), "CategoryId" },
+        { new CreateSessionRequest(new CreateSessionModel("Room", new ChatSessionCreateData(), CategoryId: 0)), "CategoryId" },
         { new CreateSessionCategoryRequest(new string('n', Limits.SessionCategoryNameMaxLength + 1)), "Name" },
         { new CreateSessionCategoryRequest("  "), "Name" },
         { new RenameSessionCategoryRequest(1, "bad\u0007name"), "Name" },
@@ -184,29 +229,33 @@ public class MessageValidatorTests
         { new MoveSessionRequest(1, null, -1), "Index" },
         { new MoveSessionRequest(1, null, Limits.SessionLayoutIndexMax + 1), "Index" },
         { new MoveSessionCategoryRequest(1, -1), "Index" },
-        { new ChatSessionHistoryRequest(1, Limits.ChatHistoryMaxTake + 1, 0), "Take" },
         { new ChatSessionHistoryPageRequest(1, 0, 50), "BeforeMessageId" },
         { new ChatSessionHistoryPageRequest(1, null, Limits.ChatHistoryMaxTake + 1), "Take" },
         { new ChatSessionChangesRequest(1, -1, 50), "AfterRevision" },
         { new ChatSessionChangesRequest(1, 0, 0), "Take" },
         { new ChatMarkReadRequest(1, 0), "MessageId" },
-        { new EditTextMessageRequest(1, 2, new string('t', Limits.ChatTextMaxLength + 1)), "Text" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1 }), "text or an attachment" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "" } }), "Text" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "a")] }), "attached once" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b"), Image("c", "B")] }), "attached once" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b", uploadId: "not-hex")] }), "UploadId" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b", width: 0)] }), "Width" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b", fileName: " ")] }), "FileName" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => Image($"a{i:x}", $"b{i:x}")).ToList() }), "Images" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Video = [new ChatVideoContentDTO { Id = 1, FileName = "a.mp4", Size = 1, MimeType = "video/mp4", Width = 1, Height = 1, Duration = TimeSpan.FromSeconds(1) }] }), "not supported" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Images = [Image("a", "b")], Files = [File("B")] }), "attached once" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a"), File("A")] }), "attached once" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a", "bad\u0001name")] }), "FileName" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = "not-hex", FileName = "a.txt" }] }), "UploadId" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => File($"a{i:x}")).ToList() }), "Files" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, IsDelayed = true }), "DelayedSentTime" },
-        { new SendTextMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, IsDisposable = true, DisposeTime = DateTime.UtcNow.AddYears(5) }), "DisposeTime" },
+        { new ChatMessageReadersRequest(0, 2), "ChatId" },
+        { new ChatMessageReadersRequest(1, 0), "MessageId" },
+        { new ChatTypingRequest(0, true), "ChatId" },
+        { new EditMessageRequest(1, 2, new string('t', Limits.ChatTextMaxLength + 1)), "Text" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1 }), "text or an attachment" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "" } }), "Text" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "a")] }), "attached once" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b"), Image("c", "B")] }), "attached once" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b", uploadId: "not-hex")] }), "UploadId" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b", width: 0)] }), "Width" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b", fileName: " ")] }), "FileName" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => (NewChatFileModel)Image($"a{i:x}", $"b{i:x}")).ToList() }), "Files" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatImageModel { UploadId = File("a").UploadId, FileName = "a.jpg", Width = 1, Height = 1 }] }), "reduced copy" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b"), File("B")] }), "attached once" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a"), File("A")] }), "attached once" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("a", "bad\u0001name")] }), "FileName" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = File("a").UploadId, FileName = "a.mp4", PreviewUploadId = File("A").UploadId }] }), "attached once" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = File("a").UploadId, FileName = "a.mp4", PreviewUploadId = "not-hex" }] }), "PreviewUploadId" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [new NewChatFileModel { UploadId = "not-hex", FileName = "a.txt" }] }), "UploadId" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = Enumerable.Range(0, Limits.ChatAttachmentsMaxCount + 1).Select(i => File($"a{i:x}")).ToList() }), "Files" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, ScheduledAt = DateTimeOffset.UtcNow.AddYears(1) }), "ScheduledAt" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "x" }, ExpiresAt = DateTimeOffset.UtcNow.AddYears(5) }), "ExpiresAt" },
         { new HybridSessionJoinRequest(1) { ClientEpoch = "not-a-guid" }, "ClientEpoch" },
         { ConnectTransport(new DTLSFingerprint { Algorithm = "md5", Fingerprint = "AB:CD" }), "Fingerprints[0]" },
         { ConnectTransport(new DTLSFingerprint { Algorithm = "sha-256", Fingerprint = "<script>" }), "Fingerprints[0]" },
@@ -221,7 +270,7 @@ public class MessageValidatorTests
     }
 
     private static HybridSessionConnectTransportRequest ConnectTransport(DTLSFingerprint fingerprint) =>
-        new(1) { DtlsParameters = new DTLSParameters { Role = "client", Fingerprints = [fingerprint] } };
+        new(1) { DTLSParameters = new DTLSParameters { Role = "client", Fingerprints = [fingerprint] } };
 
     private static void CollectUnbounded(Type type, string path, List<string> unbounded, HashSet<Type> visited)
     {
@@ -267,5 +316,27 @@ public class MessageValidatorTests
         // A polymorphic property may hold any derived type, so each of them is checked
         foreach (var candidate in SharedAssembly.GetTypes().Where(t => type.IsAssignableFrom(t) && !t.IsAbstract))
             CollectUnbounded(candidate, path, unbounded, visited);
+    }
+
+    [Fact]
+    public void EmptyGuids_AreRefused()
+    {
+        Assert.False(MessageValidator.TryValidate(
+            new CoordinatorRevokeBanRequest(Guid.Empty), out _));
+        Assert.False(MessageValidator.TryValidate(
+            new CoordinatorRevokeBanRequest(Guid.NewGuid()) { RequestId = Guid.Empty }, out var errors));
+        Assert.Contains(errors, error => error.Contains("RequestId"));
+        Assert.True(MessageValidator.TryValidate(
+            new CoordinatorRevokeBanRequest(Guid.NewGuid()), out _));
+    }
+
+    [Fact]
+    public void SetUserState_OnlyFreezesOrReinstates()
+    {
+        Assert.True(MessageValidator.TryValidate(new CoordinatorSetUserStateRequest(2, Shared.Enums.User.UserState.Suspended), out _));
+        Assert.True(MessageValidator.TryValidate(new CoordinatorSetUserStateRequest(2, Shared.Enums.User.UserState.Normal), out _));
+        Assert.False(MessageValidator.TryValidate(new CoordinatorSetUserStateRequest(2, Shared.Enums.User.UserState.Banned), out _));
+        Assert.True(MessageValidator.TryValidate(new CoordinatorBanRequest(2, Shared.Enums.User.BanKind.Ip, "spam"), out _));
+        Assert.False(MessageValidator.TryValidate(new CoordinatorBanRequest(2, Shared.Enums.User.BanKind.Ip, new string('a', 1001)), out _));
     }
 }

@@ -18,6 +18,6 @@ public record ChangeSessionPermissionsRequest(
     [property: Required, ItemCount(0, Limits.RolesMaxCount)] List<SessionPermissionOverrideDTO> Overrides
 ) : GenericSessionRequest
 {
-    public ChangeSessionPermissionsResponse ToResponse(ChangeSessionPermissionsResult result)
-        => new(RequestId, SessionId, result);
+    public ChangeSessionPermissionsResponse ToResponse()
+        => new(RequestId, SessionId);
 }

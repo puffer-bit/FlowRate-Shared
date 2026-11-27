@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 using Shared.Enums;
 using Shared.Models;
+using Shared.Models.Responses;
 using Shared.Models.DataTransferObjects.ChatSession;
 using Shared.Models.DataTransferObjects.ChatSession.User;
 using Shared.Models.Notifications.SessionInfo;
@@ -27,7 +28,8 @@ public class BaseMessageRegistrationTests
     {
         PropertyNameCaseInsensitive = true,
         MaxDepth = 16,
-        TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver(),
+        Converters = { new UnixMillisecondsConverter(), new MillisecondsConverter() }
     };
 
     private static readonly JsonTypeInfo<BaseMessage> BaseMessageInfo = ProtocolJsonContext.Default.BaseMessage;
@@ -51,13 +53,6 @@ public class BaseMessageRegistrationTests
     {
         Assert.True(Registrations.Any(r => r.DerivedType == type),
             $"{type.Name} is not registered as a JsonDerivedType of BaseMessage");
-    }
-
-    [Fact]
-    public void Discriminators_MatchTypeNames()
-    {
-        foreach (var registration in Registrations)
-            Assert.Equal(registration.DerivedType.Name, registration.TypeDiscriminator);
     }
 
     [Fact]
@@ -106,7 +101,6 @@ public class BaseMessageRegistrationTests
             Id = 1,
             CoordinatorInstanceId = "c",
             Name = "Chat",
-            Capacity = 10,
             SessionType = SessionType.Chat,
             CreatorUserId = 7,
             Users = new Dictionary<int, TextChatUserDTO> { [7] = new() { UserId = 7, IsAdmin = true } }
@@ -116,5 +110,15 @@ public class BaseMessageRegistrationTests
         var restored = Assert.IsType<ChatSessionCreatedNotification>(JsonSerializer.Deserialize(json, BaseMessageInfo));
 
         Assert.True(restored.Session.Users[7].IsAdmin);
+    }
+
+    [Fact]
+    public void SenderId_IsNeitherWrittenNorRead()
+    {
+        BaseMessage message = new ErrorResponse(Guid.NewGuid(), ErrorCode.InsufficientPermissions) { SenderId = 5 };
+        var json = JsonSerializer.Serialize(message, BaseMessageInfo);
+        Assert.DoesNotContain("SenderId", json);
+        var forged = json.Insert(json.Length - 1, ",\"SenderId\":5");
+        Assert.Equal(0, JsonSerializer.Deserialize(forged, BaseMessageInfo)!.SenderId);
     }
 }

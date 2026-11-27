@@ -17,6 +17,6 @@ public record RegisterPushTokenRequest(
     [property: Required, StringLength(Limits.PushKeyIdLength * 2), HexBytes(Limits.PushKeyIdLength)] string KeyId,
     [property: Required, StringLength(Limits.PushKeyBase64Length), Base64Bytes(Limits.PushKeyLength)] string Key) : CoordinatorRequest
 {
-    public RegisterPushTokenResponse ToResponse(PushTokenResult result, string? replyToken = null) =>
-        new(RequestId, result, replyToken);
+    public RegisterPushTokenResponse ToResponse(string? replyToken = null) =>
+        new(RequestId, replyToken);
 }
