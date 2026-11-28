@@ -11,6 +11,7 @@ public class PeerDTO
     public bool IsRejected { get; set; }
     public bool IsScreenShareActive { get; set; }
     public bool IsScreenAudioActive { get; set; }
+    /// <summary>The camera of the peer is on; everyone who sees the session is told, the track goes to its peers.</summary>
     public bool IsVideoShareActive { get; set; }
     public bool IsMicrophoneMuted { get; set; }
     public bool IsSoundMuted { get; set; }

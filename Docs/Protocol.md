@@ -449,6 +449,22 @@ snapshot (git ignores it). Then:
 6. Update the client submodule and implement the server side. Both must be built from the same
    Shared commit.
 
+## Sending messages
+
+`SendMessageRequest(ChatId, Message)` stores a new message and broadcasts it as
+`ChatSessionMessageAddedNotification`, to its author's devices too, and then answers with
+`SendMessageResponse`, which carries the stored message in `Message`.
+
+A client shows the message in the chat at once, before the server has it. To tell the stored copy from
+the one it shows, it gives the message `NewChatMessageModel.ClientMessageId`, a GUID of its own, and
+the server keeps it: `ChatMessageDTO.ClientMessageId` holds it in the notification, the response and
+the history. A request that repeats the `ClientMessageId` of a message the same author already stored
+in that chat stores nothing and sends no notification: it is answered with the stored message, so a
+client can send again whatever it did not get an answer to (a lost answer, a reconnect, a restart).
+
+All three fields are optional. Older clients send no `ClientMessageId`, and their messages are stored
+every time they are sent; older servers ignore it and answer without `Message`.
+
 ## Typing activity
 
 `ChatTypingRequest(ChatId, IsTyping)` is acknowledged by `ChatTypingResponse`. The authenticated
@@ -677,9 +693,10 @@ passes it on), who alone changes its members and name; private chats do not depe
 ## Media of a peer
 
 `HybridSessionPeerMediaChangedNotification` tells that a peer started or stopped its microphone, camera or screen
-(`Source`, `IsActive`). A started track goes to each listener with the `Inbound` to consume; a started screen share is
-first announced to everyone without one, with `HasAudio`. A stop goes to everyone, with `InitiatorUserId` when someone
-else stopped it.
+(`Source`, `IsActive`). A started track goes to each listener with the `Inbound` to consume; a started screen share or
+camera is first announced to everyone without one, a screen share with `HasAudio`. A stop goes to everyone, with
+`InitiatorUserId` when someone else stopped it. `PeerDTO.IsScreenShareActive` and `PeerDTO.IsVideoShareActive` (the
+camera) give the same state to whoever sees the session later.
 
 ## Server restarts
 

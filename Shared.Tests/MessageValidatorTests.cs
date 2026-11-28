@@ -141,6 +141,7 @@ public class MessageValidatorTests
             new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b")] }),
             new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [File("c", "notes.txt")] }),
             new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b"), File("c")] }),
+            new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "hi" }, ClientMessageId = Guid.NewGuid() }),
             new MediaTokenRequest(),
             new HybridSessionJoinRequest(1) { ClientEpoch = Guid.NewGuid().ToString("N") },
             ConnectTransport(new DTLSFingerprint { Algorithm = "sha-256", Fingerprint = "AB:CD:EF:01" })
@@ -239,6 +240,7 @@ public class MessageValidatorTests
         { new ChatTypingRequest(0, true), "ChatId" },
         { new EditMessageRequest(1, 2, new string('t', Limits.ChatTextMaxLength + 1)), "Text" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1 }), "text or an attachment" },
+        { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "hi" }, ClientMessageId = Guid.Empty }), "ClientMessageId" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, TextContent = new ChatTextContentDTO { Text = "" } }), "Text" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "a")] }), "attached once" },
         { new SendMessageRequest(1, new NewChatMessageModel { ChatId = 1, Files = [Image("a", "b"), Image("c", "B")] }), "attached once" },
