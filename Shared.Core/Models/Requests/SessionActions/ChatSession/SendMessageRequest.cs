@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Shared.Models.DataTransferObjects.ChatSession.Messages;
 using Shared.Models.Requests.SessionActions.ChatSession.Models;
 using Shared.Models.Responses.SessionActions.ChatSession;
 using Shared.Validation;
@@ -10,6 +11,6 @@ public record SendMessageRequest(
     [property: Required] NewChatMessageModel Message
 ) : ChatSessionRequest
 {
-    public SendMessageResponse ToResponse()
-        => new(RequestId);
+    public SendMessageResponse ToResponse(ChatMessageDTO? message = null)
+        => new(RequestId) { Message = message };
 }

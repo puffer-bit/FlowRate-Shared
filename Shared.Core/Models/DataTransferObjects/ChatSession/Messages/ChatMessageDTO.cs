@@ -9,6 +9,12 @@ public class ChatMessageDTO
     public required int ChatId { get; init; }
     public long Revision { get; set; }
     public required int SenderUserId { get; init; }
+
+    /// <summary>
+    /// What the author's client gave the message when sending it (<c>NewChatMessageModel.ClientMessageId</c>);
+    /// null for messages of older clients and system messages.
+    /// </summary>
+    public Guid? ClientMessageId { get; init; }
     public required DateTimeOffset SentAt { get; init; }
     public DateTimeOffset? ScheduledAt { get; set; }
     public DateTimeOffset? ExpiresAt { get; set; }

@@ -371,6 +371,7 @@ ChatMarkReadRequest.RequestId: Guid
 ChatMarkReadResponse.RequestId: Guid
 ChatMarkReadResponse.State: ChatReadStateDTO
 ChatMessageDTO.ChatId: Int32
+ChatMessageDTO.ClientMessageId: Guid?
 ChatMessageDTO.EditedAt: DateTimeOffset?
 ChatMessageDTO.ExpiresAt: DateTimeOffset?
 ChatMessageDTO.Files: List<ChatFileDTO>
@@ -1080,6 +1081,7 @@ NewChatImageModel.PreviewUploadId: String
 NewChatImageModel.UploadId: String
 NewChatImageModel.Width: Int32
 NewChatMessageModel.ChatId: Int32
+NewChatMessageModel.ClientMessageId: Guid?
 NewChatMessageModel.ExpiresAt: DateTimeOffset?
 NewChatMessageModel.Files: List<NewChatFileModel>
 NewChatMessageModel.IsLinkPreviewDisabled: Boolean
@@ -1174,6 +1176,7 @@ SFUNodeDTO.Port: Int32
 SendMessageRequest.ChatId: Int32
 SendMessageRequest.Message: NewChatMessageModel
 SendMessageRequest.RequestId: Guid
+SendMessageResponse.Message: ChatMessageDTO
 SendMessageResponse.RequestId: Guid
 ServerRestartNotification.At: DateTimeOffset?
 ServerRestartNotification.Message: String

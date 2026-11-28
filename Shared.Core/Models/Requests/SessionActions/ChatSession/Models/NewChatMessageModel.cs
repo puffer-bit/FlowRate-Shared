@@ -26,6 +26,14 @@ public class NewChatMessageModel : IValidatableObject
     /// <summary>The message goes without a preview of its link, as the author closed it in the composer.</summary>
     public bool IsLinkPreviewDisabled { get; set; }
 
+    /// <summary>
+    /// Made by the sending client for this message and kept by the server. The message comes back with it, so
+    /// the client tells it from the copy it already shows, and a message sent again with it (after a lost
+    /// answer or a reconnect) is not stored twice. Null from older clients.
+    /// </summary>
+    [NotEmptyGuid]
+    public Guid? ClientMessageId { get; init; }
+
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         if (TextContent == null && Files.Count == 0)
