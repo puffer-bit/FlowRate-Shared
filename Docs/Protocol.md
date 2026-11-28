@@ -693,9 +693,10 @@ passes it on), who alone changes its members and name; private chats do not depe
 ## Media of a peer
 
 `HybridSessionPeerMediaChangedNotification` tells that a peer started or stopped its microphone, camera or screen
-(`Source`, `IsActive`). A started track goes to each listener with the `Inbound` to consume; a started screen share is
-first announced to everyone without one, with `HasAudio`. A stop goes to everyone, with `InitiatorUserId` when someone
-else stopped it.
+(`Source`, `IsActive`). A started track goes to each listener with the `Inbound` to consume; a started screen share or
+camera is first announced to everyone without one, a screen share with `HasAudio`. A stop goes to everyone, with
+`InitiatorUserId` when someone else stopped it. `PeerDTO.IsScreenShareActive` and `PeerDTO.IsVideoShareActive` (the
+camera) give the same state to whoever sees the session later.
 
 ## Server restarts
 

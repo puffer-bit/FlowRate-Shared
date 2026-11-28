@@ -83,8 +83,8 @@ public record HybridSessionPeerPokedNotification(int SessionId, int UserId, int 
 
 /// <summary>
 /// A peer started or stopped sending one of its media. A started track goes to each listener with the
-/// <see cref="Inbound"/> to consume; a started screen share is announced to everyone first without one, with
-/// <see cref="HasAudio"/>. A stop goes to everyone, with who stopped it when it was not the peer itself.
+/// <see cref="Inbound"/> to consume; a started screen share or camera is announced to everyone first without one, a
+/// screen share with <see cref="HasAudio"/>. A stop goes to everyone, with who stopped it when it was not the peer itself.
 /// </summary>
 public record HybridSessionPeerMediaChangedNotification(int SessionId, int UserId, MediaSourceType Source, bool IsActive,
     Inbound? Inbound = null, bool HasAudio = false, int? InitiatorUserId = null)
