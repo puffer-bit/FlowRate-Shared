@@ -91,6 +91,8 @@ public static class ProtocolVersion
     //    Permission.ManageBots, ErrorCode.BotLimitReached, CoordinatorSettingsDTO.MaxBots
     //    (CoordinatorSettingsUpdateDTO.MaxBots, null keeps it), BotLoginCodeDTO and
     //    CoordinatorBots/CreateBot/BotLoginCode/DeleteBotRequest with their responses.
+    //    Sending without waiting, added without a new version (older readers ignore the fields):
+    //    NewChatMessageModel.ClientMessageId, ChatMessageDTO.ClientMessageId and SendMessageResponse.Message.
     public const int Current = 3;
 
     /// <summary>The oldest client version the server still serves.</summary>
